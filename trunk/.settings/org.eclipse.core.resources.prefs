@@ -1,7 +1,8 @@
-#Sat Jul 09 14:59:51 EEST 2011
+#Wed Jul 13 15:49:42 EEST 2011
 eclipse.preferences.version=1
-encoding//src/pdesign/__init__.py=utf-8
-encoding//src/pdesign/actions.py=utf-8
-encoding//src/pdesign/app_conf.py=utf-8
-encoding//src/pdesign/dialogs/__init__.py=utf-8
-encoding//src/pdesign/mainwindow.py=utf-8
+encoding//src/linux-gtk/pdesign/__init__.py=utf-8
+encoding//src/linux-gtk/pdesign/actions.py=utf-8
+encoding//src/linux-gtk/pdesign/app_conf.py=utf-8
+encoding//src/linux-gtk/pdesign/dialogs/__init__.py=utf-8
+encoding//src/linux-gtk/pdesign/dialogs/credits.py=utf-8
+encoding//src/linux-gtk/pdesign/mainwindow.py=utf-8
