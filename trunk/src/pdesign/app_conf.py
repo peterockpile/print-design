@@ -101,9 +101,11 @@ class AppConfig(UCConfig):
 	import_dir = '~'
 	export_dir = '~'
 	make_backup = 1
+	resource_dir = ''
 
 	def __init__(self, path):
-		self.resource_dir = os.path.join(path, 'share')
+		pass
+#		self.resource_dir = os.path.join(path, 'share')
 
 
 
