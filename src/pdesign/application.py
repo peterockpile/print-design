@@ -57,6 +57,7 @@ class Application:
 
 		self.appdata = AppData()
 		config.load(self.appdata.app_config)
+		config.resource_dir = os.path.join(self.path, 'share')
 
 		self.cursors = modes.get_cursors()
 		self.default_cms = cms.ColorManager(self.stub)
@@ -223,6 +224,7 @@ class Application:
 		pass
 
 	def update_config(self):
+		config.resource_dir = ''
 		w, h = self.mw.get_size()
 		state = self.mw.window.get_state()
 		if state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
