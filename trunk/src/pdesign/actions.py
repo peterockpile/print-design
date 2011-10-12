@@ -17,8 +17,7 @@
 
 import gtk
 
-from pdesign import _, events
-from pdesign import events, modes
+from pdesign import _, events, modes
 from pdesign.events import APP_STATUS, CLIPBOARD, CONFIG_MODIFIED, DOC_CHANGED, \
 DOC_CLOSED, DOC_MODIFIED, DOC_SAVED, MODE_CHANGED, NO_DOCS, SELECTION_CHANGED
 
