@@ -29,7 +29,7 @@ class AppMenubar(gtk.MenuBar):
 		self.actions = self.app.actions
 
 		#----FILE MENU
-		self.file_item, self.file_menu = self.create_menu("_File")
+		self.file_item, self.file_menu = self.create_menu(_("_File"))
 		items = ['NEW',
 				 None,
 				 'OPEN',
@@ -48,7 +48,7 @@ class AppMenubar(gtk.MenuBar):
 		self.add_items(self.file_menu, items)
 
 		#----EDIT MENU
-		self.edit_item, self.edit_menu = self.create_menu("_Edit")
+		self.edit_item, self.edit_menu = self.create_menu(_("_Edit"))
 		items = ['UNDO',
 				 'REDO',
 				 'CLEAR_HISTORY',
@@ -66,7 +66,7 @@ class AppMenubar(gtk.MenuBar):
 		self.add_items(self.edit_menu, items)
 
 		#----VIEW MENU
-		self.view_item, self.view_menu = self.create_menu("_View")
+		self.view_item, self.view_menu = self.create_menu(_("_View"))
 		items = [('STROKE_VIEW',),
 				('DRAFT_VIEW',),
 				 None,
@@ -82,28 +82,28 @@ class AppMenubar(gtk.MenuBar):
 		self.add_items(self.view_menu, items)
 
 		#----LAYOUT MENU
-		self.layout_item, self.effects_menu = self.create_menu("_Layout")
+		self.layout_item, self.effects_menu = self.create_menu(_("_Layout"))
 
 		#----ARRANGE MENU
-		self.arrange_item, self.arrange_menu = self.create_menu("_Arrange")
+		self.arrange_item, self.arrange_menu = self.create_menu(_("_Arrange"))
 
 		#----EFFETCS MENU
-		self.effects_item, self.effects_menu = self.create_menu("E_ffects")
+		self.effects_item, self.effects_menu = self.create_menu(_("E_ffects"))
 
 		#----BITMAPS MENU
-		self.bitmaps_item, self.curve_menu = self.create_menu("_Bitmaps")
+		self.bitmaps_item, self.curve_menu = self.create_menu(_("_Bitmaps"))
 
 		#----STYLE MENU
-		self.style_item, self.style_menu = self.create_menu("_Style")
+		self.style_item, self.style_menu = self.create_menu(_("_Style"))
 
 		#----SCRIPT MENU
-		self.script_item, self.script_menu = self.create_menu("_Script")
+		self.script_item, self.script_menu = self.create_menu(_("_Script"))
 
 		#----WINDOWS MENU
-		self.windows_item, self.windows_menu = self.create_menu("_Window")
+		self.windows_item, self.windows_menu = self.create_menu(_("_Window"))
 
 		#----HELP MENU
-		self.help_item, self.help_menu = self.create_menu("_Help")
+		self.help_item, self.help_menu = self.create_menu(_("_Help"))
 		items = ['ABOUT',
 		]
 		self.add_items(self.help_menu, items)
