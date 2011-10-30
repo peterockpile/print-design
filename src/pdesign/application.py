@@ -24,8 +24,7 @@ from uc2.utils import system
 from uc2 import cms
 from uc2 import sk1doc
 
-from pdesign import _, config
-from pdesign import events
+from pdesign import _, config, events
 import dialogs
 import modes
 from app_conf import AppData
