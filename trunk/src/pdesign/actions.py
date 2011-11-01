@@ -55,6 +55,7 @@ def create_actions(app):
 	actiongroup = app.actiongroup
 	actions = {}
 	entries = [
+
 #	name, label, tooltip, icon, shortcut, callable, [channels], validator, args 
 #gtk.accelerator_name(ord('+'),gtk.gdk.CONTROL_MASK)
 
@@ -171,8 +172,9 @@ def create_actions(app):
 	gtk.STOCK_REFRESH, '<Alt>R', proxy.force_redraw,
 	[NO_DOCS, DOC_CHANGED], insp.is_doc],
 
-
-	['PREFERENCES', _('Preferences'), _('Preferences'), gtk.STOCK_PREFERENCES, None,
+	['PROPERTIES', _('Document Properties...'), _('Document Properties...'), gtk.STOCK_PROPERTIES, None,
+	 proxy.properties, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['PREFERENCES', _('Preferences...'), _('Preferences...'), gtk.STOCK_PREFERENCES, None,
 	 proxy.preferences, None, None],
 	['QUIT', _('_Exit'), _('Exit'), gtk.STOCK_QUIT, '<Control>Q',
 	 proxy.exit, None, None],

@@ -61,6 +61,7 @@ class AppMenubar(gtk.MenuBar):
 				 'SELECT_ALL',
 				 'DESELECT',
 				 None,
+				 'PROPERTIES',
 				 'PREFERENCES',
 		]
 		self.add_items(self.edit_menu, items)
