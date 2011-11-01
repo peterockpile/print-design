@@ -147,6 +147,9 @@ class AppProxy:
 	def force_redraw(self, *args):
 		self.app.current_doc.canvas.force_redraw()
 
+	def properties(self, *args):
+		pass
+
 	def preferences(self, *args):
 		pass
 

@@ -55,6 +55,7 @@ class AppToolbar(gtk.Toolbar):
 				'ZOOM_100',
 				'ZOOM_SELECTED',
 				None,
+				'PROPERTIES',
 				'PREFERENCES',
 			   ]
 
