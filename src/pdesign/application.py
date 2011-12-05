@@ -22,7 +22,7 @@ import gtk
 import uc2
 from uc2.utils import system
 from uc2 import cms
-from uc2 import sk1doc
+from uc2.formats import pdxf
 
 from pdesign import _, config, events
 import dialogs
@@ -170,7 +170,7 @@ class Application:
 		if not doc.doc_file:
 			return self.save_as()
 		ext = os.path.splitext(self.current_doc.doc_file)[1]
-		if not ext == sk1doc.DOC_EXTENSION:
+		if not ext == pdxf.DOC_EXTENSION:
 			return self.save_as()
 		if not os.path.lexists(os.path.dirname(self.current_doc.doc_file)):
 			return self.save_as()
@@ -187,8 +187,8 @@ class Application:
 		doc_file = '' + self.current_doc.doc_file
 		if not doc_file:
 			doc_file = '' + self.current_doc.doc_name
-		if not os.path.splitext(doc_file)[1] == sk1doc.DOC_EXTENSION:
-			doc_file = os.path.splitext(doc_file)[0] + sk1doc.DOC_EXTENSION
+		if not os.path.splitext(doc_file)[1] == pdxf.DOC_EXTENSION:
+			doc_file = os.path.splitext(doc_file)[0] + pdxf.DOC_EXTENSION
 		if not os.path.lexists(os.path.dirname(doc_file)):
 			doc_file = os.path.join(config.save_dir,
 								os.path.basename(doc_file))

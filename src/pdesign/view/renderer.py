@@ -19,7 +19,7 @@ from copy import deepcopy
 
 import cairo
 
-from uc2.sk1doc import model
+from uc2.formats.pdxf import model
 from uc2 import libcairo
 
 from pdesign import config

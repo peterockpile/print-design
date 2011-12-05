@@ -22,7 +22,7 @@ import gtk
 import cairo
 
 from uc2.uc_conf import unit_dict
-from uc2 import sk1doc
+from uc2.formats import pdxf
 from uc2.utils import system
 
 from pdesign import _, config
@@ -100,10 +100,10 @@ class RulerCorner(gtk.DrawingArea):
 
 	def click_event(self, *args):
 		origin = self.presenter.model.doc_origin
-		if origin < sk1doc.ORIGINS[-1]:
+		if origin < pdxf.ORIGINS[-1]:
 			origin += 1
 		else:
-			origin = sk1doc.ORIGINS[0]
+			origin = pdxf.ORIGINS[0]
 		self.presenter.api.set_doc_origin(origin)
 
 	def repaint(self, *args):
@@ -199,10 +199,10 @@ class Ruler(gtk.DrawingArea):
 			scale = self.viewport.zoom
 
 		w, h = self.presenter.get_page_size()
-		if self.origin == sk1doc.DOC_ORIGIN_LL:
+		if self.origin == pdxf.DOC_ORIGIN_LL:
 			x += w / 2.0
 			y += h / 2.0
-		elif self.origin == sk1doc.DOC_ORIGIN_LU:
+		elif self.origin == pdxf.DOC_ORIGIN_LU:
 			x += w / 2.0
 			y -= h / 2.0
 
@@ -289,7 +289,7 @@ class Ruler(gtk.DrawingArea):
 		for i in range(start_index, len(positions), stride):
 			pos = positions[i] * units_per_pixel + origin / pt_per_unit
 			pos = round(pos, 5)
-			if self.origin == sk1doc.DOC_ORIGIN_LU and self.orient == VERTICAL:
+			if self.origin == pdxf.DOC_ORIGIN_LU and self.orient == VERTICAL:
 				pos *= -1
 			if pos == 0.0:
 				pos = 0.0
