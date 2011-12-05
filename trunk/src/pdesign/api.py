@@ -17,7 +17,7 @@
 
 from copy import deepcopy
 
-from uc2.sk1doc import model
+from uc2.formats.pdxf import model
 from uc2 import uc_conf, libcairo
 
 from pdesign import _, config
