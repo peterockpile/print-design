@@ -55,10 +55,10 @@ class MainWindow(gtk.Window):
 		self.nb_splash = SplashArea(self)
 		hbox.pack_start(self.inner_hpaned, True, True, 1)
 
-		frame2 = gtk.Frame()
-		frame2.set_shadow_type(gtk.SHADOW_IN)
-		frame2.set_size_request(150, 60)
-		self.inner_hpaned.pack2(frame2, 0, 0)
+#		frame2 = gtk.Frame()
+#		frame2.set_shadow_type(gtk.SHADOW_IN)
+#		frame2.set_size_request(150, 60)
+#		self.inner_hpaned.pack2(frame2, 0, 0)
 
 		self.nb = gtk.Notebook()
 		self.nb_frame.add(self.nb_splash)
