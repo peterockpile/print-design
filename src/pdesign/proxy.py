@@ -29,6 +29,9 @@ class AppProxy:
 	def __init__(self, app):
 		self.app = app
 
+	def stub(self, *args):
+		dialogs.about_dialog(self.mw)
+
 	def update_references(self):
 		self.mw = self.app.mw
 
@@ -252,3 +255,11 @@ class AppProxy:
 
 	def break_apart_selected(self, *args):
 		self.app.current_doc.api.break_apart_selected()
+
+	#---Page management
+	def next_page(self, *args):
+		self.app.current_doc.next_page()
+
+	def previous_page(self, *args):
+		self.app.current_doc.previous_page()
+

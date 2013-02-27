@@ -19,7 +19,8 @@ import gtk
 
 from pdesign import _, events, modes
 from pdesign.events import APP_STATUS, CLIPBOARD, CONFIG_MODIFIED, DOC_CHANGED, \
-DOC_CLOSED, DOC_MODIFIED, DOC_SAVED, MODE_CHANGED, NO_DOCS, SELECTION_CHANGED
+DOC_CLOSED, DOC_MODIFIED, DOC_SAVED, MODE_CHANGED, NO_DOCS, SELECTION_CHANGED, \
+PAGE_CHANGED
 
 
 class AppAction(gtk.Action):
@@ -127,33 +128,27 @@ def create_actions(app):
 
 
 	['UNDO', _('_Undo'), _('Undo'), gtk.STOCK_UNDO, '<Control>Z',
-	 proxy.undo, [events.NO_DOCS, events.DOC_CHANGED, events.DOC_MODIFIED,
-	 events.DOC_CLOSED], insp.is_undo],
+	 proxy.undo, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_CLOSED], insp.is_undo],
 	['REDO', _('_Redo'), _('Redo'), gtk.STOCK_REDO, '<Control><Shift>Z',
-	 proxy.redo, [events.NO_DOCS, events.DOC_CHANGED, events.DOC_MODIFIED,
-	 events.DOC_CLOSED], insp.is_redo],
+	 proxy.redo, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_CLOSED], insp.is_redo],
 	['CLEAR_HISTORY', _('Clear undo history'), _('Clear undo history'),
-	None, None, proxy.clear_history, [events.NO_DOCS, events.DOC_CHANGED,
-	 events.DOC_MODIFIED, events.DOC_CLOSED], insp.is_history],
+	None, None, proxy.clear_history, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED,
+	DOC_CLOSED], insp.is_history],
 
 
 	['CUT', _('Cu_t'), _('Cut'), gtk.STOCK_CUT, '<Control>X',
-	 proxy.cut, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.cut, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 	['COPY', _('_Copy'), _('Copy'), gtk.STOCK_COPY, '<Control>C',
-	 proxy.copy, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.copy, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 	['PASTE', _('_Paste'), _('Paste'), gtk.STOCK_PASTE, '<Control>V',
-	 proxy.paste, [events.NO_DOCS, events.CLIPBOARD], insp.is_clipboard],
+	 proxy.paste, [NO_DOCS, CLIPBOARD], insp.is_clipboard],
 	['DELETE', _('_Delete'), _('Delete'), gtk.STOCK_DELETE, 'Delete',
-	 proxy.delete, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.delete, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
 	['SELECT_ALL', _('_Select All'), _('Select All'), gtk.STOCK_SELECT_ALL, '<Control>A',
-	 proxy.select_all, [events.NO_DOCS, events.DOC_CHANGED], insp.is_doc],
+	 proxy.select_all, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 	['DESELECT', _('_Deselect'), _('Deselect'), None, '<Control><Shift>A',
-	 proxy.deselect, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.deselect, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
 	['STROKE_VIEW', _('Stroke View'), _('Stroke View'), None, '<Shift>F9',
 	 proxy.stroke_view, [NO_DOCS, DOC_CHANGED], insp.is_doc],
@@ -169,43 +164,45 @@ def create_actions(app):
 	['ZOOM_100', _('Zoom 100%'), _('Zoom 100%'), gtk.STOCK_ZOOM_100, None,
 	 proxy.zoom_100, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 	['ZOOM_SELECTED', _('Zoom selected'), _('Zoom selected'), gtk.STOCK_ZOOM_FIT, 'F4',
-	 proxy.zoom_selected, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.zoom_selected, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 	['FORCE_REDRAW', _('Redraw document'), _('Redraw document'),
 	gtk.STOCK_REFRESH, '<Alt>R', proxy.force_redraw,
 	[NO_DOCS, DOC_CHANGED], insp.is_doc],
 
+
+	['INSERT_PG', _('Insert page...'), _('Insert page'), None, None,
+	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['DELETE_PG', _('Delete page...'), _('Delete page'), None, None,
+	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['GOTO_PG', _('Go to page...'), _('Go to page'), None, None,
+	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['NEXT_PG', _('Next page'), _('Next page'), None, 'Page_Down',
+	 proxy.next_page, [NO_DOCS, DOC_CHANGED, PAGE_CHANGED], insp.can_be_next_page],
+	['PREV_PG', _('Previous page'), _('Previous page'), None, 'Page_Up',
+	 proxy.previous_page, [NO_DOCS, DOC_CHANGED, PAGE_CHANGED], insp.can_be_previous_page],
+
 	['COMBINE', _('_Combine'), _('Combine'), None, '<Control>L',
-	 proxy.combine_selected, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_combined],
+	 proxy.combine_selected, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_combined],
 	['BREAK_APART', _('_Break apart'), _('Break apart'), None, '<Control>K',
-	 proxy.break_apart_selected, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_breaked],
+	 proxy.break_apart_selected, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_breaked],
 
 	['GROUP', _('_Group'), _('Group'), None, '<Control>G',
-	 proxy.group, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_grouped],
+	 proxy.group, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_grouped],
 	['UNGROUP', _('_Ungroup'), _('Ungroup'), None, '<Control>U',
-	 proxy.ungroup, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_ungrouped],
+	 proxy.ungroup, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_ungrouped],
 	['UNGROUP_ALL', _('U_ngroup all'), _('Ungroup all'), None, None,
-	 proxy.ungroup_all, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_ungrouped_all],
+	 proxy.ungroup_all, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_ungrouped_all],
 	['CONVERT_TO_CURVES', _('Con_vert to curves'), _('Convert to curves'), None, '<Control>Q',
-	 proxy.convert_to_curve, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.can_be_curve],
+	 proxy.convert_to_curve, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_curve],
 
 	['EDIT_TEXT', _('_Edit text...'), _('Edit text'), None, 'F8',
-	 proxy.edit_text, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_text_selected],
+	 proxy.edit_text, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_text_selected],
 
 	['SET_CONTAINER', _('_Place into container'), _('Place into container'), None, None,
-	 proxy.set_container, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_selection],
+	 proxy.set_container, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
 	['UNPACK_CONTAINER', _('_Extract from container'), _('Extract from container'), None, None,
-	 proxy.unpack_container, [events.NO_DOCS, events.DOC_CHANGED,
-	events.SELECTION_CHANGED], insp.is_container_selected],
+	 proxy.unpack_container, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_container_selected],
 
 	['PROPERTIES', _('Document Properties...'), _('Document Properties...'), gtk.STOCK_PROPERTIES, None,
 	 proxy.properties, [NO_DOCS, DOC_CHANGED], insp.is_doc],
