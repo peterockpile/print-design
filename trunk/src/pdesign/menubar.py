@@ -138,6 +138,18 @@ class AppMenubar(gtk.MenuBar):
 		]
 		self.add_items(self.help_menu, items)
 
+		#----HIDDEN MENU
+		self.hidden_item, self.hidden_menu = self.create_menu("hidden")
+		items = ['PREV_PG_KP',
+				'NEXT_PG_KP',
+				'CUT2',
+				'CUT3',
+				'PASTE2',
+				'PASTE3',
+				'DELETE2',
+		]
+		self.add_items(self.hidden_menu, items)
+
 		self.append(self.file_item)
 		self.append(self.edit_item)
 		self.append(self.view_item)
