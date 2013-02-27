@@ -86,6 +86,7 @@ class AppCanvas(gtk.DrawingArea):
 		self.my_change = False
 		self.ctrls = self.init_controllers()
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.repaint)
+		self.eventloop.connect(self.eventloop.PAGE_CHANGED, self.repaint)
 		self.eventloop.connect(self.eventloop.SELECTION_CHANGED,
 							self.selection_repaint)
 

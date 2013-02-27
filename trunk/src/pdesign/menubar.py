@@ -85,7 +85,15 @@ class AppMenubar(gtk.MenuBar):
 		self.add_items(self.view_menu, items)
 
 		#----LAYOUT MENU
-		self.layout_item, self.effects_menu = self.create_menu(_("_Layout"))
+		self.layout_item, self.layout_menu = self.create_menu(_("_Layout"))
+		items = ['INSERT_PG',
+				 'DELETE_PG',
+				 'GOTO_PG',
+				 None,
+				 'NEXT_PG',
+				 'PREV_PG',
+		]
+		self.add_items(self.layout_menu, items)
 
 		#----ARRANGE MENU
 		self.arrange_item, self.arrange_menu = self.create_menu(_("_Arrange"))

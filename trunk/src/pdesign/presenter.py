@@ -184,6 +184,25 @@ class PD_Presenter:
 		self.active_page = self.doc_presenter.methods.get_page(page_num)
 		self.set_active_layer(self.active_page)
 
+	def get_pages(self):
+		return self.doc_presenter.methods.get_pages()
+
+	def next_page(self):
+		pages = self.doc_presenter.methods.get_pages()
+		if pages.index(self.active_page) < len(pages) - 1:
+			self.set_active_page(pages.index(self.active_page) + 1)
+			self.selection.clear()
+			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
+			events.emit(events.PAGE_CHANGED, self)
+
+	def previous_page(self):
+		pages = self.doc_presenter.methods.get_pages()
+		if pages.index(self.active_page):
+			self.set_active_page(pages.index(self.active_page) - 1)
+			self.selection.clear()
+			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
+			events.emit(events.PAGE_CHANGED, self)
+
 	def set_active_layer(self, page, layer_num=0):
 		self.active_layer = self.doc_presenter.methods.get_layer(page, layer_num)
 
