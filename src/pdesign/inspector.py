@@ -55,38 +55,32 @@ class DocumentInspector:
 		return result
 
 	def is_undo(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		if doc.api.undo:
 			return True
 		else:
 			return False
 
 	def is_redo(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		if doc.api.redo:
 			return True
 		else:
 			return False
 
 	def is_history(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		if self.is_undo(doc) or self.is_redo(doc):
 			return True
 		else:
 			return False
 
 	def is_selection(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif doc.selection is None:
 			return False
 		elif doc.selection.objs:
@@ -101,10 +95,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_curve(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			for obj in doc.selection.objs:
@@ -116,10 +108,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_grouped(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			if len(doc.selection.objs) > 1:
@@ -129,10 +119,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_ungrouped(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc)and len(doc.selection.objs) == 1:
 			result = False
 			if doc.selection.objs[0].cid == model.GROUP:
@@ -142,10 +130,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_ungrouped_all(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			for obj in doc.selection.objs:
@@ -157,10 +143,8 @@ class DocumentInspector:
 			return False
 
 	def is_text_selected(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			objs = doc.selection.objs
@@ -173,10 +157,8 @@ class DocumentInspector:
 			return False
 
 	def is_container_selected(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			objs = doc.selection.objs
@@ -189,10 +171,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_combined(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = True
 			objs = doc.selection.objs
@@ -206,10 +186,8 @@ class DocumentInspector:
 			return False
 
 	def can_be_breaked(self, doc=None):
-		if doc is None:
-			doc = self.app.current_doc
-		if doc is None:
-			return False
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			objs = doc.selection.objs
@@ -219,3 +197,12 @@ class DocumentInspector:
 			return result
 		else:
 			return False
+
+	def can_be_next_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+
+	def can_be_next_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+
