@@ -1,6 +1,7 @@
-#Wed Feb 27 13:34:40 EET 2013
+#Wed Feb 27 14:10:51 EET 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/actions.py=utf-8
+encoding//src/pdesign/application.py=utf-8
 encoding//src/pdesign/eventloop.py=utf-8
 encoding//src/pdesign/events.py=utf-8
 encoding//src/pdesign/inspector.py=utf-8
