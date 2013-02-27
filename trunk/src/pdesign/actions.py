@@ -126,6 +126,9 @@ def create_actions(app):
 	['PRINT_SETUP', _('Print Setup...'), _('Print Setup'), gtk.STOCK_PRINT_PREVIEW, None,
 	 proxy.do_print_setup, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 
+	['QUIT', _('_Exit'), _('Exit'), gtk.STOCK_QUIT, '<Alt>F4',
+	 proxy.exit, None, None],
+
 
 	['UNDO', _('_Undo'), _('Undo'), gtk.STOCK_UNDO, '<Control>Z',
 	 proxy.undo, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_CLOSED], insp.is_undo],
@@ -222,8 +225,6 @@ def create_actions(app):
 	 proxy.properties, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 	['PREFERENCES', _('Preferences...'), _('Preferences...'), gtk.STOCK_PREFERENCES, None,
 	 proxy.preferences, None, None],
-	['QUIT', _('_Exit'), _('Exit'), gtk.STOCK_QUIT, '<Alt>F4',
-	 proxy.exit, None, None],
 
 	['REPORT_BUG', _('_Report bug'), _('Report bug'), gtk.STOCK_DIALOG_WARNING, None,
 	 proxy.report_bug, None, None],
