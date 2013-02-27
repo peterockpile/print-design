@@ -23,6 +23,7 @@ class EventLoop:
 	SELECT_AREA = []
 	DOC_MODIFIED = []
 	SELECTION_CHANGED = []
+	PAGE_CHANGED = []
 
 	def __init__(self, presenter):
 		self.presenter = presenter
@@ -30,6 +31,7 @@ class EventLoop:
 		self.SELECT_AREA = []
 		self.DOC_MODIFIED = []
 		self.SELECTION_CHANGED = []
+		self.PAGE_CHANGED = []
 
 	def connect(self, channel, receiver):
 		"""

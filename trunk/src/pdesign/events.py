@@ -21,15 +21,16 @@ for internal events processing.
 
 Signal arguments:
 CONFIG_MODIFIED   arg[0] - [attr, value]
-APP_STATUS		arg[0] - statusbar message
-NO_DOCS		   no args
+APP_STATUS		  arg[0] - statusbar message
+NO_DOCS		      no args
 DOC_MODIFIED	  arg[0] - presenter instance
-DOC_CHANGED	   arg[0] - actual presenter instance
-DOC_SAVED		 arg[0] - saved presenter instance
-DOC_CLOSED		no args
+DOC_CHANGED	      arg[0] - actual presenter instance
+DOC_SAVED		  arg[0] - saved presenter instance
+DOC_CLOSED		  no args
 MODE_CHANGED	  arg[0] - canvas MODE value
 SELECTION_CHANGED arg[0] - presenter instance
-CLIPBOARD		 no args 
+CLIPBOARD		  no args 
+PAGE_CHANGED      arg[0] - presenter instance
 """
 
 #Signal channels
@@ -47,6 +48,7 @@ DOC_CLOSED = ['DOC_CLOSED']
 MODE_CHANGED = ['MODE_CHANGED']
 SELECTION_CHANGED = ['SELECTION_CHANGED']
 CLIPBOARD = ['CLIPBOARD']
+PAGE_CHANGED = ['PAGE_CHANGED']
 
 
 
