@@ -196,7 +196,7 @@ class PD_Presenter:
 			events.emit(events.PAGE_CHANGED, self)
 
 	def previous_page(self):
-		pages = self.doc_presenter.methods.get_pages()
+		pages = self.get_pages()
 		if pages.index(self.active_page):
 			self.set_active_page(pages.index(self.active_page) - 1)
 			self.selection.clear()

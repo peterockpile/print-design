@@ -21,7 +21,7 @@ import gtk
 
 from uc2.formats.pdxf import model
 from uc2.formats.pdxf import const
-from uc2 import libgeom
+from uc2 import libgeom, uc2const
 
 from pdesign import _
 from pdesign import config
@@ -116,6 +116,14 @@ class AbstractAPI:
 
 	def _insert_object(self, obj, parent, index):
 		self.methods.insert_object(obj, parent, index)
+
+	def _get_pages_snapshot(self):
+		return [] + self.presenter.get_pages()
+
+	def _set_pages_snapshot(self, snapshot):
+		model = self.presenter.model
+		parent = model.childs[0]
+		parent.childs = snapshot
 
 	def _get_layers_snapshot(self):
 		layers_snapshot = []
@@ -761,3 +769,75 @@ class PresenterAPI(AbstractAPI):
 			False]
 		self.add_undo(transaction)
 		self.selection.update()
+
+	def delete_page(self, index):
+		pages = self.presenter.get_pages()
+		if index == 0 and len(pages) == 1: return
+
+		before = self._get_pages_snapshot()
+		sel_before = [] + self.selection.objs
+		active_index_before = pages.index(self.presenter.active_page)
+
+		self.methods.delete_page(index)
+
+		active_index_after = 0
+
+		if index == active_index_before:
+			if index:
+				active_index_after = index - 1
+		else:
+			pages = self.presenter.get_pages()
+			active_index_after = pages.index(self.presenter.active_page)
+
+		self.selection.clear()
+		self.presenter.set_active_page(active_index_after)
+
+		after = self._get_pages_snapshot()
+
+		transaction = [
+			[[self._set_pages_snapshot, before],
+			[self._set_selection, sel_before],
+			[self.presenter.set_active_page, active_index_before]],
+			[[self._set_pages_snapshot, after],
+			[self._set_selection, []],
+			[self.presenter.set_active_page, active_index_after]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+	def insert_page(self, number, target, position):
+		pages = self.presenter.get_pages()
+
+		before = self._get_pages_snapshot()
+		sel_before = [] + self.selection.objs
+		active_index_before = pages.index(self.presenter.active_page)
+
+		active_index_after = active_index_before
+		if position == uc2const.AFTER:
+			active_index_after = active_index_before + 1
+
+		for item in range(number):
+			page = self.methods.insert_page(active_index_after + item)
+			self.methods.add_layer(page)
+			page.do_update()
+
+		self.selection.clear()
+		self.presenter.set_active_page(active_index_after)
+
+		after = self._get_pages_snapshot()
+
+		transaction = [
+			[[self._set_pages_snapshot, before],
+			[self._set_selection, sel_before],
+			[self.presenter.set_active_page, active_index_before]],
+			[[self._set_pages_snapshot, after],
+			[self._set_selection, []],
+			[self.presenter.set_active_page, active_index_after]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+
+
+
+
