@@ -258,7 +258,12 @@ class AppProxy:
 
 	#---Page management
 	def next_page(self, *args):
-		self.app.current_doc.next_page()
+		doc = self.app.current_doc
+		pages = doc.get_pages()
+		if pages.index(doc.active_page) < len(pages) - 1:
+			self.app.current_doc.next_page()
+		else:
+			self.insert_page()
 
 	def previous_page(self, *args):
 		self.app.current_doc.previous_page()
