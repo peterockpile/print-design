@@ -239,6 +239,8 @@ def text_edit_dialog(parent, text="", caption=_("Enter text")):
 	dialog.set_icon(parent.get_icon())
 	dialog.set_default_size(570, 350)
 
+	#------------------------
+
 	text_buffer = gtk.TextBuffer()
 	text_buffer.set_text(text)
 	editor = gtk.TextView(text_buffer);
@@ -251,6 +253,8 @@ def text_edit_dialog(parent, text="", caption=_("Enter text")):
 	vbox = gtk.VBox(False, 0)
 	vbox.pack_start(sw, True, True, 0)
 
+	#------------------------
+
 	dialog.vbox.pack_start(vbox)
 
 	dialog.show_all()
@@ -259,6 +263,105 @@ def text_edit_dialog(parent, text="", caption=_("Enter text")):
 	if ret == gtk.RESPONSE_OK:
 		result = text_buffer.get_text(text_buffer.get_start_iter(),
 									text_buffer.get_end_iter())
+
+	dialog.destroy()
+	return result
+
+def delete_page_dialog(parent, doc, caption=_("Delete page")):
+	result = -1
+	dialog = gtk.Dialog(caption, parent,
+						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+						(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+						gtk.STOCK_OK, gtk.RESPONSE_OK))
+	dialog.set_icon(parent.get_icon())
+	dialog.set_resizable(False)
+
+	#------------------------
+	pages = doc.get_pages()
+	hbox = gtk.HBox(False, 10)
+	hbox.set_border_width(10)
+	label = gtk.Label(_('Delete page No.:'))
+	hbox.pack_start(label, True, True, 0)
+
+	index = pages.index(doc.active_page)
+
+	adj = gtk.Adjustment(index + 1, 0, len(pages), 1, 1, 0)
+	spinner = gtk.SpinButton(adj, 0, 0)
+	spinner.set_numeric(True)
+	hbox.pack_end(spinner, False, False, 0)
+
+	#------------------------
+
+	dialog.vbox.pack_start(hbox)
+	dialog.show_all()
+	ret = dialog.run()
+
+	if ret == gtk.RESPONSE_OK:
+		result = int(adj.get_value()) - 1
+	dialog.destroy()
+	return result
+
+def insert_page_dialog(parent, doc, caption=_("Insert page")):
+	result = []
+	dialog = gtk.Dialog(caption, parent,
+						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+						(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+						gtk.STOCK_OK, gtk.RESPONSE_OK))
+	dialog.set_icon(parent.get_icon())
+	dialog.set_resizable(False)
+
+	#------------------------
+	pages = doc.get_pages()
+	index = pages.index(doc.active_page)
+
+	hbox = gtk.HBox(False, 10)
+	hbox.set_border_width(10)
+
+	label = gtk.Label(_('Insert:'))
+	hbox.pack_start(label, False, False, 0)
+
+
+	adj = gtk.Adjustment(1, 1, 1000, 1, 1, 0)
+	spinner = gtk.SpinButton(adj, 0, 0)
+	spinner.set_numeric(True)
+	hbox.pack_start(spinner, False, False, 0)
+
+	label = gtk.Label(_('page(s)'))
+	hbox.pack_start(label, False, False, 0)
+
+	hbox2 = gtk.HBox(False, 10)
+	hbox2.set_border_width(10)
+
+	adj2 = gtk.Adjustment(index + 1, 1, len(pages), 1, 1, 0)
+	spinner2 = gtk.SpinButton(adj2, 0, 0)
+	spinner2.set_numeric(True)
+	hbox2.pack_end(spinner2, False, False, 0)
+
+	label = gtk.Label(_('page No.:'))
+	hbox2.pack_end(label, False, False, 0)
+
+	vbox = gtk.VBox(False, 0)
+	radiobut1 = gtk.RadioButton(None, _("Before"))
+	radiobut2 = gtk.RadioButton(radiobut1, _("After"))
+	vbox.pack_start(radiobut1)
+	vbox.pack_start(radiobut2)
+	radiobut2.set_active(True)
+	hbox2.pack_start(vbox, False, False, 0)
+	#------------------------
+
+	dialog.vbox.pack_start(hbox)
+	dialog.vbox.pack_start(hbox2)
+	dialog.show_all()
+	ret = dialog.run()
+
+	if ret == gtk.RESPONSE_OK:
+		number = int(adj.get_value())
+		target = int(adj2.get_value()) - 1
+		if radiobut2.get_active():
+			position = uc2const.AFTER
+		else:
+			position = uc2const.BEFORE
+		result = [number, target, position]
 
 	dialog.destroy()
 	return result

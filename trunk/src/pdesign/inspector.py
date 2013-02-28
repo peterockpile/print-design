@@ -205,7 +205,6 @@ class DocumentInspector:
 		if pages.index(doc.active_page) < len(pages) - 1: return True
 		return False
 
-
 	def can_be_previous_page(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
@@ -213,3 +212,9 @@ class DocumentInspector:
 		if pages.index(doc.active_page): return True
 		return False
 
+	def can_delete_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		pages = doc.get_pages()
+		if len(pages) - 1: return True
+		return False
