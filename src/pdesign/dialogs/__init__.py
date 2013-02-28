@@ -285,7 +285,41 @@ def delete_page_dialog(parent, doc, caption=_("Delete page")):
 
 	index = pages.index(doc.active_page)
 
-	adj = gtk.Adjustment(index + 1, 0, len(pages), 1, 1, 0)
+	adj = gtk.Adjustment(index + 1, 1, len(pages), 1, 1, 0)
+	spinner = gtk.SpinButton(adj, 0, 0)
+	spinner.set_numeric(True)
+	hbox.pack_end(spinner, False, False, 0)
+
+	#------------------------
+
+	dialog.vbox.pack_start(hbox)
+	dialog.show_all()
+	ret = dialog.run()
+
+	if ret == gtk.RESPONSE_OK:
+		result = int(adj.get_value()) - 1
+	dialog.destroy()
+	return result
+
+def goto_page_dialog(parent, doc, caption=_("Go to page")):
+	result = -1
+	dialog = gtk.Dialog(caption, parent,
+						gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+						(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+						gtk.STOCK_OK, gtk.RESPONSE_OK))
+	dialog.set_icon(parent.get_icon())
+	dialog.set_resizable(False)
+
+	#------------------------
+	pages = doc.get_pages()
+	hbox = gtk.HBox(False, 10)
+	hbox.set_border_width(10)
+	label = gtk.Label(_('Go to page No.:'))
+	hbox.pack_start(label, True, True, 0)
+
+	index = pages.index(doc.active_page)
+
+	adj = gtk.Adjustment(index + 1, 1, len(pages), 1, 1, 0)
 	spinner = gtk.SpinButton(adj, 0, 0)
 	spinner.set_numeric(True)
 	hbox.pack_end(spinner, False, False, 0)

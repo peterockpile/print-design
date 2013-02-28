@@ -279,5 +279,8 @@ class AppProxy:
 			self.app.current_doc.api.insert_page(*ret)
 
 	def goto_page(self, *args):
-		pass
+		index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
+		if index >= 0:
+			self.app.current_doc.goto_page(index)
+
 
