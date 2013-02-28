@@ -188,7 +188,7 @@ def create_actions(app):
 	['DELETE_PG', _('Delete page...'), _('Delete page'), None, None,
 	 proxy.delete_page, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED], insp.can_delete_page],
 	['GOTO_PG', _('Go to page...'), _('Go to page'), None, None,
-	 proxy.stub, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED], insp.is_doc],
+	 proxy.goto_page, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED], insp.can_goto_page],
 	['NEXT_PG', _('Next page'), _('Next page'), None, 'Page_Down',
 	 proxy.next_page, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, PAGE_CHANGED], insp.can_be_next_page],
 	['NEXT_PG_KP', 'Next page', 'Next page', None, 'KP_Page_Down',
