@@ -21,6 +21,7 @@ from uc2.utils import system
 
 from pdesign.view.canvas import AppCanvas
 from pdesign.widgets.ruler import RulerCorner, Ruler
+from pdesign.widgets.pager_widget import PagerWidget
 
 
 class DocArea(gtk.Table):
@@ -31,6 +32,7 @@ class DocArea(gtk.Table):
 	corner = None
 	hruler = None
 	vruler = None
+	pager = None
 
 	def __init__(self, app, presenter):
 		gtk.Table.__init__(self)
@@ -55,9 +57,13 @@ class DocArea(gtk.Table):
 		self.vscroll = gtk.VScrollbar(self.v_adj)
 		da_box.attach(self.vscroll, 2, 3, 1, 2, gtk.SHRINK, gtk.EXPAND | gtk.FILL)
 
+		hbox = gtk.HBox()
+		self.pager = PagerWidget(self.presenter)
+		hbox.pack_start(self.pager, False, False, 0)
 		self.h_adj = gtk.Adjustment()
 		self.hscroll = gtk.HScrollbar(self.h_adj)
-		da_box.attach(self.hscroll, 1, 2, 2, 3, gtk.EXPAND | gtk.FILL, gtk.SHRINK)
+		hbox.pack_end(self.hscroll, True, True, 0)
+		da_box.attach(hbox, 1, 2, 2, 3, gtk.EXPAND | gtk.FILL, gtk.SHRINK)
 
 		self.canvas = AppCanvas(self)
 		da_box.attach(self.canvas, 1, 2, 1, 2, gtk.FILL | gtk.EXPAND,
