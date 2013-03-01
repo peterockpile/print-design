@@ -18,6 +18,7 @@
 import gtk
 
 from uc2.utils import system
+from uc2 import uc2const
 
 from pdesign.view.canvas import AppCanvas
 from pdesign.widgets.ruler import RulerCorner, Ruler
@@ -47,10 +48,10 @@ class DocArea(gtk.Table):
 		self.corner = RulerCorner(self)
 		da_box.attach(self.corner, 0, 1, 0, 1, gtk.SHRINK, gtk.SHRINK)
 
-		self.hruler = Ruler(self, 0)
+		self.hruler = Ruler(self, uc2const.HORIZONTAL)
 		da_box.attach(self.hruler, 1, 3, 0, 1, gtk.EXPAND | gtk.FILL, gtk.SHRINK)
 
-		self.vruler = Ruler(self, 1)
+		self.vruler = Ruler(self, uc2const.VERTICAL)
 		da_box.attach(self.vruler, 0, 1, 1, 3, gtk.SHRINK, gtk.EXPAND | gtk.FILL)
 
 		self.v_adj = gtk.Adjustment()
