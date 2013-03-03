@@ -21,7 +21,11 @@ from pdesign import _, config
 
 class PagerWidget(gtk.HBox):
 
+	start = None
+	left = None
 	label = None
+	right = None
+	end = None
 
 	def __init__(self, presenter):
 
