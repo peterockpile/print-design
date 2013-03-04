@@ -28,3 +28,10 @@ class UnitLabel(gtk.Label):
 	def update_label(self, *args):
 		if args[0][0] == 'default_unit':
 			self.set_text(config.default_unit)
+
+class ActionButton(gtk.Button):
+	def __init__(self, action):
+		gtk.Button.__init__(self, stock=action.icon)
+		self.set_property('relief', gtk.RELIEF_NONE)
+		self.set_tooltip_text(action.tooltip)
+		action.connect_proxy(self)
