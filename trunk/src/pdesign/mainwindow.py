@@ -24,6 +24,7 @@ from pdesign.toolbar import AppToolbar
 from pdesign.tools import AppTools
 from pdesign.palette import Palette
 from pdesign.statusbar import AppStatusbar
+from pdesign.context import ContextPanel
 
 class MainWindow(gtk.Window):
 
@@ -42,6 +43,12 @@ class MainWindow(gtk.Window):
 
 		self.toolbar = AppToolbar(self)
 		vbox.pack_start(self.toolbar, False, False, 0)
+
+		self.ctx_bar = ContextPanel(self)
+		vbox.pack_start(self.ctx_bar, False, False, 0)
+
+		self.ctx_line = gtk.HSeparator()
+		vbox.pack_start(self.ctx_line, False, False, 0)
 
 		#---CENTRAL PART
 		hbox = gtk.HBox(False, 0)
@@ -105,6 +112,8 @@ class MainWindow(gtk.Window):
 			self.nb_frame.remove(self.nb_splash)
 			self.nb_frame.add(self.nb)
 			self.tools_frame.add(self.tools)
+			self.ctx_bar.set_visible(True)
+			self.ctx_line.set_visible(True)
 			self.tools_frame.show_all()
 		index = self.nb.append_page(da, da.tab_caption)
 		da.show_all()
@@ -120,6 +129,8 @@ class MainWindow(gtk.Window):
 			self.set_win_title()
 			self.app.current_doc = None
 			self.tools_frame.remove(self.tools)
+			self.ctx_bar.set_visible(False)
+			self.ctx_line.set_visible(False)
 
 	def change_doc(self, *args):
 		da = self.nb.get_nth_page(args[2])

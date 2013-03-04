@@ -102,6 +102,10 @@ class DocumentInspector:
 		if obj.cid == model.CURVE: return True
 		return False
 
+	def is_obj_rect(self, obj):
+		if obj.cid == model.RECTANGLE: return True
+		return False
+
 	def can_be_curve(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
