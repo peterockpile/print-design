@@ -18,13 +18,15 @@
 import os, gtk
 
 from pdesign import _, config, events
-from pdesign.context.transform import Test1Plugin, TestPlugin
+from pdesign.context.transform import GroupPlugin, Test1Plugin, TestPlugin
 from pdesign.context.units import UnitsPlugin
 
-PLUGINS = [UnitsPlugin, Test1Plugin, TestPlugin]
+PLUGINS = [UnitsPlugin, GroupPlugin, Test1Plugin, TestPlugin]
 
 NO_DOC = []
 DEFAULT = ['UnitsPlugin', 'Test1Plugin', 'TestPlugin']
+MULTIPLE = ['GroupPlugin']
+GROUP = ['GroupPlugin']
 RECTANGLE = ['TestPlugin']
 CURVE = ['Test1Plugin']
 
@@ -72,9 +74,11 @@ class ContextPanel(gtk.HBox):
 			doc = self.app.current_doc
 			sel = doc.selection.objs
 			if len(sel) > 1:
-				return DEFAULT
+				return MULTIPLE
 			elif self.insp.is_obj_rect(sel[0]):
 				return RECTANGLE
+			elif self.insp.can_be_ungrouped():
+				return GROUP
 			elif self.insp.is_obj_curve(sel[0]):
 				return CURVE
 			else:

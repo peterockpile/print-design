@@ -17,6 +17,7 @@
 
 import gtk
 
+from pdesign.widgets import ActionButton, UnitLabel
 
 class ActionPlugin(gtk.HBox):
 
@@ -30,6 +31,21 @@ class ActionPlugin(gtk.HBox):
 		self.build()
 
 	def build(self):pass
+
+class GroupPlugin(ActionPlugin):
+
+	name = 'GroupPlugin'
+
+	def build(self):
+		self.rot_left = ActionButton(self.actions['GROUP'])
+		self.pack_start(self.rot_left, False, False, 0)
+
+		self.rot_left = ActionButton(self.actions['UNGROUP'])
+		self.pack_start(self.rot_left, False, False, 0)
+
+		self.rot_left = ActionButton(self.actions['UNGROUP_ALL'])
+		self.pack_start(self.rot_left, False, False, 0)
+
 
 class TestPlugin(ActionPlugin):
 
