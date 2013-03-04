@@ -25,7 +25,7 @@ from uc2.uc2const import unit_dict
 from uc2.formats.pdxf import const
 from uc2.utils import system
 
-from pdesign import _, config
+from pdesign import _, config, events
 
 SIZE = 18
 
@@ -173,6 +173,7 @@ class Ruler(gtk.DrawingArea):
 		self.connect('expose_event', self.repaint)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.check_config)
+		events.connect(events.CONFIG_MODIFIED, self.check_config)
 
 	def check_config(self, *args):
 		if not self.origin == self.presenter.model.doc_origin:
