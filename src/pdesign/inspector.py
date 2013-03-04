@@ -94,13 +94,21 @@ class DocumentInspector:
 		else:
 			return False
 
+	def is_obj_primitive(self, obj):
+		if obj.cid > model.PRIMITIVE_CLASS: return True
+		return False
+
+	def is_obj_curve(self, obj):
+		if obj.cid == model.CURVE: return True
+		return False
+
 	def can_be_curve(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
 		elif self.is_selection(doc):
 			result = False
 			for obj in doc.selection.objs:
-				if obj.cid > model.PRIMITIVE_CLASS and not obj.cid == model.CURVE:
+				if self.is_obj_primitive(obj) and not self.is_obj_curve(obj):
 					result = True
 					break
 			return result

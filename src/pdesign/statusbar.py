@@ -19,6 +19,7 @@
 import gtk
 
 from pdesign import events
+from pdesign.widgets.color_monitor import ColorMonitorWidget
 
 class AppStatusbar(gtk.Statusbar):
 
@@ -31,7 +32,13 @@ class AppStatusbar(gtk.Statusbar):
 		events.connect(events.APP_STATUS, self.show_message)
 
 	def build(self):
-		pass
+		self.cmw = ColorMonitorWidget(self.app)
+		self.pack_end(self.cmw, False, False, 0)
+
+		vbox = gtk.VBox()
+		spacer = gtk.EventBox()
+		vbox.pack_start(spacer, False, False, 10)
+		self.pack_end(vbox, False, False, 0)
 
 	def show_message(self, args):
 		self.push(0, args[0])
