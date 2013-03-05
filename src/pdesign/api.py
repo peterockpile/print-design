@@ -16,7 +16,7 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from copy import deepcopy
-import types
+import types, math
 import gtk
 
 from uc2.formats.pdxf import model
@@ -476,6 +476,48 @@ class PresenterAPI(AbstractAPI):
 					False]
 				self.add_undo(transaction)
 			self.selection.update()
+
+	def move_selected(self, x, y, copy=False):
+		trafo = [1.0, 0.0, 0.0, 1.0, x, y]
+		self.transform_selected(trafo, copy)
+
+	def rotate_selected(self, angle=0, copy=False):
+		if self.selection.objs:
+			bbox = self.selection.bbox
+			w = bbox[2] - bbox[0]
+			h = bbox[3] - bbox[1]
+
+			x0, y0 = bbox[:2]
+			shift_x, shift_y = self.selection.center_offset
+			center_x = x0 + w / 2.0 + shift_x
+			center_y = y0 + h / 2.0 + shift_y
+
+			m21 = math.sin(angle)
+			m11 = m22 = math.cos(angle)
+			m12 = -m21
+			dx = center_x - m11 * center_x + m21 * center_y;
+			dy = center_y - m21 * center_x - m11 * center_y;
+
+			trafo = [m11, m21, m12, m22, dx, dy]
+			self.transform_selected(trafo, copy)
+
+	def mirror_selected(self, vertical=True, copy=False):
+		if self.selection.objs:
+			m11 = m22 = 1.0
+			dx = dy = 0.0
+			bbox = self.selection.bbox
+			w = bbox[2] - bbox[0]
+			h = bbox[3] - bbox[1]
+			x0, y0 = bbox[:2]
+			if vertical:
+				m22 = -1
+				dy = 2 * y0 + h
+			else:
+				m11 = -1
+				dx = 2 * x0 + w
+
+			trafo = [m11, 0.0, 0.0, m22, dx, dy]
+			self.transform_selected(trafo, copy)
 
 	def convert_to_curve_selected(self):
 		if self.selection.objs:
