@@ -17,7 +17,7 @@
 
 import gtk
 
-from pdesign import _, events, modes
+from pdesign import _, events, modes, icons
 from pdesign.events import APP_STATUS, CLIPBOARD, CONFIG_MODIFIED, DOC_CHANGED, \
 DOC_CLOSED, DOC_MODIFIED, DOC_SAVED, MODE_CHANGED, NO_DOCS, SELECTION_CHANGED, \
 PAGE_CHANGED
@@ -234,6 +234,19 @@ def create_actions(app):
 	 proxy.project_forum, None, None],
 	['ABOUT', _('_About PrintDesign'), _('About PrintDesign'), gtk.STOCK_ABOUT, None,
 	 proxy.about, None, None],
+
+	['ROTATE_LEFT', _('Rotate _Left'), _('Rotate Left'), icons.STOCK_ROTATE_LEFT, None,
+	 proxy.rotate_left, [events.NO_DOCS, events.DOC_CHANGED,
+	events.SELECTION_CHANGED], insp.is_selection],
+	['ROTATE_RIGHT', _('Rotate _Right'), _('Rotate Right'), icons.STOCK_ROTATE_RIGHT, None,
+	 proxy.rotate_right, [events.NO_DOCS, events.DOC_CHANGED,
+	events.SELECTION_CHANGED], insp.is_selection],
+	['VERT_MIRROR', _('Flip _vertically'), _('Flip vertically'), icons.STOCK_VERT_MIRROR, None,
+	 proxy.vertical_mirror, [events.NO_DOCS, events.DOC_CHANGED,
+	events.SELECTION_CHANGED], insp.is_selection],
+	['HOR_MIRROR', _('Flip _horizontally'), _('Flip horizontally'), icons.STOCK_HOR_MIRROR, None,
+	 proxy.horizontal_mirror, [events.NO_DOCS, events.DOC_CHANGED,
+	events.SELECTION_CHANGED], insp.is_selection],
 	]
 
 	for entry in entries:

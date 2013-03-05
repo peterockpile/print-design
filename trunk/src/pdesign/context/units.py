@@ -30,7 +30,7 @@ class UnitsPlugin(gtk.HBox):
 		self.app = mw.app
 		self.actions = self.app.actions
 		self.sep = gtk.VSeparator()
-		self.pack_end(self.sep, False, False, 5)
+		self.pack_end(self.sep, False, False, 2)
 		self.build()
 
 	def build(self):

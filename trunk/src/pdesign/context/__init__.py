@@ -18,17 +18,18 @@
 import os, gtk
 
 from pdesign import _, config, events
-from pdesign.context.transform import GroupPlugin, Test1Plugin, TestPlugin
+from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
+									ResizePlugin
 from pdesign.context.units import UnitsPlugin
 
-PLUGINS = [UnitsPlugin, GroupPlugin, Test1Plugin, TestPlugin]
+PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin]
 
 NO_DOC = []
-DEFAULT = ['UnitsPlugin', 'Test1Plugin', 'TestPlugin']
-MULTIPLE = ['GroupPlugin']
-GROUP = ['GroupPlugin']
-RECTANGLE = ['TestPlugin']
-CURVE = ['Test1Plugin']
+DEFAULT = ['UnitsPlugin', ]
+MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
+GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
+RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin']
+CURVE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin']
 
 class ContextPanel(gtk.HBox):
 

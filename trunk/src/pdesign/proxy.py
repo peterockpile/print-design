@@ -15,6 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+import math
+
 from pdesign import dialogs
 from pdesign import modes
 from pdesign.dialogs import prefs
@@ -255,6 +257,18 @@ class AppProxy:
 
 	def break_apart_selected(self, *args):
 		self.app.current_doc.api.break_apart_selected()
+
+	def rotate_left(self, *args):
+		self.app.current_doc.api.rotate_selected(math.pi / 2.0)
+
+	def rotate_right(self, *args):
+		self.app.current_doc.api.rotate_selected(-math.pi / 2.0)
+
+	def vertical_mirror(self, *args):
+		self.app.current_doc.api.mirror_selected()
+
+	def horizontal_mirror(self, *args):
+		self.app.current_doc.api.mirror_selected(False)
 
 	#---Page management
 	def next_page(self, *args):

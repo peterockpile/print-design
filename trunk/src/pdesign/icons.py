@@ -22,10 +22,29 @@ from pdesign import _, config
 
 
 STOCK_DONT_SAVE = 'action-dont-save'
+STOCK_ROTATE_LEFT = 'object-rotate-left'
+STOCK_ROTATE_RIGHT = 'object-rotate-right'
+STOCK_HOR_MIRROR = 'object-horizontal-mirror'
+STOCK_VERT_MIRROR = 'object-vertical-mirror'
 
 def load_icons():
 
+	items = [STOCK_ROTATE_LEFT, STOCK_ROTATE_RIGHT, STOCK_HOR_MIRROR,
+			STOCK_VERT_MIRROR]
+
+	path = '' + os.path.join(config.resource_dir, 'icons')
+
 	iconfactory = gtk.IconFactory()
+
+	for item in items:
+		gtk.stock_add([(item, '', 0, 0, ''), ])
+		pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(path, item + '.png'))
+		source = gtk.IconSource()
+		source.set_pixbuf(pixbuf)
+		source.set_size_wildcarded(True)
+		iconset = gtk.IconSet()
+		iconset.add_source(source)
+		iconfactory.add(item, iconset)
 
 	#Creating aliased icons
 	items = [(STOCK_DONT_SAVE, _("_Don't save"), 0, 0, None), ]
