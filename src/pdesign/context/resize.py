@@ -22,6 +22,8 @@ from pdesign.widgets import UnitLabel, UnitSpin, KeepRatioLabel
 
 class ResizePlugin(gtk.HBox):
 
+	name = 'ResizePlugin'
+
 	def __init__(self, mw):
 		gtk.HBox.__init__(self)
 		self.mw = mw
