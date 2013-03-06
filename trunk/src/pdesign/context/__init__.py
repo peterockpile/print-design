@@ -43,6 +43,7 @@ class ContextPanel(gtk.HBox):
 		self.app = mw.app
 		self.insp = self.app.inspector
 
+		self.set_border_width(2)
 		self.holder = PanelHolder()
 		self.pack_start(self.holder, False, False, 0)
 
