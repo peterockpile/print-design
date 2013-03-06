@@ -209,7 +209,7 @@ def create_actions(app):
 	 proxy.ungroup, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_ungrouped],
 	['UNGROUP_ALL', _('U_ngroup all'), _('Ungroup all'), None, None,
 	 proxy.ungroup_all, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_ungrouped_all],
-	['CONVERT_TO_CURVES', _('Con_vert to curves'), _('Convert to curves'), None, '<Control>Q',
+	['CONVERT_TO_CURVES', _('Con_vert to curves'), _('Convert to curves'), icons.STOCK_TO_CURVE, '<Control>Q',
 	 proxy.convert_to_curve, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_curve],
 
 	['EDIT_TEXT', _('_Edit text...'), _('Edit text'), None, 'F8',

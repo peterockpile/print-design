@@ -69,6 +69,14 @@ class MirrorPlugin(ActionPlugin):
 		self.rot_right = ActionButton(self.actions['VERT_MIRROR'])
 		self.pack_start(self.rot_right, False, False, 0)
 
+class ToCurvePlugin(ActionPlugin):
+
+	name = 'ToCurvePlugin'
+
+	def build(self):
+		self.but = ActionButton(self.actions['CONVERT_TO_CURVES'])
+		self.pack_start(self.but, False, False, 0)
+
 class ResizePlugin(ActionPlugin):
 
 	name = 'ResizePlugin'
