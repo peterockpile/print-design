@@ -105,6 +105,11 @@ class AbstractAPI:
 			self.undo[-1][2] = True
 			self.undo_marked = True
 
+	def _set_page_format(self, page, format):
+		self.methods.set_page_format(page, format)
+		self.presenter.docarea.hruler.queue_draw()
+		self.presenter.docarea.vruler.queue_draw()
+
 	def _set_selection(self, objs):
 		self.selection.objs = [] + objs
 		self.selection.update()
@@ -255,6 +260,17 @@ class PresenterAPI(AbstractAPI):
 		self.redo = self._clear_history_stack(self.redo)
 		events.emit(events.DOC_MODIFIED, self.presenter)
 		self.presenter.reflect_saving()
+
+	def set_page_format(self, format):
+		page = self.presenter.active_page
+		format_before = page.page_format
+		format_after = format
+		self._set_page_format(page, format_after)
+		transaction = [
+			[[self._set_page_format, page, format_before]],
+			[[self._set_page_format, page, format_after]],
+			False]
+		self.add_undo(transaction)
 
 	def set_doc_origin(self, origin):
 		cur_origin = self.model.doc_origin
