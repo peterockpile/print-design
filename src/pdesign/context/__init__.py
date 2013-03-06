@@ -32,7 +32,12 @@ DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', ]
 MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
+CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
+POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 CURVE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin']
+TEXT = []
+PIXMAP = []
+
 
 class ContextPanel(gtk.HBox):
 
@@ -82,10 +87,14 @@ class ContextPanel(gtk.HBox):
 				return MULTIPLE
 			elif self.insp.is_obj_rect(sel[0]):
 				return RECTANGLE
-			elif self.insp.can_be_ungrouped():
-				return GROUP
+			elif self.insp.is_obj_circle(sel[0]):
+				return CIRCLE
+			elif self.insp.is_obj_polygon(sel[0]):
+				return POLYGON
 			elif self.insp.is_obj_curve(sel[0]):
 				return CURVE
+			elif self.insp.can_be_ungrouped():
+				return GROUP
 			else:
 				return DEFAULT
 
