@@ -106,6 +106,22 @@ class DocumentInspector:
 		if obj.cid == model.RECTANGLE: return True
 		return False
 
+	def is_obj_circle(self, obj):
+		if obj.cid == model.CIRCLE: return True
+		return False
+
+	def is_obj_polygon(self, obj):
+		if obj.cid == model.POLYGON: return True
+		return False
+
+	def is_obj_text(self, obj):
+		if obj.cid == model.TEXT_BLOCK: return True
+		return False
+
+	def is_obj_pixmap(self, obj):
+		if obj.cid == model.PIXMAP: return True
+		return False
+
 	def can_be_curve(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
