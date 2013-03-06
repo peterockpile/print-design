@@ -18,6 +18,7 @@
 import os
 
 from uc2.uc_conf import UCConfig
+from uc2 import uc2const
 from uc2.utils import system
 from uc2.utils.fs import expanduser_unicode
 
@@ -88,8 +89,9 @@ class AppConfig(UCConfig):
 	# 2 - upper-left page corner 
 	ruler_coordinates = 1
 
-	# 'pt', 'in', 'cm', 'mm'
-	default_unit = 'mm'
+	default_unit = uc2const.UNIT_MM
+
+	obj_jump = 1.0 * uc2const.mm_to_pt
 
 	sel_frame_offset = 10.0
 	sel_frame_color = (0.0, 0.0, 0.0)
