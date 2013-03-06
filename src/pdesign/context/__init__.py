@@ -19,8 +19,9 @@ import os, gtk
 
 from pdesign import _, config, events
 from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
-									ResizePlugin, ToCurvePlugin
+									ToCurvePlugin
 from pdesign.context.units import UnitsPlugin
+from pdesign.context.resize import ResizePlugin
 from pdesign.context.page_format import PageFormatPlugin
 
 PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin,
