@@ -24,6 +24,30 @@ from uc2 import uc2const
 
 from pdesign import _, config, events
 
+class ImageButton(gtk.Button):
+	def __init__(self, text, path):
+		gtk.Button.__init__(self)
+		self.set_property('relief', gtk.RELIEF_NONE)
+		loader = gtk.gdk.pixbuf_new_from_file
+		image = gtk.Image()
+		pixbuf = loader(os.path.join(config.resource_dir, *path))
+		image.set_from_pixbuf(pixbuf)
+		self.add(image)
+		if text:
+			self.set_tooltip_text(text)
+
+class ImageToggleButton(gtk.ToggleButton):
+	def __init__(self, text, path):
+		gtk.ToggleButton.__init__(self)
+		self.set_property('relief', gtk.RELIEF_NONE)
+		loader = gtk.gdk.pixbuf_new_from_file
+		image = gtk.Image()
+		pixbuf = loader(os.path.join(config.resource_dir, *path))
+		image.set_from_pixbuf(pixbuf)
+		self.add(image)
+		if text:
+			self.set_tooltip_text(text)
+
 class UnitLabel(gtk.Label):
 
 	def __init__(self):
