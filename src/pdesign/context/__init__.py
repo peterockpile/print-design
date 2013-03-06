@@ -21,11 +21,13 @@ from pdesign import _, config, events
 from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
 									ResizePlugin
 from pdesign.context.units import UnitsPlugin
+from pdesign.context.page_format import PageFormatPlugin
 
-PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin]
+PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin,
+		PageFormatPlugin, ]
 
 NO_DOC = []
-DEFAULT = ['UnitsPlugin', ]
+DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', ]
 MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin']
