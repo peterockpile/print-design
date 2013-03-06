@@ -219,9 +219,5 @@ class PD_Presenter:
 	def get_page_size(self, page=None):
 		if page is None:
 			page = self.active_page
-		page_format = page.page_format
-		if page_format[2]:
-			h, w = page_format[1]
-		else:
-			w, h = page_format[1]
+		w, h = page.page_format[1]
 		return w, h
