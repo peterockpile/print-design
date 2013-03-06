@@ -23,12 +23,13 @@ from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
 from pdesign.context.units import UnitsPlugin
 from pdesign.context.resize import ResizePlugin
 from pdesign.context.page_format import PageFormatPlugin
+from pdesign.context.jump import JumpPlugin
 
 PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin,
-		PageFormatPlugin, ToCurvePlugin, ]
+		PageFormatPlugin, ToCurvePlugin, JumpPlugin, ]
 
 NO_DOC = []
-DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', ]
+DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', 'JumpPlugin']
 MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
