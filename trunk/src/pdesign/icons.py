@@ -26,11 +26,12 @@ STOCK_ROTATE_LEFT = 'object-rotate-left'
 STOCK_ROTATE_RIGHT = 'object-rotate-right'
 STOCK_HOR_MIRROR = 'object-horizontal-mirror'
 STOCK_VERT_MIRROR = 'object-vertical-mirror'
+STOCK_TO_CURVE = 'object-to-curve'
 
 def load_icons():
 
 	items = [STOCK_ROTATE_LEFT, STOCK_ROTATE_RIGHT, STOCK_HOR_MIRROR,
-			STOCK_VERT_MIRROR]
+			STOCK_VERT_MIRROR, STOCK_TO_CURVE]
 
 	path = '' + os.path.join(config.resource_dir, 'icons')
 
