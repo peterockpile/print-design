@@ -15,9 +15,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 
-from pdesign.widgets import ActionButton
+from pdesign import _, config
+from pdesign.widgets import ActionButton, AngleSpin
 
 class ActionPlugin(gtk.HBox):
 
@@ -51,11 +53,30 @@ class RotatePlugin(ActionPlugin):
 	name = 'RotatePlugin'
 
 	def build(self):
+		ebox = gtk.EventBox()
+		label = gtk.Image()
+		image_file = os.path.join(config.resource_dir, 'icons', 'rotate-selection.png')
+		label.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file(image_file))
+		ebox.add(label)
+		ebox.set_tooltip_text(_('Rotate selection'))
+		self.pack_start(ebox, False, False, 2)
+
+		self.angle_spin = AngleSpin(self.user_update)
+		self.pack_start(self.angle_spin, False, False, 0)
+		self.angle_spin.set_angle_value(0.0)
+
 		self.rot_left = ActionButton(self.actions['ROTATE_LEFT'])
 		self.pack_start(self.rot_left, False, False, 0)
 
 		self.rot_right = ActionButton(self.actions['ROTATE_RIGHT'])
 		self.pack_start(self.rot_right, False, False, 0)
+
+	def user_update(self, *args):
+		val = self.angle_spin.get_angle_value()
+		if val <> 0.0:
+			self.app.current_doc.api.rotate_selected(val)
+			self.angle_spin.grab_focus()
+
 
 class MirrorPlugin(ActionPlugin):
 
