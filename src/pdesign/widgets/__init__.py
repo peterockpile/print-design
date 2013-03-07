@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import os, math
 
 import gtk
 
@@ -110,6 +110,46 @@ class UnitSpin(gtk.SpinButton):
 
 	def get_point_value(self):
 		return self.point_value
+
+KEY_KP_ENTER = 65421
+KEY_RETURN = 65293
+
+class AngleSpin(gtk.SpinButton):
+
+	angle_value = 0
+	flag = False
+	callback = None
+	changes = False
+
+	def __init__(self, callback):
+		#value=0, lower=0, upper=0, step_incr=0, page_incr=0, page_size=0
+		self.callback = callback
+		self.adj = gtk.Adjustment(0.0, -1000.0, 1000.0, 5.0, 5.0, 0.0)
+		gtk.SpinButton.__init__(self, self.adj, 0.1, 2)
+		self.set_numeric(True)
+		self.connect('value-changed', self.update_angle_value)
+		self.connect('key_press_event', self.check_input)
+
+	def check_input(self, widget, event):
+		keyval = event.keyval
+		if keyval in [KEY_RETURN, KEY_KP_ENTER]:
+			self.update_angle_value()
+
+	def update_angle_value(self, *args):
+		if self.flag:return
+		value = self.adj.get_value()
+		self.angle_value = math.pi * value / 180.0
+		self.changes = False
+		self.callback()
+
+	def set_angle_value(self, value=0.0):
+		self.angle_value = value
+		self.flag = True
+		self.adj.set_value(value * 180 / math.pi)
+		self.flag = False
+
+	def get_angle_value(self):
+		return self.angle_value
 
 class ActionButton(gtk.Button):
 	def __init__(self, action):
