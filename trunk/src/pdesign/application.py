@@ -64,8 +64,8 @@ class Application(UCApplication):
 		icons.load_icons()
 
 		self.cursors = modes.get_cursors()
-		self.proxy = AppProxy(self)
 		self.inspector = DocumentInspector(self)
+		self.proxy = AppProxy(self)
 		self.clipboard = AppClipboard(self)
 
 

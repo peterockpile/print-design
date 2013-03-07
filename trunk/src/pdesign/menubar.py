@@ -160,6 +160,7 @@ class AppMenubar(gtk.MenuBar):
 		self.append(self.text_item)
 		self.append(self.tools_item)
 		self.append(self.help_item)
+#		self.append(self.hidden_item)
 
 	def create_menu(self, text):
 		menu = gtk.Menu()
