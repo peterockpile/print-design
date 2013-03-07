@@ -19,7 +19,7 @@ import gtk, os
 
 from pdesign import _, config
 
-class PagerWidget(gtk.HBox):
+class PagerWidget(gtk.VBox):
 
 	start = None
 	left = None
@@ -29,26 +29,32 @@ class PagerWidget(gtk.HBox):
 
 	def __init__(self, presenter):
 
-		gtk.HBox.__init__(self)
+		gtk.VBox.__init__(self)
 		self.presenter = presenter
 
+		line = gtk.HSeparator()
+		self.pack_start(line, False, False, 0)
+
+		self.hbox = gtk.HBox()
+		self.pack_start(self.hbox, False, False, 0)
+
 		self.start = PagerButton('pager-arrow-start.png')
-		self.pack_start(self.start, False, False, 0)
+		self.hbox.pack_start(self.start, False, False, 0)
 		self.start.connect('clicked', self.goto_start)
 
 		self.left = PagerButton('pager-arrow-left.png')
-		self.pack_start(self.left, False, False, 0)
+		self.hbox.pack_start(self.left, False, False, 0)
 		self.left.connect('clicked', self.goto_left)
 
 		self.label = gtk.Label()
-		self.pack_start(self.label, False, False, 5)
+		self.hbox.pack_start(self.label, False, False, 5)
 
 		self.right = PagerButton('pager-arrow-right.png')
-		self.pack_start(self.right, False, False, 0)
+		self.hbox.pack_start(self.right, False, False, 0)
 		self.right.connect('clicked', self.goto_right)
 
 		self.end = PagerButton('pager-arrow-end.png')
-		self.pack_start(self.end, False, False, 0)
+		self.hbox.pack_start(self.end, False, False, 0)
 		self.end.connect('clicked', self.goto_end)
 
 		self.update_pager()
