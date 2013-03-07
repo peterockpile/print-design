@@ -19,23 +19,23 @@ import os, gtk
 
 from pdesign import _, config, events
 from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
-									ToCurvePlugin
+									ToCurvePlugin, CombinePlugin
 from pdesign.context.units import UnitsPlugin
 from pdesign.context.resize import ResizePlugin
 from pdesign.context.page_format import PageFormatPlugin
 from pdesign.context.jump import JumpPlugin
 
 PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin,
-		PageFormatPlugin, ToCurvePlugin, JumpPlugin, ]
+		PageFormatPlugin, ToCurvePlugin, JumpPlugin, CombinePlugin ]
 
 NO_DOC = []
 DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', 'JumpPlugin']
-MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
+MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
-CURVE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin']
+CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin']
 TEXT = []
 PIXMAP = []
 
