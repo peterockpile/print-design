@@ -68,6 +68,17 @@ class MirrorPlugin(ActionPlugin):
 		self.rot_right = ActionButton(self.actions['VERT_MIRROR'])
 		self.pack_start(self.rot_right, False, False, 0)
 
+class CombinePlugin(ActionPlugin):
+
+	name = 'CombinePlugin'
+
+	def build(self):
+		self.rot_left = ActionButton(self.actions['COMBINE'])
+		self.pack_start(self.rot_left, False, False, 0)
+
+		self.rot_right = ActionButton(self.actions['BREAK_APART'])
+		self.pack_start(self.rot_right, False, False, 0)
+
 class ToCurvePlugin(ActionPlugin):
 
 	name = 'ToCurvePlugin'
