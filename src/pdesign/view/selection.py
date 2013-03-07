@@ -54,6 +54,7 @@ class Selection:
 			msg = '%i %s' % (len(self.objs), msg)
 		events.emit(events.APP_STATUS, msg)
 		events.emit(events.SELECTION_CHANGED, self.presenter)
+		self.presenter.docarea.canvas.grab_focus()
 
 	def update_bbox(self):
 		self.bbox = []

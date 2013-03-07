@@ -28,6 +28,7 @@ from pdesign import modes, events
 from pdesign.view import controllers
 from pdesign.view import creators
 from pdesign.view.renderer import PDRenderer
+from pdesign.view.kb_processor import KeyboardProcessor
 
 
 PAGEFIT = 0.9
@@ -65,6 +66,7 @@ class AppCanvas(gtk.DrawingArea):
 		self.app = self.presenter.app
 
 		self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color("#ffffff"))
+		self.set_property("can-focus", True)
 
 		self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
 					gtk.gdk.POINTER_MOTION_MASK |
@@ -89,6 +91,12 @@ class AppCanvas(gtk.DrawingArea):
 		self.eventloop.connect(self.eventloop.PAGE_CHANGED, self.repaint)
 		self.eventloop.connect(self.eventloop.SELECTION_CHANGED,
 							self.selection_repaint)
+		self.kb_proc = KeyboardProcessor(self.app, self)
+		self.connect('key_press_event', self.on_key_press_event)
+
+	def on_key_press_event(self, widget, event):
+		if self.kb_proc.check_keypress(event.keyval):
+			return True
 
 	def init_controllers(self):
 		dummy = controllers.AbstractController(self, self.presenter)

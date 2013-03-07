@@ -18,7 +18,7 @@
 import math
 
 from pdesign import dialogs
-from pdesign import modes
+from pdesign import modes, config
 from pdesign.dialogs import prefs
 
 class AppProxy:
@@ -30,6 +30,7 @@ class AppProxy:
 
 	def __init__(self, app):
 		self.app = app
+		self.insp = app.inspector
 
 	def stub(self, *args):
 		dialogs.about_dialog(self.mw)
@@ -296,5 +297,21 @@ class AppProxy:
 		index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
 		if index >= 0:
 			self.app.current_doc.goto_page(index)
+
+	def move_up(self, *args):
+		if self.insp.is_selection():
+			self.app.current_doc.api.move_selected(0, config.obj_jump)
+
+	def move_down(self, *args):
+		if self.insp.is_selection():
+			self.app.current_doc.api.move_selected(0, -1.0 * config.obj_jump)
+
+	def move_left(self, *args):
+		if self.insp.is_selection():
+			self.app.current_doc.api.move_selected(-1.0 * config.obj_jump, 0)
+
+	def move_right(self, *args):
+		if self.insp.is_selection():
+			self.app.current_doc.api.move_selected(config.obj_jump, 0)
 
 
