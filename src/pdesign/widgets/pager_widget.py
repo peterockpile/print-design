@@ -62,6 +62,7 @@ class PagerWidget(gtk.VBox):
 										self.update_pager)
 		self.presenter.eventloop.connect(self.presenter.eventloop.DOC_MODIFIED,
 										self.update_pager)
+		self.show_all()
 
 	def update_pager(self, *args):
 		pages = self.presenter.get_pages()
