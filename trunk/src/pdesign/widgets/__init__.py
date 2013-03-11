@@ -120,20 +120,24 @@ class AngleSpin(gtk.SpinButton):
 	flag = False
 	callback = None
 	changes = False
+	input_flag = False
 
-	def __init__(self, callback):
+	def __init__(self, callback, input_flag=False):
 		#value=0, lower=0, upper=0, step_incr=0, page_incr=0, page_size=0
 		self.callback = callback
+		self.input_flag = input_flag
 		self.adj = gtk.Adjustment(0.0, -1000.0, 1000.0, 5.0, 5.0, 0.0)
 		gtk.SpinButton.__init__(self, self.adj, 0.1, 2)
 		self.set_numeric(True)
 		self.connect('value-changed', self.update_angle_value)
-		self.connect('key_press_event', self.check_input)
+		if self.input_flag:
+			self.connect('key_press_event', self.check_input)
 
 	def check_input(self, widget, event):
 		keyval = event.keyval
 		if keyval in [KEY_RETURN, KEY_KP_ENTER]:
-			self.update_angle_value()
+			if self.adj.get_value() == round(self.angle_value * 180 / math.pi, 2):
+				self.update_angle_value()
 
 	def update_angle_value(self, *args):
 		if self.flag:return
