@@ -82,6 +82,7 @@ class PagerWidget(gtk.VBox):
 			self.end.set_sensitive(False)
 		else:
 			self.end.set_sensitive(True)
+		self.show_all()
 
 	def goto_start(self, *args):
 		self.presenter.goto_page(0)
