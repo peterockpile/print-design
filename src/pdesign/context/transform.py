@@ -61,7 +61,7 @@ class RotatePlugin(ActionPlugin):
 		ebox.set_tooltip_text(_('Rotate selection'))
 		self.pack_start(ebox, False, False, 2)
 
-		self.angle_spin = AngleSpin(self.user_update)
+		self.angle_spin = AngleSpin(self.user_update, True)
 		self.pack_start(self.angle_spin, False, False, 0)
 		self.angle_spin.set_angle_value(0.0)
 
