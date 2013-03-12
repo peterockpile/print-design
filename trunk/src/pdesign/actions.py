@@ -102,6 +102,7 @@ def create_actions(app):
 	['COPY_MODE', _('Copy mode'), _('Copy mode'), None, None,
 	 proxy.set_copy_mode, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 
+	#------ File -------
 	['NEW', _('_New'), _('New'), gtk.STOCK_NEW, '<Control>N',
 	 proxy.new, None, None],
 	['OPEN', _('_Open'), _('Open'), gtk.STOCK_OPEN, '<Control>O',
@@ -129,7 +130,7 @@ def create_actions(app):
 	['QUIT', _('_Exit'), _('Exit'), gtk.STOCK_QUIT, '<Alt>F4',
 	 proxy.exit, None, None],
 
-
+	#------ Edit -------
 	['UNDO', _('_Undo'), _('Undo'), gtk.STOCK_UNDO, '<Control>Z',
 	 proxy.undo, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_CLOSED], insp.is_undo],
 	['REDO', _('_Redo'), _('Redo'), gtk.STOCK_REDO, '<Control><Shift>Z',
@@ -163,6 +164,7 @@ def create_actions(app):
 	['DESELECT', _('_Deselect'), _('Deselect'), None, '<Control><Shift>A',
 	 proxy.deselect, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
+	#------ View -------
 	['STROKE_VIEW', _('Stroke View'), _('Stroke View'), None, '<Shift>F9',
 	 proxy.stroke_view, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 	['DRAFT_VIEW', _('Draft View'), _('Draft View'), None, None,
@@ -182,7 +184,7 @@ def create_actions(app):
 	gtk.STOCK_REFRESH, '<Alt>R', proxy.force_redraw,
 	[NO_DOCS, DOC_CHANGED], insp.is_doc],
 
-
+	#------ Layout -------
 	['INSERT_PG', _('Insert page...'), _('Insert page'), None, None,
 	 proxy.insert_page, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 	['DELETE_PG', _('Delete page...'), _('Delete page'), None, None,
@@ -198,6 +200,7 @@ def create_actions(app):
 	['PREV_PG_KP', 'Previous page', 'Previous page', None, 'KP_Page_Up',
 	 proxy.previous_page, [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, PAGE_CHANGED], insp.can_be_previous_page],
 
+	#------ Arrange -------
 	['COMBINE', _('_Combine'), _('Combine'), None, '<Control>L',
 	 proxy.combine_selected, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.can_be_combined],
 	['BREAK_APART', _('_Break apart'), _('Break apart'), None, '<Control>K',
@@ -215,11 +218,21 @@ def create_actions(app):
 	['EDIT_TEXT', _('_Edit text...'), _('Edit text'), None, 'F8',
 	 proxy.edit_text, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_text_selected],
 
+	#------ Effects -------
 	['SET_CONTAINER', _('_Place into container'), _('Place into container'), None, None,
 	 proxy.set_container, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
 	['UNPACK_CONTAINER', _('_Extract from container'), _('Extract from container'), None, None,
 	 proxy.unpack_container, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_container_selected],
+
+	#------ Tools -------
+	['PAGES', _('_Pages'), _('Pages'), icons.STOCK_PLUGIN_PAGES, '<Control>F7',
+	 proxy.load_pages_plg, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['LAYERS', _('_Layers'), _('Close'), icons.STOCK_PLUGIN_LAYERS, 'F7',
+	 proxy.load_layers_plg, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['DOM_VIEWER', _('_Object browser'), _('Object browser'), icons.STOCK_PLUGIN_DOM_VIEWER, None,
+	 proxy.load_dom_plg, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+
 
 	['PROPERTIES', _('Document Properties...'), _('Document Properties...'), gtk.STOCK_PROPERTIES, None,
 	 proxy.properties, [NO_DOCS, DOC_CHANGED], insp.is_doc],
