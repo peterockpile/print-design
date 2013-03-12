@@ -298,6 +298,8 @@ class AppProxy:
 		if index >= 0:
 			self.app.current_doc.goto_page(index)
 
+	#---Canvas actions		
+
 	def move_up(self, *args):
 		if self.insp.is_selection():
 			self.app.current_doc.api.move_selected(0, config.obj_jump)
@@ -313,5 +315,13 @@ class AppProxy:
 	def move_right(self, *args):
 		if self.insp.is_selection():
 			self.app.current_doc.api.move_selected(config.obj_jump, 0)
+
+	#---Tools
+	def load_layers_plg(self, *args):
+		self.app.mw.plugin_panel.load_plugin('LayersPlugin')
+	def load_pages_plg(self, *args):
+		self.app.mw.plugin_panel.load_plugin('PagesPlugin')
+	def load_dom_plg(self, *args):
+		self.app.mw.plugin_panel.load_plugin('DOMPlugin')
 
 

@@ -126,6 +126,11 @@ class AppMenubar(gtk.MenuBar):
 
 		#----TOOLS MENU
 		self.tools_item, self.tools_menu = self.create_menu(_("T_ools"))
+		items = ['PAGES',
+				'LAYERS',
+				'DOM_VIEWER',
+		]
+		self.add_items(self.tools_menu, items)
 
 		#----HELP MENU
 		self.help_item, self.help_menu = self.create_menu(_("_Help"))

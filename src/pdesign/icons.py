@@ -27,11 +27,15 @@ STOCK_ROTATE_RIGHT = 'object-rotate-right'
 STOCK_HOR_MIRROR = 'object-horizontal-mirror'
 STOCK_VERT_MIRROR = 'object-vertical-mirror'
 STOCK_TO_CURVE = 'object-to-curve'
+STOCK_PLUGIN_LAYERS = 'plugin-layers'
+STOCK_PLUGIN_DOM_VIEWER = 'plugin-dom-viewer'
+STOCK_PLUGIN_PAGES = 'plugin-pages'
 
 def load_icons():
 
 	items = [STOCK_ROTATE_LEFT, STOCK_ROTATE_RIGHT, STOCK_HOR_MIRROR,
-			STOCK_VERT_MIRROR, STOCK_TO_CURVE]
+			STOCK_VERT_MIRROR, STOCK_TO_CURVE, STOCK_PLUGIN_LAYERS,
+			STOCK_PLUGIN_DOM_VIEWER, STOCK_PLUGIN_PAGES, ]
 
 	path = '' + os.path.join(config.resource_dir, 'icons')
 
