@@ -15,10 +15,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 
-
-from pdesign import _, events, icons
+from uc2.formats.pdxf import model
+from pdesign import _, events, icons, config
 from pdesign.plugins.plg_caption import PluginTabCaption
 
 class DOMPlugin(gtk.VBox):
@@ -41,8 +42,8 @@ class DOMPlugin(gtk.VBox):
 		self.add(spacer)
 		self.set_border_width(5)
 
-		model = self.app.current_doc.doc_presenter.model
-		self.listmodel = ObjectTreeModel(model)
+		doc_model = self.app.current_doc.doc_presenter.model
+		self.listmodel = ObjectTreeModel(doc_model)
 
 		self.treeview = gtk.TreeView()
 
@@ -104,7 +105,6 @@ class DOMPlugin(gtk.VBox):
 	def view_object(self, *args):pass
 
 
-
 NODE_ICON = gtk.Image().render_icon(gtk.STOCK_DIRECTORY, gtk.ICON_SIZE_MENU)
 LEAF_ICON = gtk.Image().render_icon(gtk.STOCK_FILE, gtk.ICON_SIZE_MENU)
 COLOR = '#A7A7A7'
@@ -117,22 +117,44 @@ class ObjectTreeModel(gtk.TreeStore):
 		self.model = model
 		self.model_dict = {}
 
+		self.document_icon = self.load_icon('object-document.png')
+		self.pages_icon = self.load_icon('object-pages.png')
+		self.page_icon = self.load_icon('object-page.png')
+		self.layer_icon = self.load_icon('object-layer.png')
+		self.grid_layer_icon = self.load_icon('object-grid-layer.png')
+		self.guide_layer_icon = self.load_icon('object-guide-layer.png')
+		self.master_layers_icon = self.load_icon('object-master-layers.png')
+		self.desktop_layers_icon = self.load_icon('object-desktop-layers.png')
+
+		self.group_icon = self.load_icon('object-group.png')
+		self.container_icon = self.load_icon('object-container.png')
+		self.curve_icon = self.load_icon('object-curve.png')
+		self.rect_icon = self.load_icon('object-rect.png')
+		self.ellipse_icon = self.load_icon('object-ellipse.png')
+		self.polygon_icon = self.load_icon('object-polygon.png')
+		self.text_icon = self.load_icon('object-text.png')
+
 		iter = self.append(None)
 		self.add_to_dict(self.model, iter)
 		self.model_dict[iter] = self.model
 		icon_type, name, info = self.model.resolve()
-		self.set(iter, 0, self.get_icon(icon_type),
+		self.set(iter, 0, self.get_icon(icon_type, self.model),
 						1, name,
 						2, info,
 						3, COLOR)
 		for child in self.model.childs:
 			self.scan_model(iter, child)
 
+	def load_icon(self, path):
+		loader = gtk.gdk.pixbuf_new_from_file
+		pixbuf = loader(os.path.join(config.resource_dir, 'icons', 'obj_browser', path))
+		return pixbuf
+
 	def scan_model(self, iter, obj):
 		child_iter = self.append(iter)
 		self.add_to_dict(obj, child_iter)
 		icon_type, name, info = obj.resolve()
-		self.set(child_iter, 0, self.get_icon(icon_type),
+		self.set(child_iter, 0, self.get_icon(icon_type, obj),
 							1, name,
 							2, info,
 							3, COLOR)
@@ -146,6 +168,22 @@ class ObjectTreeModel(gtk.TreeStore):
 	def get_obj_by_path(self, path):
 		return self.model_dict[path.__str__()]
 
-	def get_icon(self, type):
+	def get_icon(self, type, obj):
+		if obj.cid == model.DOCUMENT:return self.document_icon
+		if obj.cid == model.PAGES:return self.pages_icon
+		if obj.cid == model.PAGE:return self.page_icon
+		if obj.cid == model.LAYER:return self.layer_icon
+		if obj.cid == model.GRID_LAYER:return self.grid_layer_icon
+		if obj.cid == model.GUIDE_LAYER:return self.guide_layer_icon
+		if obj.cid == model.MASTER_LAYERS:return self.master_layers_icon
+
+		if obj.cid == model.GROUP:return self.group_icon
+		if obj.cid == model.CONTAINER:return self.container_icon
+		if obj.cid == model.RECTANGLE:return self.rect_icon
+		if obj.cid == model.CURVE:return self.curve_icon
+		if obj.cid == model.CIRCLE:return self.ellipse_icon
+		if obj.cid == model.POLYGON:return self.polygon_icon
+		if obj.cid == model.TEXT_BLOCK:return self.text_icon
+
 		if type: return LEAF_ICON
 		return NODE_ICON
