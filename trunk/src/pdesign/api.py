@@ -341,11 +341,12 @@ class PresenterAPI(AbstractAPI):
 			for obj in self.selection.objs:
 				self.methods.delete_object(obj)
 			after = self._get_layers_snapshot()
+			sel_after = []
 			transaction = [
 				[[self._set_layers_snapshot, before],
 				[self._set_selection, sel_before]],
 				[[self._set_layers_snapshot, after],
-				[self.selection.clear()]],
+				[self._set_selection, sel_after]],
 				False]
 			self.add_undo(transaction)
 		self.selection.clear()
@@ -827,6 +828,28 @@ class PresenterAPI(AbstractAPI):
 			False]
 		self.add_undo(transaction)
 		self.selection.update()
+
+	def set_active_page(self, index):
+		if not self.undo:
+			self.presenter.set_active_page(index)
+			self.selection.clear()
+		else:
+			pages = self.presenter.get_pages()
+			active_index_before = pages.index(self.presenter.active_page)
+			sel_before = [] + self.selection.objs
+			active_index_after = index
+
+			self.presenter.set_active_page(index)
+			self.selection.clear()
+
+			transaction = [
+				[[self._set_selection, sel_before],
+				[self.presenter.set_active_page, active_index_before]],
+				[[self._set_selection, []],
+				[self.presenter.set_active_page, active_index_after]],
+				False]
+			self.add_undo(transaction)
+			self.selection.update()
 
 	def delete_page(self, index):
 		pages = self.presenter.get_pages()
