@@ -189,18 +189,20 @@ class PD_Presenter:
 		return self.doc_presenter.methods.get_pages()
 
 	def next_page(self):
-		pages = self.doc_presenter.methods.get_pages()
+		pages = self.get_pages()
 		if pages.index(self.active_page) < len(pages) - 1:
-			self.set_active_page(pages.index(self.active_page) + 1)
-			self.selection.clear()
+			self.api.set_active_page(pages.index(self.active_page) + 1)
+#			self.set_active_page(pages.index(self.active_page) + 1)
+#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
 	def previous_page(self):
 		pages = self.get_pages()
 		if pages.index(self.active_page):
-			self.set_active_page(pages.index(self.active_page) - 1)
-			self.selection.clear()
+			self.api.set_active_page(pages.index(self.active_page) - 1)
+#			self.set_active_page(pages.index(self.active_page) - 1)
+#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
@@ -208,8 +210,9 @@ class PD_Presenter:
 		pages = self.get_pages()
 		current_index = pages.index(self.active_page)
 		if index >= 0 and index <> current_index:
-			self.set_active_page(index)
-			self.selection.clear()
+			self.api.set_active_page(index)
+#			self.set_active_page(index)
+#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
