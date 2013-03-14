@@ -21,12 +21,31 @@ from pdesign import modes
 
 from pdesign.view.controllers import AbstractController
 
-class RectangleCreator(AbstractController):
+class AbstractCreator(AbstractController):
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_move(self, event):
+		if self.draw:
+			AbstractController.mouse_move(self, event)
+		else:
+			self.counter += 1
+			if self.counter > 5:
+				self.counter = 0
+				point = [event.x, event.y]
+				dpoint = self.canvas.win_to_doc(point)
+				if self.selection.is_point_over_marker(dpoint):
+					mark = self.selection.is_point_over_marker(dpoint)[0]
+					self.canvas.resize_marker = mark
+					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+
+class RectangleCreator(AbstractCreator):
 
 	mode = modes.RECT_MODE
 
 	def __init__(self, canvas, presenter):
-		AbstractController.__init__(self, canvas, presenter)
+		AbstractCreator.__init__(self, canvas, presenter)
 
 	def do_action(self, event):
 		if self.start and self.end:
@@ -35,12 +54,12 @@ class RectangleCreator(AbstractController):
 				rect = self.start + self.end
 				self.api.create_rectangle(rect)
 
-class EllipseCreator(AbstractController):
+class EllipseCreator(AbstractCreator):
 
 	mode = modes.ELLIPSE_MODE
 
 	def __init__(self, canvas, presenter):
-		AbstractController.__init__(self, canvas, presenter)
+		AbstractCreator.__init__(self, canvas, presenter)
 
 	def do_action(self, event):
 		if self.start and self.end:
@@ -49,12 +68,12 @@ class EllipseCreator(AbstractController):
 				rect = self.start + self.end
 				self.api.create_ellipse(rect)
 
-class PolygonCreator(AbstractController):
+class PolygonCreator(AbstractCreator):
 
 	mode = modes.POLYGON_MODE
 
 	def __init__(self, canvas, presenter):
-		AbstractController.__init__(self, canvas, presenter)
+		AbstractCreator.__init__(self, canvas, presenter)
 
 	def do_action(self, event):
 		if self.start and self.end:
@@ -63,12 +82,12 @@ class PolygonCreator(AbstractController):
 				rect = self.start + self.end
 				self.api.create_polygon(rect)
 
-class TextBlockCreator(AbstractController):
+class TextBlockCreator(AbstractCreator):
 
 	mode = modes.TEXT_MODE
 
 	def __init__(self, canvas, presenter):
-		AbstractController.__init__(self, canvas, presenter)
+		AbstractCreator.__init__(self, canvas, presenter)
 
 	def do_action(self, event):
 		if self.start and self.end:
@@ -80,19 +99,4 @@ class TextBlockCreator(AbstractController):
 				rect = self.start + self.start
 				self.api.create_text(rect, width=const.TEXTBLOCK_WIDTH)
 
-
-#		if self.start and self.end:
-#			add_flag = False
-#			if event.state & gtk.gdk.SHIFT_MASK:
-#				add_flag = True
-#			change_x = abs(self.end[0] - self.start[0])
-#			change_y = abs(self.end[1] - self.start[1])
-#			if change_x < 5 and change_y < 5:
-#				self.canvas.select_at_point(self.start, add_flag)
-#			else:
-#				self.canvas.select_by_rect(self.start, self.end, add_flag)
-#
-#			dpoint = self.canvas.win_to_doc(self.start)
-#			if self.selection.is_point_over(dpoint):
-#				self.canvas.set_temp_mode(modes.MOVE_MODE)
 
