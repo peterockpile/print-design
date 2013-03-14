@@ -176,6 +176,7 @@ class ObjectTreeModel(gtk.TreeStore):
 		if obj.cid == model.GRID_LAYER:return self.grid_layer_icon
 		if obj.cid == model.GUIDE_LAYER:return self.guide_layer_icon
 		if obj.cid == model.MASTER_LAYERS:return self.master_layers_icon
+		if obj.cid == model.DESKTOP_LAYERS:return self.desktop_layers_icon
 
 		if obj.cid == model.GROUP:return self.group_icon
 		if obj.cid == model.CONTAINER:return self.container_icon
