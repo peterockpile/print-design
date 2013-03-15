@@ -17,12 +17,10 @@
 
 import gtk
 import cairo
-import gobject
 
 
 from uc2.uc2const import mm_to_pt
 from uc2.libcairo import normalize_bbox
-from pdesign import _, config
 from pdesign import modes, events
 
 from pdesign.view import controllers
@@ -107,7 +105,7 @@ class AppCanvas(gtk.DrawingArea):
 		modes.FLEUR_MODE: controllers.FleurController(self, self.presenter),
 		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: controllers.PickController(self, self.presenter),
-		modes.LINE_MODE: dummy,
+		modes.LINE_MODE: creators.PolyLineCreator(self, self.presenter),
 		modes.CURVE_MODE: dummy,
 		modes.RECT_MODE: creators.RectangleCreator(self, self.presenter),
 		modes.ELLIPSE_MODE: creators.EllipseCreator(self, self.presenter),
@@ -121,6 +119,8 @@ class AppCanvas(gtk.DrawingArea):
 
 	def set_mode(self, mode=modes.SELECT_MODE):
 		if not mode == self.mode:
+			if not self.controller is None:
+				self.controller.stop()
 			self.mode = mode
 			self.controller = self.ctrls[mode]
 			self.controller.set_cursor()
@@ -242,6 +242,19 @@ class AppCanvas(gtk.DrawingArea):
 		y_new = (y - dy) / m22
 		return [x_new, y_new]
 
+	def paths_doc_to_win(self, paths):
+		result = []
+		for path in paths:
+			new_path = []
+			new_points = []
+			new_path.append(self.doc_to_win(path[0]))
+			for point in path[1]:
+				new_points.append(self.doc_to_win(point))
+			new_path.append(new_points)
+			new_path.append([] + path[2])
+			result.append(new_path)
+		return result
+
 	def _fit_to_page(self):
 		width, height = self.presenter.get_page_size()
 
@@ -333,20 +346,29 @@ class AppCanvas(gtk.DrawingArea):
 			self.set_mode(modes.SELECT_MODE)
 		self._keep_center()
 		self.renderer.paint_document()
+		if not self.controller is None:
+			if not self.previous_mode is None:
+				self.ctrls[self.previous_mode].repaint()
+			else:
+				self.controller.repaint()
 
 	def selection_repaint(self, *args):
 		self.renderer.paint_selection()
 
 #==============EVENT CONTROLLING==========================
 	def mouseDoubleClickEvent(self, widget, event):
-		pass
+		self.controller.set_cursor()
+		self.controller.mouse_double_click(event)
 
 	def mouseMoveEvent(self, widget, event):
 		self.controller.mouse_move(event)
 
 	def mousePressEvent(self, widget, event):
-		self.controller.set_cursor()
-		self.controller.mouse_down(event)
+		if event.type == gtk.gdk._2BUTTON_PRESS:
+			self.mouseDoubleClickEvent(widget, event)
+		else:
+			self.controller.set_cursor()
+			self.controller.mouse_down(event)
 
 	def mouseReleaseEvent(self, widget, event):
 		self.controller.mouse_up(event)

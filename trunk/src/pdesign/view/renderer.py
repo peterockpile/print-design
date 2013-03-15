@@ -163,7 +163,7 @@ class PDRenderer(CairoRenderer):
 			x0, y0, x1, y1 = selection.frame
 			self.ctx.set_line_width(1.0 / zoom)
 			self.ctx.set_dash([])
-			self.ctx.set_source_rgb(*CAIRO_WHITE)
+			self.ctx.set_source_rgb(*config.sel_marker_frame_bgcolor)
 			self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
 			self.ctx.stroke()
 			self.ctx.set_source_rgb(*config.sel_marker_frame_color)
@@ -204,7 +204,7 @@ class PDRenderer(CairoRenderer):
 
 			#Object markers
 			objs = selection.objs
-			self.ctx.set_source_rgb(*CAIRO_BLACK)
+			self.ctx.set_source_rgb(*config.sel_object_marker_color)
 			self.ctx.set_line_width(1.0 / zoom)
 			self.ctx.set_dash([])
 			offset = 2.0 / zoom
@@ -243,18 +243,49 @@ class PDRenderer(CairoRenderer):
 		self._paint_selection()
 		self.end_soft_repaint()
 
+	def draw_polyline_point(self, point, size, fill, stroke, stroke_width):
+		cx, cy = point
+		x = cx - int(size / 2.0)
+		y = cy - int(size / 2.0)
+		self.ctx.move_to(x, y)
+		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+		self.ctx.set_source_rgb(*fill)
+		self.ctx.rectangle(x, y, size, size)
+		self.ctx.fill()
+		self.ctx.set_line_width(stroke_width)
+		self.ctx.set_source_rgb(*stroke)
+		self.ctx.rectangle(x, y, size, size)
+		self.ctx.stroke()
+		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
+
 	def paint_polyline(self, paths, cursor=[]):
 		self.start_soft_repaint()
 		if paths:
-			zoom = self.canvas.zoom
 			for path in paths:
-				self.ctx.set_source_rgb(*CAIRO_BLACK)
-				self.ctx.set_line_width(1.0)
+				self.ctx.set_source_rgb(*config.line_stroke_color)
+				self.ctx.set_line_width(config.line_stroke_width)
 				self.ctx.move_to(*path[0])
 				points = path[1]
 				for point in points:
 					self.ctx.line_to(*point)
 				self.ctx.stroke()
+				self.draw_polyline_point(path[0],
+						config.line_start_point_size,
+						config.line_start_point_fill,
+						config.line_start_point_stroke,
+						config.line_start_point_stroke_width)
+				for point in points:
+					self.draw_polyline_point(point,
+							config.line_point_size,
+							config.line_point_fill,
+							config.line_point_stroke,
+							config.line_point_stroke_width)
+			if points:
+					self.draw_polyline_point(points[-1],
+							config.line_last_point_size,
+							config.line_last_point_fill,
+							config.line_last_point_stroke,
+							config.line_last_point_stroke_width)
 
 		self.end_soft_repaint()
 

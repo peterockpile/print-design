@@ -60,6 +60,10 @@ class AbstractController:
 		else:
 			self.canvas.set_canvas_cursor(self.mode)
 
+	def stop(self):pass
+
+	def repaint(self):pass
+
 	def mouse_down(self, event):
 		self.start = []
 		self.end = []
@@ -92,15 +96,9 @@ class AbstractController:
 		if self.draw:
 			self.end = [event.x, event.y]
 
-	def do_action(self, event):
-		pass
+	def do_action(self, event): pass
 
-	def _draw_frame(self, *args):
-		if self.end:
-			self.canvas.renderer.draw_frame(self.start, self.end)
-			self.end = []
-		return True
-
+	def mouse_double_click(self, event): pass
 
 	def wheel(self, event):
 		va = self.canvas.mw.v_adj
@@ -109,6 +107,12 @@ class AbstractController:
 		if event.direction == gtk.gdk.SCROLL_DOWN:
 			direction = -1
 		va.set_value(va.get_value() - dy * direction)
+
+	def _draw_frame(self, *args):
+		if self.end:
+			self.canvas.renderer.draw_frame(self.start, self.end)
+			self.end = []
+		return True
 
 class FleurController(AbstractController):
 
@@ -148,15 +152,16 @@ class FleurController(AbstractController):
 				self.fleur_timer = gobject.timeout_add(RENDERING_DELAY, self._scroll_canvas)
 
 	def _scroll_canvas(self, *args):
-		dx = self.end[0] - self.start[0]
-		dy = self.end[1] - self.start[1]
-		if dx <> 0 or dy <> 0:
-			ha = self.canvas.mw.h_adj
-			va = self.canvas.mw.v_adj
-			zoom = self.canvas.zoom
-			ha.set_value(ha.get_value() - dx / zoom)
-			va.set_value(va.get_value() - dy / zoom)
-			self.start = self.end
+		if self.start and self.end:
+			dx = self.end[0] - self.start[0]
+			dy = self.end[1] - self.start[1]
+			if dx <> 0 or dy <> 0:
+				ha = self.canvas.mw.h_adj
+				va = self.canvas.mw.v_adj
+				zoom = self.canvas.zoom
+				ha.set_value(ha.get_value() - dx / zoom)
+				va.set_value(va.get_value() - dy / zoom)
+				self.start = self.end
 		return True
 
 class TempFleurController(FleurController):
