@@ -23,6 +23,8 @@ import gobject
 from pdesign import config
 from pdesign import modes
 
+RENDERING_DELAY = 50
+
 ZOOM_IN = 1.25
 ZOOM_OUT = 0.8
 
@@ -39,7 +41,6 @@ class AbstractController:
 
 	counter = 0
 	timer = None
-	DELAY = 50
 
 	mode = None
 
@@ -73,7 +74,7 @@ class AbstractController:
 			self.start = [event.x, event.y]
 			self.end = [event.x, event.y]
 			self.counter = 0
-			self.timer = gobject.timeout_add(self.DELAY, self._draw_frame)
+			self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 		elif event.button == MIDDLE_BUTTON:
 			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 
@@ -111,20 +112,21 @@ class AbstractController:
 
 class FleurController(AbstractController):
 
-	counter = 0
 	mode = modes.FLEUR_MODE
+	move = False
+	fleur_timer = None
 
 	def __init__(self, canvas, presenter):
 		AbstractController.__init__(self, canvas, presenter)
 
 	def mouse_down(self, event):
-		self.start = [event.x, event.y]
-		self.counter = 0
+		self.move = True
 
 	def mouse_up(self, event):
 		if self.start:
+			if not self.fleur_timer is None:
+				gobject.source_remove(self.fleur_timer)
 			self.end = [event.x, event.y]
-			self.counter = 0
 			dx = self.end[0] - self.start[0]
 			dy = self.end[1] - self.start[1]
 			ha = self.canvas.mw.h_adj
@@ -135,63 +137,42 @@ class FleurController(AbstractController):
 
 			self.start = []
 			self.end = []
+			self.move = False
 
 	def mouse_move(self, event):
-		if self.start:
-			self.end = [event.x, event.y]
-			self.counter += 1
-			if self.counter > 5:
-				self.counter = 0
-				dx = self.end[0] - self.start[0]
-				dy = self.end[1] - self.start[1]
-				ha = self.canvas.mw.h_adj
-				va = self.canvas.mw.v_adj
-				zoom = self.canvas.zoom
-				ha.set_value(ha.get_value() - dx / zoom)
-				va.set_value(va.get_value() - dy / zoom)
-				self.start = self.end
+		if self.move:
+			if self.start:
+				self.end = [event.x, event.y]
+			else:
+				self.start = [event.x, event.y]
+				self.fleur_timer = gobject.timeout_add(RENDERING_DELAY, self._scroll_canvas)
 
-class TempFleurController(AbstractController):
+	def _scroll_canvas(self, *args):
+		dx = self.end[0] - self.start[0]
+		dy = self.end[1] - self.start[1]
+		if dx <> 0 or dy <> 0:
+			ha = self.canvas.mw.h_adj
+			va = self.canvas.mw.v_adj
+			zoom = self.canvas.zoom
+			ha.set_value(ha.get_value() - dx / zoom)
+			va.set_value(va.get_value() - dy / zoom)
+			self.start = self.end
+		return True
 
-	counter = 0
+class TempFleurController(FleurController):
+
 	mode = modes.TEMP_FLEUR_MODE
+	move = True
 
 	def __init__(self, canvas, presenter):
-		AbstractController.__init__(self, canvas, presenter)
+		FleurController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):pass
 
 	def mouse_up(self, event):
-		if self.start:
-			self.end = [event.x, event.y]
-			self.counter = 0
-			dx = self.end[0] - self.start[0]
-			dy = self.end[1] - self.start[1]
-			ha = self.canvas.mw.h_adj
-			va = self.canvas.mw.v_adj
-			zoom = self.canvas.zoom
-			ha.set_value(ha.get_value() - dx / zoom)
-			va.set_value(va.get_value() - dy / zoom)
-
-			self.start = []
-			self.end = []
+		FleurController.mouse_up(self, event)
+		self.move = True
 		self.canvas.restore_mode()
-
-	def mouse_move(self, event):
-		if self.start:
-			self.end = [event.x, event.y]
-			self.counter += 1
-			if self.counter > 5:
-				self.counter = 0
-				dx = self.end[0] - self.start[0]
-				dy = self.end[1] - self.start[1]
-				ha = self.canvas.mw.h_adj
-				va = self.canvas.mw.v_adj
-				zoom = self.canvas.zoom
-				ha.set_value(ha.get_value() - dx / zoom)
-				va.set_value(va.get_value() - dy / zoom)
-				self.start = self.end
-		else:
-			self.start = [event.x, event.y]
-			self.counter = 0
 
 class ZoomController(AbstractController):
 
@@ -309,7 +290,7 @@ class MoveController(AbstractController):
 			self.start = [event.x, event.y]
 			self.move = True
 			self.canvas.renderer.show_move_frame()
-			self.timer = gobject.timeout_add(self.DELAY, self._draw_frame)
+			self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 
 	def _draw_frame(self, *args):
 		if self.end:
@@ -413,9 +394,9 @@ class TransformController(AbstractController):
 			self.move = True
 			if not self.canvas.resize_marker == 9:
 				self.canvas.renderer.show_move_frame()
-				self.timer = gobject.timeout_add(self.DELAY, self._draw_frame)
+				self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 			else:
-				self.timer = gobject.timeout_add(self.DELAY, self._draw_center)
+				self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_center)
 
 	def mouse_up(self, event):
 		if event.button == LEFT_BUTTON:
