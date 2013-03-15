@@ -414,6 +414,13 @@ class PresenterAPI(AbstractAPI):
 			obj.update()
 			self.insert_object(obj, parent, len(parent.childs))
 
+	def create_curve(self, paths):
+		parent = self.presenter.active_layer
+		obj = model.Curve(self.pdxf_cfg, parent, paths)
+		obj.style = deepcopy(self.model.styles['Default Style'])
+		obj.update()
+		self.insert_object(obj, parent, len(parent.childs))
+
 
 #///////////////////////////////////////////
 

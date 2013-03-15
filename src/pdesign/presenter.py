@@ -117,6 +117,7 @@ class PD_Presenter:
 							self.selection,
 							self
 							]
+		self.app.mw.show_all()
 
 	def close(self):
 		if not self.docarea is None:

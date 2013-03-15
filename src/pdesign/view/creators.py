@@ -21,6 +21,10 @@ from pdesign import modes
 
 from pdesign.view.controllers import AbstractController
 
+LEFT_BUTTON = 1
+MIDDLE_BUTTON = 2
+RIGHT_BUTTON = 3
+
 class AbstractCreator(AbstractController):
 
 	def __init__(self, canvas, presenter):
@@ -99,4 +103,54 @@ class TextBlockCreator(AbstractCreator):
 				rect = self.start + self.start
 				self.api.create_text(rect, width=const.TEXTBLOCK_WIDTH)
 
+class PolyLineCreator(AbstractCreator):
+
+	mode = modes.LINE_MODE
+	paths = []
+	path = [[], [], []]
+	points = []
+
+	def __init__(self, canvas, presenter):
+		AbstractCreator.__init__(self, canvas, presenter)
+
+	def stop(self):
+		self.draw = False
+		self.paths = []
+		self.points = []
+		self.path = [[], [], []]
+		self.canvas.renderer.paint_polyline([])
+		self.canvas.selection_repaint()
+
+	def mouse_down(self, event):
+		if event.button == LEFT_BUTTON:
+			if not self.draw:
+				self.presenter.selection.clear()
+				self.draw = True
+				self.paths = []
+				self.points = []
+				self.path = [[], [], []]
+				self.paths.append(self.path)
+		elif event.button == MIDDLE_BUTTON:
+			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+
+	def mouse_up(self, event):
+		if self.draw:
+			if self.path[0]:
+				self.points.append(self.canvas.win_to_doc([event.x, event.y]))
+				self.path[1] = self.points
+			else:
+				self.path[0] = self.canvas.win_to_doc([event.x, event.y])
+			self.repaint()
+
+	def repaint(self):
+		if self.path[0]:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_polyline(paths)
+
+	def mouse_double_click(self, event):
+		paths = self.paths
+		self.stop()
+		self.api.create_curve(paths)
+
+	def mouse_move(self, event):pass
 
