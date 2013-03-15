@@ -105,6 +105,7 @@ class AppCanvas(gtk.DrawingArea):
 		modes.SHAPER_MODE: dummy,
 		modes.ZOOM_MODE: controllers.ZoomController(self, self.presenter),
 		modes.FLEUR_MODE: controllers.FleurController(self, self.presenter),
+		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: controllers.PickController(self, self.presenter),
 		modes.LINE_MODE: dummy,
 		modes.CURVE_MODE: dummy,
