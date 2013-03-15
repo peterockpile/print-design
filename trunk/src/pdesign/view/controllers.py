@@ -26,6 +26,10 @@ from pdesign import modes
 ZOOM_IN = 1.25
 ZOOM_OUT = 0.8
 
+LEFT_BUTTON = 1
+MIDDLE_BUTTON = 2
+RIGHT_BUTTON = 3
+
 class AbstractController:
 
 	draw = False
@@ -64,15 +68,17 @@ class AbstractController:
 			gobject.source_remove(self.timer)
 		self.timer = None
 
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			self.draw = True
 			self.start = [event.x, event.y]
 			self.end = [event.x, event.y]
 			self.counter = 0
 			self.timer = gobject.timeout_add(self.DELAY, self._draw_frame)
+		elif event.button == MIDDLE_BUTTON:
+			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 
 	def mouse_up(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			if self.draw:
 				gobject.source_remove(self.timer)
 				self.draw = False
@@ -145,6 +151,48 @@ class FleurController(AbstractController):
 				va.set_value(va.get_value() - dy / zoom)
 				self.start = self.end
 
+class TempFleurController(AbstractController):
+
+	counter = 0
+	mode = modes.TEMP_FLEUR_MODE
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_up(self, event):
+		if self.start:
+			self.end = [event.x, event.y]
+			self.counter = 0
+			dx = self.end[0] - self.start[0]
+			dy = self.end[1] - self.start[1]
+			ha = self.canvas.mw.h_adj
+			va = self.canvas.mw.v_adj
+			zoom = self.canvas.zoom
+			ha.set_value(ha.get_value() - dx / zoom)
+			va.set_value(va.get_value() - dy / zoom)
+
+			self.start = []
+			self.end = []
+		self.canvas.restore_mode()
+
+	def mouse_move(self, event):
+		if self.start:
+			self.end = [event.x, event.y]
+			self.counter += 1
+			if self.counter > 5:
+				self.counter = 0
+				dx = self.end[0] - self.start[0]
+				dy = self.end[1] - self.start[1]
+				ha = self.canvas.mw.h_adj
+				va = self.canvas.mw.v_adj
+				zoom = self.canvas.zoom
+				ha.set_value(ha.get_value() - dx / zoom)
+				va.set_value(va.get_value() - dy / zoom)
+				self.start = self.end
+		else:
+			self.start = [event.x, event.y]
+			self.counter = 0
+
 class ZoomController(AbstractController):
 
 	mode = modes.ZOOM_MODE
@@ -153,17 +201,19 @@ class ZoomController(AbstractController):
 		AbstractController.__init__(self, canvas, presenter)
 
 	def mouse_down(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			AbstractController.mouse_down(self, event)
-		elif event.button == 3:
+		elif event.button == RIGHT_BUTTON:
 			self.start = [event.x, event.y]
 			cursor = self.canvas.app.cursors[modes.ZOOM_OUT_MODE]
 			self.canvas.set_temp_cursor(cursor)
+		elif event.button == MIDDLE_BUTTON:
+			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 
 	def mouse_up(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			AbstractController.mouse_up(self, event)
-		if event.button == 3:
+		if event.button == RIGHT_BUTTON:
 			if not self.draw:
 				self.canvas.zoom_at_point(self.start, ZOOM_OUT)
 				self.canvas.restore_cursor()
@@ -228,7 +278,7 @@ class PickController(AbstractController):
 	def mouse_down(self, event):pass
 
 	def mouse_up(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			self.end = [event.x, event.y]
 			self.do_action()
 
@@ -255,7 +305,7 @@ class MoveController(AbstractController):
 		self.trafo = []
 
 	def mouse_down(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			self.start = [event.x, event.y]
 			self.move = True
 			self.canvas.renderer.show_move_frame()
@@ -299,7 +349,7 @@ class MoveController(AbstractController):
 				self.canvas.restore_mode()
 
 	def mouse_up(self, event):
-		if self.move and event.button == 1:
+		if self.move and event.button == LEFT_BUTTON:
 			gobject.source_remove(self.timer)
 			new = [event.x, event.y]
 			if event.state & gtk.gdk.CONTROL_MASK:
@@ -325,7 +375,7 @@ class MoveController(AbstractController):
 			self.start = []
 			self.end = []
 
-		elif self.moved and event.button == 3:
+		elif self.moved and event.button == RIGHT_BUTTON:
 			self.copy = True
 			cursor = self.app.cursors[modes.COPY_MODE]
 			self.canvas.set_temp_cursor(cursor)
@@ -358,7 +408,7 @@ class TransformController(AbstractController):
 
 
 	def mouse_down(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			self.start = [event.x, event.y]
 			self.move = True
 			if not self.canvas.resize_marker == 9:
@@ -368,7 +418,7 @@ class TransformController(AbstractController):
 				self.timer = gobject.timeout_add(self.DELAY, self._draw_center)
 
 	def mouse_up(self, event):
-		if event.button == 1:
+		if event.button == LEFT_BUTTON:
 			gobject.source_remove(self.timer)
 			self.end = [event.x, event.y]
 			self.move = False
@@ -391,7 +441,7 @@ class TransformController(AbstractController):
 				self.start = []
 				self.end = []
 
-		if event.button == 3 and self.moved:
+		if event.button == RIGHT_BUTTON and self.moved:
 			self.copy = True
 			self.set_cursor()
 

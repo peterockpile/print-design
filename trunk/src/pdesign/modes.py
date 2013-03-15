@@ -25,6 +25,7 @@ SELECT_MODE = 0
 SHAPER_MODE = 1
 ZOOM_MODE = 2
 FLEUR_MODE = 3
+TEMP_FLEUR_MODE = 5
 PICK_MODE = 4
 LINE_MODE = 10
 CURVE_MODE = 11
@@ -62,6 +63,7 @@ def get_cursors():
 			SHAPER_MODE:('cur_edit.png', (5, 5)),
 			ZOOM_MODE:('cur_zoom_in.png', (6, 6)),
 			FLEUR_MODE:('cur_fleur.png', (11, 4)),
+			TEMP_FLEUR_MODE:('cur_fleur.png', (11, 4)),
 			PICK_MODE:('cur_pick.png', (9, 2)),
 			LINE_MODE:('cur_create_polyline.png', (6, 6)),
 			CURVE_MODE:('cur_create_bezier.png', (6, 6)),
