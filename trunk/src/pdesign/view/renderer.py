@@ -139,13 +139,12 @@ class PDRenderer(CairoRenderer):
 		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
 		self.ctx.set_line_width(1.0)
 		self.ctx.set_dash([])
-		self.ctx.set_source_rgb(1, 1, 1)
+		self.ctx.set_source_rgb(*CAIRO_WHITE)
 		self.ctx.new_path()
 		self.ctx.append_path(path)
 		self.ctx.stroke()
 		self.ctx.set_dash(config.sel_frame_dash)
-		r, g, b = config.sel_frame_color
-		self.ctx.set_source_rgb(r, g, b)
+		self.ctx.set_source_rgb(*config.sel_frame_color)
 		self.ctx.new_path()
 		self.ctx.append_path(path)
 		self.ctx.stroke()
@@ -164,11 +163,10 @@ class PDRenderer(CairoRenderer):
 			x0, y0, x1, y1 = selection.frame
 			self.ctx.set_line_width(1.0 / zoom)
 			self.ctx.set_dash([])
-			self.ctx.set_source_rgb(1, 1, 1)
+			self.ctx.set_source_rgb(*CAIRO_WHITE)
 			self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
 			self.ctx.stroke()
-			r, g, b = config.sel_marker_frame_color
-			self.ctx.set_source_rgb(r, g, b)
+			self.ctx.set_source_rgb(*config.sel_marker_frame_color)
 			a, b = config.sel_marker_frame_dash
 			self.ctx.set_dash([a / zoom, b / zoom])
 			self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
@@ -176,20 +174,18 @@ class PDRenderer(CairoRenderer):
 
 			#Selection markers
 			markers = selection.markers
-			r, g, b = config.sel_marker_fill
-			r1, g1, b1 = config.sel_marker_stroke
 			size = config.sel_marker_size / zoom
 			i = 0
 			for marker in markers:
 				if i == 9:
 					cs = 3.0 / (2.0 * zoom)
-					self.ctx.set_source_rgb(r, g, b)
+					self.ctx.set_source_rgb(*config.sel_marker_fill)
 					self.ctx.rectangle(marker[0], marker[1] + size / 2.0 - cs,
 									size, 2.0 * cs)
 					self.ctx.rectangle(marker[0] + size / 2.0 - cs, marker[1],
 									2.0 * cs, size)
 					self.ctx.fill()
-					self.ctx.set_source_rgb(r1, g1, b1)
+					self.ctx.set_source_rgb(*config.sel_marker_stroke)
 					self.ctx.move_to(marker[0] + size / 2.0, marker[1])
 					self.ctx.line_to(marker[0] + size / 2.0, marker[1] + size)
 					self.ctx.stroke()
@@ -197,10 +193,10 @@ class PDRenderer(CairoRenderer):
 					self.ctx.line_to(marker[0] + size, marker[1] + size / 2.0)
 					self.ctx.stroke()
 				elif i in [0, 1, 2, 3, 5, 6, 7, 8]:
-					self.ctx.set_source_rgb(r, g, b)
+					self.ctx.set_source_rgb(*config.sel_marker_fill)
 					self.ctx.rectangle(marker[0], marker[1], size, size)
 					self.ctx.fill_preserve()
-					self.ctx.set_source_rgb(r1, g1, b1)
+					self.ctx.set_source_rgb(*config.sel_marker_stroke)
 					self.ctx.set_line_width(1.0 / zoom)
 					self.ctx.set_dash([])
 					self.ctx.stroke()
@@ -208,7 +204,7 @@ class PDRenderer(CairoRenderer):
 
 			#Object markers
 			objs = selection.objs
-			self.ctx.set_source_rgb(0, 0, 0)
+			self.ctx.set_source_rgb(*CAIRO_BLACK)
 			self.ctx.set_line_width(1.0 / zoom)
 			self.ctx.set_dash([])
 			offset = 2.0 / zoom
@@ -246,3 +242,19 @@ class PDRenderer(CairoRenderer):
 		self.start_soft_repaint()
 		self._paint_selection()
 		self.end_soft_repaint()
+
+	def paint_polyline(self, paths, cursor=[]):
+		self.start_soft_repaint()
+		if paths:
+			zoom = self.canvas.zoom
+			for path in paths:
+				self.ctx.set_source_rgb(*CAIRO_BLACK)
+				self.ctx.set_line_width(1.0)
+				self.ctx.move_to(*path[0])
+				points = path[1]
+				for point in points:
+					self.ctx.line_to(*point)
+				self.ctx.stroke()
+
+		self.end_soft_repaint()
+
