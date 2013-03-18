@@ -172,11 +172,15 @@ class PolyLineCreator(AbstractCreator):
 
 	def mouse_double_click(self, event=None):
 		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
+				if config.line_autoclose_flag:
+					self.path[2] = [1]
 				self.points = []
 				self.path = [[], [], []]
 				self.paths.append(self.path)
 				return
 		if self.draw and self.paths and self.points:
+			if config.line_autoclose_flag:
+				self.path[2] = [1]
 			paths = self.paths
 			self.stop()
 			self.api.create_curve(paths)

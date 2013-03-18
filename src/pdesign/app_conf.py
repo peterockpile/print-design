@@ -109,6 +109,8 @@ class AppConfig(UCConfig):
 	stroke_sensitive_size = 5.0 #in pixels
 
 	#============== POLYLINE CREATOR OPTIONS ================
+	line_autoclose_flag = 1
+
 	line_stroke_color = (0.0, 0.0, 0.0)
 	line_stroke_width = 0.7
 
