@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
-import gtk
+import gtk, gobject
 
 from uc2 import libgeom
 from uc2.formats.pdxf import const
@@ -23,6 +23,8 @@ from uc2.formats.pdxf import const
 from pdesign import modes, config
 
 from pdesign.view.controllers import AbstractController
+
+RENDERING_DELAY = 50
 
 LEFT_BUTTON = 1
 MIDDLE_BUTTON = 2
@@ -112,15 +114,19 @@ class PolyLineCreator(AbstractCreator):
 	paths = []
 	path = [[], [], []]
 	points = []
+	cursor = []
 
 	def __init__(self, canvas, presenter):
 		AbstractCreator.__init__(self, canvas, presenter)
 
 	def stop(self):
 		self.draw = False
+		self.cursor = []
 		self.paths = []
 		self.points = []
 		self.path = [[], [], []]
+		if not self.timer is None:
+			gobject.source_remove(self.timer)
 		self.canvas.renderer.paint_polyline([])
 		self.canvas.selection_repaint()
 
@@ -129,6 +135,7 @@ class PolyLineCreator(AbstractCreator):
 			if not self.draw:
 				self.presenter.selection.clear()
 				self.draw = True
+				self.cursor = []
 				self.paths = []
 				self.points = []
 				self.path = [[], [], []]
@@ -165,10 +172,10 @@ class PolyLineCreator(AbstractCreator):
 				self.path[0] = self.canvas.win_to_doc([event.x, event.y])
 			self.repaint()
 
-	def repaint(self):
+	def repaint(self, cursor=[]):
 		if self.path[0]:
 			paths = self.canvas.paths_doc_to_win(self.paths)
-			self.canvas.renderer.paint_polyline(paths)
+			self.canvas.renderer.paint_polyline(paths, cursor)
 
 	def mouse_double_click(self, event=None):
 		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
@@ -185,5 +192,20 @@ class PolyLineCreator(AbstractCreator):
 			self.stop()
 			self.api.create_curve(paths)
 
-	def mouse_move(self, event):pass
+	def mouse_move(self, event):
+		if self.draw:
+			self.cursor = [event.x, event.y]
+			if self.timer is None:
+				self.timer = gobject.timeout_add(RENDERING_DELAY, self._repaint)
+		else:
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
+
+	def _repaint(self):
+		if self.path[0] and self.cursor:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_polyline(paths, self.cursor)
+		return True
+
 

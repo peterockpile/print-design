@@ -289,6 +289,15 @@ class PDRenderer(CairoRenderer):
 								config.line_last_point_fill,
 								config.line_last_point_stroke,
 								config.line_last_point_stroke_width)
+		if cursor:
+			self.ctx.set_source_rgb(*config.line_trace_color)
+			self.ctx.set_line_width(config.line_stroke_width)
+			if paths[-1][1]:
+				self.ctx.move_to(*paths[-1][1][-1])
+			else:
+				self.ctx.move_to(*paths[-1][0])
+			self.ctx.line_to(*cursor)
+			self.ctx.stroke()
 
 		self.end_soft_repaint()
 
