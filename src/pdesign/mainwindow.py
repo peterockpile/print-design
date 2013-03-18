@@ -118,7 +118,6 @@ class MainWindow(gtk.Window):
 		self.nb.show_all()
 		self.nb.set_current_page(index)
 		self.set_win_title(da.presenter.doc_name)
-		self.show_all()
 
 	def remove_tab(self, tab):
 		self.nb.remove_page(self.nb.page_num(tab))
