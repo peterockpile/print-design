@@ -15,6 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+import gtk
+
 from uc2 import libgeom
 from uc2.formats.pdxf import const
 
@@ -145,7 +147,13 @@ class PolyLineCreator(AbstractCreator):
 					x1, y1 = self.canvas.doc_to_win(self.points[-1])
 					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
 						self.path[2] = [1]
-						self.mouse_double_click()
+						if not event.state & gtk.gdk.CONTROL_MASK:
+							self.mouse_double_click()
+						else:
+							self.repaint()
+							self.points = []
+							self.path = [[], [], []]
+							self.paths.append(self.path)
 					elif not libgeom.is_point_in_rect2([x, y], [x1, y1], w, h):
 						self.points.append(self.canvas.win_to_doc([x, y]))
 						self.path[1] = self.points
@@ -163,9 +171,15 @@ class PolyLineCreator(AbstractCreator):
 			self.canvas.renderer.paint_polyline(paths)
 
 	def mouse_double_click(self, event=None):
-		paths = self.paths
-		self.stop()
-		self.api.create_curve(paths)
+		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
+				self.points = []
+				self.path = [[], [], []]
+				self.paths.append(self.path)
+				return
+		if self.draw and self.paths and self.points:
+			paths = self.paths
+			self.stop()
+			self.api.create_curve(paths)
 
 	def mouse_move(self, event):pass
 
