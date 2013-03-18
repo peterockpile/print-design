@@ -15,9 +15,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+from uc2 import libgeom
 from uc2.formats.pdxf import const
 
-from pdesign import modes
+from pdesign import modes, config
 
 from pdesign.view.controllers import AbstractController
 
@@ -135,9 +136,23 @@ class PolyLineCreator(AbstractCreator):
 
 	def mouse_up(self, event):
 		if self.draw:
+			x, y = [event.x, event.y]
 			if self.path[0]:
-				self.points.append(self.canvas.win_to_doc([event.x, event.y]))
-				self.path[1] = self.points
+				w0 = h0 = config.line_start_point_size
+				x0, y0 = self.canvas.doc_to_win(self.path[0])
+				if self.points:
+					w = h = config.line_last_point_size
+					x1, y1 = self.canvas.doc_to_win(self.points[-1])
+					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
+						self.path[2] = [1]
+						self.mouse_double_click()
+					elif not libgeom.is_point_in_rect2([x, y], [x1, y1], w, h):
+						self.points.append(self.canvas.win_to_doc([x, y]))
+						self.path[1] = self.points
+				else:
+					if not libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0):
+						self.points.append(self.canvas.win_to_doc([x, y]))
+						self.path[1] = self.points
 			else:
 				self.path[0] = self.canvas.win_to_doc([event.x, event.y])
 			self.repaint()
@@ -147,7 +162,7 @@ class PolyLineCreator(AbstractCreator):
 			paths = self.canvas.paths_doc_to_win(self.paths)
 			self.canvas.renderer.paint_polyline(paths)
 
-	def mouse_double_click(self, event):
+	def mouse_double_click(self, event=None):
 		paths = self.paths
 		self.stop()
 		self.api.create_curve(paths)
