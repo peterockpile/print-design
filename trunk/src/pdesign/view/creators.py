@@ -22,7 +22,7 @@ from uc2.formats.pdxf import const
 
 from pdesign import modes, config
 
-from pdesign.view.controllers import AbstractController
+from pdesign.view.controllers import AbstractController, PseudoEvent
 
 RENDERING_DELAY = 50
 
@@ -243,9 +243,4 @@ class PolyLineCreator(AbstractCreator):
 					self.timer = None
 					self.event = None
 		return True
-
-class PseudoEvent:
-	x = 0
-	y = 0
-	state = 0
 
