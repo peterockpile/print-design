@@ -115,12 +115,15 @@ class PolyLineCreator(AbstractCreator):
 	path = [[], [], []]
 	points = []
 	cursor = []
+	create = False
+	event = None
 
 	def __init__(self, canvas, presenter):
 		AbstractCreator.__init__(self, canvas, presenter)
 
 	def stop(self):
 		self.draw = False
+		self.create = False
 		self.cursor = []
 		self.paths = []
 		self.points = []
@@ -135,17 +138,22 @@ class PolyLineCreator(AbstractCreator):
 			if not self.draw:
 				self.presenter.selection.clear()
 				self.draw = True
-				self.cursor = []
 				self.paths = []
 				self.points = []
 				self.path = [[], [], []]
 				self.paths.append(self.path)
+			self.cursor = [event.x, event.y]
+			self.create = True
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
 		elif event.button == MIDDLE_BUTTON:
 			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 
 	def mouse_up(self, event):
 		if self.draw:
 			x, y = [event.x, event.y]
+			self.create = False
 			if self.path[0]:
 				w0 = h0 = config.line_start_point_size
 				x0, y0 = self.canvas.doc_to_win(self.path[0])
@@ -194,9 +202,21 @@ class PolyLineCreator(AbstractCreator):
 
 	def mouse_move(self, event):
 		if self.draw:
-			self.cursor = [event.x, event.y]
-			if self.timer is None:
-				self.timer = gobject.timeout_add(RENDERING_DELAY, self._repaint)
+			if self.create:
+				if self.event is None:
+					self.event = PseudoEvent()
+					self.event.x = self.cursor[0]
+					self.event.y = self.cursor[1]
+					self.mouse_up(self.event)
+					self.create = True
+				self.event.x = event.x
+				self.event.y = event.y
+				if self.timer is None:
+					self.timer = gobject.timeout_add(RENDERING_DELAY, self._create)
+			else:
+				self.cursor = [event.x, event.y]
+				if self.timer is None:
+					self.timer = gobject.timeout_add(RENDERING_DELAY, self._repaint)
 		else:
 			if not self.timer is None:
 				gobject.source_remove(self.timer)
@@ -208,4 +228,24 @@ class PolyLineCreator(AbstractCreator):
 			self.canvas.renderer.paint_polyline(paths, self.cursor)
 		return True
 
+	def _create(self):
+		if not self.event is None:
+			if self.create:
+				x, y = [self.event.x, self.event.y]
+				x0, y0 = self.cursor
+				if abs(x - x0) > 2 or abs(y - y0) > 2:
+					self.mouse_up(self.event)
+					self.create = True
+					self.cursor = [x, y]
+			else:
+				if not self.timer is None:
+					gobject.source_remove(self.timer)
+					self.timer = None
+					self.event = None
+		return True
+
+class PseudoEvent:
+	x = 0
+	y = 0
+	state = 0
 
