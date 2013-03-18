@@ -268,7 +268,10 @@ class PDRenderer(CairoRenderer):
 				points = path[1]
 				for point in points:
 					self.ctx.line_to(*point)
+				if path[2]:
+					self.ctx.close_path()
 				self.ctx.stroke()
+
 				self.draw_polyline_point(path[0],
 						config.line_start_point_size,
 						config.line_start_point_fill,
@@ -280,12 +283,12 @@ class PDRenderer(CairoRenderer):
 							config.line_point_fill,
 							config.line_point_stroke,
 							config.line_point_stroke_width)
-			if points:
-					self.draw_polyline_point(points[-1],
-							config.line_last_point_size,
-							config.line_last_point_fill,
-							config.line_last_point_stroke,
-							config.line_last_point_stroke_width)
+				if points:
+						self.draw_polyline_point(points[-1],
+								config.line_last_point_size,
+								config.line_last_point_fill,
+								config.line_last_point_stroke,
+								config.line_last_point_stroke_width)
 
 		self.end_soft_repaint()
 
