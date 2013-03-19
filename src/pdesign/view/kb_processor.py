@@ -27,6 +27,7 @@ KEY_KP_UP = 65431
 KEY_KP_DOWN = 65433
 KEY_KP_LEFT = 65430
 KEY_KP_RIGHT = 65432
+KEY_ESCAPE = 65307
 
 class KeyboardProcessor:
 
@@ -43,6 +44,8 @@ class KeyboardProcessor:
 
 		if self.canvas.mode == modes.SELECT_MODE:
 			return self.select_mode(keyval)
+		if self.canvas.mode == modes.LINE_MODE:
+			return self.line_mode(keyval)
 		elif self.canvas.mode == modes.RECT_MODE:
 			return self.rect_mode(keyval)
 		elif self.canvas.mode == modes.ELLIPSE_MODE:
@@ -52,23 +55,39 @@ class KeyboardProcessor:
 
 		return False
 
+	#=========MODES================
+
 	def select_mode(self, keyval):
 		if self.check_moving(keyval): return True
 		return False
 
+	def line_mode(self, keyval):
+		if self.check_moving(keyval): return True
+		if self.check_escape(keyval): return True
+		return False
+
 	def rect_mode(self, keyval):
 		if self.check_moving(keyval): return True
+		if self.check_escape(keyval): return True
 		return False
 
 	def ellipse_mode(self, keyval):
 		if self.check_moving(keyval): return True
+		if self.check_escape(keyval): return True
 		return False
 
 	def polygon_mode(self, keyval):
 		if self.check_moving(keyval): return True
+		if self.check_escape(keyval): return True
 		return False
 
+	#=========ACTIONS================
 
+	def check_escape(self, keyval):
+		if keyval == KEY_ESCAPE:
+			self.canvas.set_mode(modes.SELECT_MODE)
+			return True
+		return False
 
 	def check_moving(self, keyval):
 		if keyval in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
