@@ -114,6 +114,7 @@ class AppConfig(UCConfig):
 	line_stroke_color = (0.0, 0.0, 0.0)
 	line_stroke_width = 0.7
 	line_trace_color = (1.0, 0.0, 0.0)
+	line_sensitivity_size = 9.0
 
 	line_start_point_size = 5.0
 	line_start_point_fill = (1.0, 1.0, 1.0)

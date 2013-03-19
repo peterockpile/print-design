@@ -66,9 +66,11 @@ class AbstractController:
 		else:
 			self.canvas.set_canvas_cursor(self.mode)
 
-	def stop(self):pass
-
+	def start_(self):pass
+	def stop_(self):pass
 	def repaint(self):pass
+	def do_action(self, event): pass
+	def mouse_double_click(self, event): pass
 
 	def mouse_down(self, event):
 		self.start = []
@@ -102,9 +104,6 @@ class AbstractController:
 		if self.draw:
 			self.end = [event.x, event.y]
 
-	def do_action(self, event): pass
-
-	def mouse_double_click(self, event): pass
 
 	def wheel(self, event):
 		va = self.canvas.mw.v_adj
