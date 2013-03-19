@@ -120,11 +120,13 @@ class AppCanvas(gtk.DrawingArea):
 	def set_mode(self, mode=modes.SELECT_MODE):
 		if not mode == self.mode:
 			if not self.controller is None:
-				self.controller.stop()
+				self.controller.stop_()
 			self.mode = mode
 			self.controller = self.ctrls[mode]
 			self.controller.set_cursor()
+			self.controller.start_()
 			events.emit(events.MODE_CHANGED, mode)
+			self.grab_focus()
 
 	def set_temp_mode(self, mode=modes.SELECT_MODE, callback=None):
 		if not mode == self.mode:
@@ -132,12 +134,15 @@ class AppCanvas(gtk.DrawingArea):
 			self.mode = mode
 			self.controller = self.ctrls[mode]
 			self.controller.callback = callback
+			self.controller.start_()
 			self.controller.set_cursor()
+			self.grab_focus()
 
 	def restore_mode(self):
 		if not self.previous_mode is None:
 			self.set_mode(self.previous_mode)
 			self.previous_mode = None
+			self.grab_focus()
 
 	def set_canvas_cursor(self, mode):
 		self.current_cursor = self.app.cursors[mode]

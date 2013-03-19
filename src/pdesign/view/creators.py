@@ -121,7 +121,7 @@ class PolyLineCreator(AbstractCreator):
 	def __init__(self, canvas, presenter):
 		AbstractCreator.__init__(self, canvas, presenter)
 
-	def stop(self):
+	def stop_(self):
 		self.draw = False
 		self.create = False
 		self.cursor = []
@@ -155,10 +155,10 @@ class PolyLineCreator(AbstractCreator):
 			x, y = [event.x, event.y]
 			self.create = False
 			if self.path[0]:
-				w0 = h0 = config.line_start_point_size
+				w0 = h0 = config.line_sensitivity_size
 				x0, y0 = self.canvas.doc_to_win(self.path[0])
 				if self.points:
-					w = h = config.line_last_point_size
+					w = h = config.line_sensitivity_size
 					x1, y1 = self.canvas.doc_to_win(self.points[-1])
 					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
 						self.path[2] = [1]
@@ -197,7 +197,7 @@ class PolyLineCreator(AbstractCreator):
 			if config.line_autoclose_flag:
 				self.path[2] = [1]
 			paths = self.paths
-			self.stop()
+			self.stop_()
 			self.api.create_curve(paths)
 
 	def mouse_move(self, event):
@@ -221,6 +221,16 @@ class PolyLineCreator(AbstractCreator):
 			if not self.timer is None:
 				gobject.source_remove(self.timer)
 				self.timer = None
+			self.counter += 1
+			if self.counter > 5:
+				self.counter = 0
+				point = [event.x, event.y]
+				dpoint = self.canvas.win_to_doc(point)
+				if self.selection.is_point_over_marker(dpoint):
+					mark = self.selection.is_point_over_marker(dpoint)[0]
+					self.canvas.resize_marker = mark
+					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+
 
 	def _repaint(self):
 		if self.path[0] and self.cursor:
