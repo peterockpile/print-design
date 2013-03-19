@@ -148,6 +148,10 @@ class PolyLineCreator(AbstractCreator):
 				gobject.source_remove(self.timer)
 				self.timer = None
 		elif event.button == MIDDLE_BUTTON:
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
+				self.repaint()
 			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 
 	def mouse_up(self, event):
