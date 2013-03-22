@@ -93,7 +93,8 @@ class AppConfig(UCConfig):
 
 	obj_jump = 1.0 * uc2const.mm_to_pt
 
-	sel_frame_offset = 10.0
+	sel_frame_visible = 1
+	sel_frame_offset = 0.0
 	sel_frame_color = (0.0, 0.0, 0.0)
 	sel_frame_dash = [5, 5]
 
