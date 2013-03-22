@@ -163,15 +163,32 @@ class PDRenderer(CairoRenderer):
 			if config.sel_frame_visible:
 				x0, y0, x1, y1 = selection.frame
 				self.ctx.set_line_width(1.0 / zoom)
-				self.ctx.set_dash([])
-				self.ctx.set_source_rgb(*config.sel_marker_frame_bgcolor)
-				self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
-				self.ctx.stroke()
-				self.ctx.set_source_rgb(*config.sel_marker_frame_color)
-				a, b = config.sel_marker_frame_dash
-				self.ctx.set_dash([a / zoom, b / zoom])
-				self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
-				self.ctx.stroke()
+				if config.sel_marker_frame_bgcolor:
+					self.ctx.set_dash([])
+					self.ctx.set_source_rgb(*config.sel_marker_frame_bgcolor)
+					self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
+					self.ctx.stroke()
+				if config.sel_marker_frame_color:
+					self.ctx.set_source_rgb(*config.sel_marker_frame_color)
+					a, b = config.sel_marker_frame_dash
+					self.ctx.set_dash([a / zoom, b / zoom])
+					self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
+					self.ctx.stroke()
+
+			if config.sel_bbox_visible:
+				x0, y0, x1, y1 = selection.bbox
+				self.ctx.set_line_width(1.0 / zoom)
+				if config.sel_bbox_bgcolor:
+					self.ctx.set_dash([])
+					self.ctx.set_source_rgb(*config.sel_bbox_bgcolor)
+					self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
+					self.ctx.stroke()
+				if config.sel_bbox_color:
+					self.ctx.set_source_rgb(*config.sel_bbox_color)
+					a, b = config.sel_bbox_dash
+					self.ctx.set_dash([a / zoom, b / zoom])
+					self.ctx.rectangle(x0, y0, x1 - x0, y1 - y0)
+					self.ctx.stroke()
 
 			#Selection markers
 			markers = selection.markers

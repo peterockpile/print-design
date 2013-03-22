@@ -98,6 +98,11 @@ class AppConfig(UCConfig):
 	sel_frame_color = (0.0, 0.0, 0.0)
 	sel_frame_dash = [5, 5]
 
+	sel_bbox_visible = 0
+	sel_bbox_color = (0.0, 0.0, 0.0)
+	sel_bbox_bgcolor = (1.0, 1.0, 1.0)
+	sel_bbox_dash = [5, 5]
+
 	sel_marker_size = 9.0
 	sel_marker_frame_color = (0.62745, 0.62745, 0.64314)
 	sel_marker_frame_bgcolor = (1.0, 1.0, 1.0)
