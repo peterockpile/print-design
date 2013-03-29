@@ -254,9 +254,18 @@ class AppCanvas(gtk.DrawingArea):
 			new_points = []
 			new_path.append(self.doc_to_win(path[0]))
 			for point in path[1]:
-				new_points.append(self.doc_to_win(point))
+				if len(point) == 2:
+					new_points.append(self.doc_to_win(point))
+				else:
+					new_points.append([self.doc_to_win(point[0]),
+									self.doc_to_win(point[1]),
+									self.doc_to_win(point[2]),
+									point[3]])
 			new_path.append(new_points)
-			new_path.append([] + path[2])
+			if path[2]:
+				new_path.append(1)
+			else:
+				new_path.append(0)
 			result.append(new_path)
 		return result
 
