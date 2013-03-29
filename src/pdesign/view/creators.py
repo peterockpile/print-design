@@ -112,7 +112,7 @@ class PolyLineCreator(AbstractCreator):
 
 	mode = modes.LINE_MODE
 	paths = []
-	path = [[], [], 0]
+	path = [[], [], const.CURVE_OPENED]
 	points = []
 	cursor = []
 	create = False
@@ -127,7 +127,7 @@ class PolyLineCreator(AbstractCreator):
 		self.cursor = []
 		self.paths = []
 		self.points = []
-		self.path = [[], [], 0]
+		self.path = [[], [], const.CURVE_OPENED]
 		if not self.timer is None:
 			gobject.source_remove(self.timer)
 		self.canvas.renderer.paint_curve([])
@@ -140,7 +140,7 @@ class PolyLineCreator(AbstractCreator):
 				self.draw = True
 				self.paths = []
 				self.points = []
-				self.path = [[], [], 0]
+				self.path = [[], [], const.CURVE_OPENED]
 				self.paths.append(self.path)
 			self.cursor = [event.x, event.y]
 			self.create = True
@@ -165,13 +165,13 @@ class PolyLineCreator(AbstractCreator):
 					w = h = config.line_sensitivity_size
 					x1, y1 = self.canvas.doc_to_win(self.points[-1])
 					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
-						self.path[2] = 1
+						self.path[2] = const.CURVE_CLOSED
 						if not event.state & gtk.gdk.CONTROL_MASK:
 							self.mouse_double_click()
 						else:
 							self.repaint()
 							self.points = []
-							self.path = [[], [], 0]
+							self.path = [[], [], const.CURVE_OPENED]
 							self.paths.append(self.path)
 					elif not libgeom.is_point_in_rect2([x, y], [x1, y1], w, h):
 						self.points.append(self.canvas.win_to_doc([x, y]))
@@ -192,14 +192,14 @@ class PolyLineCreator(AbstractCreator):
 	def mouse_double_click(self, event=None):
 		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
 				if config.line_autoclose_flag:
-					self.path[2] = 1
+					self.path[2] = const.CURVE_CLOSED
 				self.points = []
-				self.path = [[], [], 0]
+				self.path = [[], [], const.CURVE_OPENED]
 				self.paths.append(self.path)
 				return
 		if self.draw and self.paths and self.points:
 			if config.line_autoclose_flag:
-				self.path[2] = 1
+				self.path[2] = const.CURVE_CLOSED
 			paths = self.paths
 			self.stop_()
 			self.api.create_curve(paths)
@@ -258,3 +258,152 @@ class PolyLineCreator(AbstractCreator):
 					self.event = None
 		return True
 
+class PathsCreator(AbstractCreator):
+
+	mode = modes.CURVE_MODE
+	paths = []
+	path = [[], [], const.CURVE_OPENED]
+	points = []
+	cursor = []
+	create = False
+	event = None
+
+	def __init__(self, canvas, presenter):
+		AbstractCreator.__init__(self, canvas, presenter)
+
+	def stop_(self):
+		self.draw = False
+		self.create = False
+		self.cursor = []
+		self.paths = []
+		self.points = []
+		self.path = [[], [], const.CURVE_OPENED]
+		if not self.timer is None:
+			gobject.source_remove(self.timer)
+		self.canvas.renderer.paint_curve([])
+		self.canvas.selection_repaint()
+
+	def mouse_down(self, event):
+		if event.button == LEFT_BUTTON:
+			if not self.draw:
+				self.presenter.selection.clear()
+				self.draw = True
+				self.paths = []
+				self.points = []
+				self.path = [[], [], const.CURVE_OPENED]
+				self.paths.append(self.path)
+			self.cursor = [event.x, event.y]
+			self.create = True
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
+		elif event.button == MIDDLE_BUTTON:
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
+				self.repaint()
+			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+
+	def mouse_up(self, event):
+		if self.draw:
+			x, y = [event.x, event.y]
+			self.create = False
+			if self.path[0]:
+				w0 = h0 = config.line_sensitivity_size
+				x0, y0 = self.canvas.doc_to_win(self.path[0])
+				if self.points:
+					w = h = config.line_sensitivity_size
+					x1, y1 = self.canvas.doc_to_win(self.points[-1])
+					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
+						self.path[2] = const.CURVE_CLOSED
+						if not event.state & gtk.gdk.CONTROL_MASK:
+							self.mouse_double_click()
+						else:
+							self.repaint()
+							self.points = []
+							self.path = [[], [], const.CURVE_OPENED]
+							self.paths.append(self.path)
+					elif not libgeom.is_point_in_rect2([x, y], [x1, y1], w, h):
+						self.points.append(self.canvas.win_to_doc([x, y]))
+						self.path[1] = self.points
+				else:
+					if not libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0):
+						self.points.append(self.canvas.win_to_doc([x, y]))
+						self.path[1] = self.points
+			else:
+				self.path[0] = self.canvas.win_to_doc([event.x, event.y])
+			self.repaint()
+
+	def repaint(self, cursor=[]):
+		if self.path[0]:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths, cursor)
+
+	def mouse_double_click(self, event=None):
+		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
+				if config.line_autoclose_flag:
+					self.path[2] = const.CURVE_CLOSED
+				self.points = []
+				self.path = [[], [], const.CURVE_OPENED]
+				self.paths.append(self.path)
+				return
+		if self.draw and self.paths and self.points:
+			if config.line_autoclose_flag:
+				self.path[2] = const.CURVE_CLOSED
+			paths = self.paths
+			self.stop_()
+			self.api.create_curve(paths)
+
+	def mouse_move(self, event):
+		if self.draw:
+			if self.create:
+				if self.event is None:
+					self.event = PseudoEvent()
+					self.event.x = self.cursor[0]
+					self.event.y = self.cursor[1]
+					self.mouse_up(self.event)
+					self.create = True
+				self.event.x = event.x
+				self.event.y = event.y
+				if self.timer is None:
+					self.timer = gobject.timeout_add(RENDERING_DELAY, self._create)
+			else:
+				self.cursor = [event.x, event.y]
+				if self.timer is None:
+					self.timer = gobject.timeout_add(RENDERING_DELAY, self._repaint)
+		else:
+			if not self.timer is None:
+				gobject.source_remove(self.timer)
+				self.timer = None
+			self.counter += 1
+			if self.counter > 5:
+				self.counter = 0
+				point = [event.x, event.y]
+				dpoint = self.canvas.win_to_doc(point)
+				if self.selection.is_point_over_marker(dpoint):
+					mark = self.selection.is_point_over_marker(dpoint)[0]
+					self.canvas.resize_marker = mark
+					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+
+
+	def _repaint(self):
+		if self.path[0] and self.cursor:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths, self.cursor)
+		return True
+
+	def _create(self):
+		if not self.event is None:
+			if self.create:
+				x, y = [self.event.x, self.event.y]
+				x0, y0 = self.cursor
+				if abs(x - x0) > 2 or abs(y - y0) > 2:
+					self.mouse_up(self.event)
+					self.create = True
+					self.cursor = [x, y]
+			else:
+				if not self.timer is None:
+					gobject.source_remove(self.timer)
+					self.timer = None
+					self.event = None
+		return True

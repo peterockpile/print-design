@@ -106,7 +106,7 @@ class AppCanvas(gtk.DrawingArea):
 		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: controllers.PickController(self, self.presenter),
 		modes.LINE_MODE: creators.PolyLineCreator(self, self.presenter),
-		modes.CURVE_MODE: dummy,
+		modes.CURVE_MODE: creators.PathsCreator(self, self.presenter),
 		modes.RECT_MODE: creators.RectangleCreator(self, self.presenter),
 		modes.ELLIPSE_MODE: creators.EllipseCreator(self, self.presenter),
 		modes.TEXT_MODE: creators.TextBlockCreator(self, self.presenter),
