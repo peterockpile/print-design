@@ -276,7 +276,7 @@ class PDRenderer(CairoRenderer):
 		self.ctx.stroke()
 		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
 
-	def paint_polyline(self, paths, cursor=[]):
+	def paint_curve(self, paths, cursor=[]):
 		self.start_soft_repaint()
 		if paths:
 			for path in paths:
@@ -285,7 +285,13 @@ class PDRenderer(CairoRenderer):
 				self.ctx.move_to(*path[0])
 				points = path[1]
 				for point in points:
-					self.ctx.line_to(*point)
+					if len(point) == 2:
+						self.ctx.line_to(*point)
+					else:
+						x0, y0 = point[0]
+						x1, y1 = point[1]
+						x2, y2 = point[2]
+						self.ctx.curve_to(x0, y0, x1, y1, x2, y2)
 				if path[2]:
 					self.ctx.close_path()
 				self.ctx.stroke()
