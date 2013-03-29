@@ -18,7 +18,7 @@
 import gtk, gobject
 
 from uc2 import libgeom
-from uc2.formats.pdxf import const
+from uc2.formats.pdxf import const, model
 
 from pdesign import modes, config
 
@@ -112,7 +112,7 @@ class PolyLineCreator(AbstractCreator):
 
 	mode = modes.LINE_MODE
 	paths = []
-	path = [[], [], []]
+	path = [[], [], 0]
 	points = []
 	cursor = []
 	create = False
@@ -127,10 +127,10 @@ class PolyLineCreator(AbstractCreator):
 		self.cursor = []
 		self.paths = []
 		self.points = []
-		self.path = [[], [], []]
+		self.path = [[], [], 0]
 		if not self.timer is None:
 			gobject.source_remove(self.timer)
-		self.canvas.renderer.paint_polyline([])
+		self.canvas.renderer.paint_curve([])
 		self.canvas.selection_repaint()
 
 	def mouse_down(self, event):
@@ -140,7 +140,7 @@ class PolyLineCreator(AbstractCreator):
 				self.draw = True
 				self.paths = []
 				self.points = []
-				self.path = [[], [], []]
+				self.path = [[], [], 0]
 				self.paths.append(self.path)
 			self.cursor = [event.x, event.y]
 			self.create = True
@@ -165,13 +165,13 @@ class PolyLineCreator(AbstractCreator):
 					w = h = config.line_sensitivity_size
 					x1, y1 = self.canvas.doc_to_win(self.points[-1])
 					if libgeom.is_point_in_rect2([x, y], [x0, y0], w0, h0) and len(self.points) > 1:
-						self.path[2] = [1]
+						self.path[2] = 1
 						if not event.state & gtk.gdk.CONTROL_MASK:
 							self.mouse_double_click()
 						else:
 							self.repaint()
 							self.points = []
-							self.path = [[], [], []]
+							self.path = [[], [], 0]
 							self.paths.append(self.path)
 					elif not libgeom.is_point_in_rect2([x, y], [x1, y1], w, h):
 						self.points.append(self.canvas.win_to_doc([x, y]))
@@ -187,19 +187,19 @@ class PolyLineCreator(AbstractCreator):
 	def repaint(self, cursor=[]):
 		if self.path[0]:
 			paths = self.canvas.paths_doc_to_win(self.paths)
-			self.canvas.renderer.paint_polyline(paths, cursor)
+			self.canvas.renderer.paint_curve(paths, cursor)
 
 	def mouse_double_click(self, event=None):
 		if not event is None and event.state & gtk.gdk.CONTROL_MASK:
 				if config.line_autoclose_flag:
-					self.path[2] = [1]
+					self.path[2] = 1
 				self.points = []
-				self.path = [[], [], []]
+				self.path = [[], [], 0]
 				self.paths.append(self.path)
 				return
 		if self.draw and self.paths and self.points:
 			if config.line_autoclose_flag:
-				self.path[2] = [1]
+				self.path[2] = 1
 			paths = self.paths
 			self.stop_()
 			self.api.create_curve(paths)
@@ -239,7 +239,7 @@ class PolyLineCreator(AbstractCreator):
 	def _repaint(self):
 		if self.path[0] and self.cursor:
 			paths = self.canvas.paths_doc_to_win(self.paths)
-			self.canvas.renderer.paint_polyline(paths, self.cursor)
+			self.canvas.renderer.paint_curve(paths, self.cursor)
 		return True
 
 	def _create(self):
