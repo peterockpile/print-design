@@ -124,7 +124,7 @@ class AppConfig(UCConfig):
 
 	line_start_point_size = 5.0
 	line_start_point_fill = (1.0, 1.0, 1.0)
-	line_start_point_stroke = (0.0, 0.3, 1.0)
+	line_start_point_stroke = (0.0, 0.0, 0.0)
 	line_start_point_stroke_width = 2.0
 
 	line_point_size = 5.0
@@ -135,7 +135,7 @@ class AppConfig(UCConfig):
 	line_last_point_size = 5.0
 	line_last_point_fill = (1.0, 1.0, 1.0)
 	line_last_point_stroke = (0.0, 0.3, 1.0)
-	line_last_point_stroke_width = 1.0
+	line_last_point_stroke_width = 2.0
 
 	line_closing_point_size = 5.0
 	line_closing_point_fill = (1.0, 1.0, 1.0)

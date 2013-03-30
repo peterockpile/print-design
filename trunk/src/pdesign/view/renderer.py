@@ -261,8 +261,11 @@ class PDRenderer(CairoRenderer):
 		self._paint_selection()
 		self.end_soft_repaint()
 
-	def draw_polyline_point(self, point, size, fill, stroke, stroke_width):
-		cx, cy = point
+	def draw_curve_point(self, point, size, fill, stroke, stroke_width):
+		if len(point) == 2:
+			cx, cy = point
+		else:
+			cx, cy = point[2]
 		x = cx - int(size / 2.0)
 		y = cy - int(size / 2.0)
 		self.ctx.move_to(x, y)
@@ -296,19 +299,19 @@ class PDRenderer(CairoRenderer):
 					self.ctx.close_path()
 				self.ctx.stroke()
 
-				self.draw_polyline_point(path[0],
+				self.draw_curve_point(path[0],
 						config.line_start_point_size,
 						config.line_start_point_fill,
 						config.line_start_point_stroke,
 						config.line_start_point_stroke_width)
 				for point in points:
-					self.draw_polyline_point(point,
+					self.draw_curve_point(point,
 							config.line_point_size,
 							config.line_point_fill,
 							config.line_point_stroke,
 							config.line_point_stroke_width)
 				if points:
-						self.draw_polyline_point(points[-1],
+						self.draw_curve_point(points[-1],
 								config.line_last_point_size,
 								config.line_last_point_fill,
 								config.line_last_point_stroke,
@@ -317,7 +320,11 @@ class PDRenderer(CairoRenderer):
 			self.ctx.set_source_rgb(*config.line_trace_color)
 			self.ctx.set_line_width(config.line_stroke_width)
 			if paths[-1][1]:
-				self.ctx.move_to(*paths[-1][1][-1])
+				end_point = paths[-1][1][-1]
+				if len(end_point) == 2:
+					self.ctx.move_to(*end_point)
+				else:
+					self.ctx.move_to(*end_point[2])
 			else:
 				self.ctx.move_to(*paths[-1][0])
 			self.ctx.line_to(*cursor)

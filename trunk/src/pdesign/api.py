@@ -200,6 +200,11 @@ class AbstractAPI:
 				style[0] = []
 			obj.style = style
 
+	def _set_paths_and_trafo(self, obj, paths, trafo):
+		obj.paths = paths
+		obj.trafo = trafo
+		obj.update()
+
 	def _apply_trafo(self, objs, trafo):
 		before = []
 		after = []
@@ -420,6 +425,24 @@ class PresenterAPI(AbstractAPI):
 		obj.style = deepcopy(self.model.styles['Default Style'])
 		obj.update()
 		self.insert_object(obj, parent, len(parent.childs))
+
+	def update_curve(self, obj, paths, trafo=[1.0, 0.0, 0.0, 1.0, 0.0, 0.0]):
+		sel_before = [obj, ]
+		sel_after = [obj, ]
+		trafo_before = obj.trafo
+		paths_before = obj.paths
+		trafo_after = trafo
+		paths_after = paths
+		self._set_paths_and_trafo(obj, paths_after, trafo_after)
+		transaction = [
+			[[self._set_paths_and_trafo, obj, paths_before, trafo_before],
+			[self._set_selection, sel_before]],
+			[[self._set_paths_and_trafo, obj, paths_after, trafo_after],
+			[self._set_selection, sel_after]],
+			False]
+		self._set_selection(sel_after)
+		self.add_undo(transaction)
+		self.selection.update()
 
 
 #///////////////////////////////////////////
