@@ -46,6 +46,8 @@ class KeyboardProcessor:
 			return self.select_mode(keyval)
 		if self.canvas.mode == modes.LINE_MODE:
 			return self.line_mode(keyval)
+		if self.canvas.mode == modes.CURVE_MODE:
+			return self.curve_mode(keyval)
 		elif self.canvas.mode == modes.RECT_MODE:
 			return self.rect_mode(keyval)
 		elif self.canvas.mode == modes.ELLIPSE_MODE:
@@ -62,6 +64,11 @@ class KeyboardProcessor:
 		return False
 
 	def line_mode(self, keyval):
+		if self.check_moving(keyval): return True
+		if self.check_escape(keyval): return True
+		return False
+
+	def curve_mode(self, keyval):
 		if self.check_moving(keyval): return True
 		if self.check_escape(keyval): return True
 		return False
