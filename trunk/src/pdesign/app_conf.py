@@ -142,6 +142,15 @@ class AppConfig(UCConfig):
 	line_closing_point_stroke = (0.0, 0.3, 1.0)
 	line_closing_point_stroke_width = 2.0
 
+	control_point_size = 3.0
+	control_point_fill = (1.0, 1.0, 1.0)
+	control_point_stroke = (0.0, 0.0, 0.0)
+	control_point_stroke_width = 1.0
+
+	control_line_stroke_color = (0.0, 0.5, 0.0)
+	control_line_stroke_width = 0.7
+
+
 	#============== COLOR PROFILES ================
 	display_profiles = {}
 	rgb_profiles = {}

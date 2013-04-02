@@ -279,7 +279,7 @@ class PDRenderer(CairoRenderer):
 		self.ctx.stroke()
 		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
 
-	def paint_curve(self, paths, cursor=[]):
+	def paint_curve(self, paths, cursor=[], trace_path=[]):
 		self.start_soft_repaint()
 		if paths:
 			for path in paths:
@@ -319,16 +319,26 @@ class PDRenderer(CairoRenderer):
 		if cursor:
 			self.ctx.set_source_rgb(*config.line_trace_color)
 			self.ctx.set_line_width(config.line_stroke_width)
-			if paths[-1][1]:
-				end_point = paths[-1][1][-1]
-				if len(end_point) == 2:
-					self.ctx.move_to(*end_point)
-				else:
-					self.ctx.move_to(*end_point[2])
+			if trace_path:
+				self.ctx.move_to(*trace_path[0])
+				point = trace_path[1]
+				x0, y0 = point[0]
+				x1, y1 = point[1]
+				x2, y2 = point[2]
+				self.ctx.curve_to(x0, y0, x1, y1, x2, y2)
+				self.ctx.stroke()
 			else:
-				self.ctx.move_to(*paths[-1][0])
-			self.ctx.line_to(*cursor)
-			self.ctx.stroke()
+
+				if paths[-1][1]:
+					end_point = paths[-1][1][-1]
+					if len(end_point) == 2:
+						self.ctx.move_to(*end_point)
+					else:
+						self.ctx.move_to(*end_point[2])
+				else:
+					self.ctx.move_to(*paths[-1][0])
+				self.ctx.line_to(*cursor)
+				self.ctx.stroke()
 
 		self.end_soft_repaint()
 
