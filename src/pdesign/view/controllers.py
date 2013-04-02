@@ -68,6 +68,8 @@ class AbstractController:
 
 	def start_(self):pass
 	def stop_(self):pass
+	def standby(self):pass
+	def restore(self):pass
 	def repaint(self):pass
 	def do_action(self, event): pass
 	def mouse_double_click(self, event): pass
