@@ -277,7 +277,7 @@ class PolyLineCreator(AbstractCreator):
 	def add_point(self, point):
 		subpoint = libgeom.bezier_base_point(point)
 		if self.path[0]:
-			w = h = config.line_sensitivity_size
+			w = h = config.curve_point_sensitivity_size
 			start = self.canvas.point_doc_to_win(self.path[0])
 			if self.points:
 				p = self.canvas.point_doc_to_win(self.points[-1])
@@ -303,7 +303,7 @@ class PolyLineCreator(AbstractCreator):
 
 	def release_curve(self):
 		if self.points:
-			if config.line_autoclose_flag:
+			if config.curve_autoclose_flag:
 				self.path[2] = const.CURVE_CLOSED
 				self.points.append([] + self.path[0])
 			paths = self.paths

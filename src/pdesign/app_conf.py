@@ -114,33 +114,28 @@ class AppConfig(UCConfig):
 	rotation_step = 5.0 #in degrees
 	stroke_sensitive_size = 5.0 #in pixels
 
-	#============== POLYLINE CREATOR OPTIONS ================
-	line_autoclose_flag = 0
+	#============== BEZIER CURVE OPTIONS ================
+	curve_autoclose_flag = 0
 
-	line_stroke_color = (0.0, 0.0, 0.0)
-	line_stroke_width = 0.7
-	line_trace_color = (1.0, 0.0, 0.0)
-	line_sensitivity_size = 9.0
+	curve_stroke_color = (0.0, 0.0, 0.0)
+	curve_stroke_width = 0.7
+	curve_trace_color = (1.0, 0.0, 0.0)
+	curve_point_sensitivity_size = 9.0
 
-	line_start_point_size = 5.0
-	line_start_point_fill = (1.0, 1.0, 1.0)
-	line_start_point_stroke = (0.0, 0.0, 0.0)
-	line_start_point_stroke_width = 2.0
+	curve_start_point_size = 5.0
+	curve_start_point_fill = (1.0, 1.0, 1.0)
+	curve_start_point_stroke = (0.0, 0.0, 0.0)
+	curve_start_point_stroke_width = 2.0
 
-	line_point_size = 5.0
-	line_point_fill = (1.0, 1.0, 1.0)
-	line_point_stroke = (0.0, 0.3, 1.0)
-	line_point_stroke_width = 1.0
+	curve_point_size = 5.0
+	curve_point_fill = (1.0, 1.0, 1.0)
+	curve_point_stroke = (0.0, 0.3, 1.0)
+	curve_point_stroke_width = 1.0
 
-	line_last_point_size = 5.0
-	line_last_point_fill = (1.0, 1.0, 1.0)
-	line_last_point_stroke = (0.0, 0.3, 1.0)
-	line_last_point_stroke_width = 2.0
-
-	line_closing_point_size = 5.0
-	line_closing_point_fill = (1.0, 1.0, 1.0)
-	line_closing_point_stroke = (0.0, 0.3, 1.0)
-	line_closing_point_stroke_width = 2.0
+	curve_last_point_size = 5.0
+	curve_last_point_fill = (1.0, 1.0, 1.0)
+	curve_last_point_stroke = (0.0, 0.3, 1.0)
+	curve_last_point_stroke_width = 2.0
 
 	control_point_size = 5.0
 	control_point_fill = (1.0, 1.0, 1.0)
