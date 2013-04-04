@@ -32,12 +32,6 @@ LEFT_BUTTON = 1
 MIDDLE_BUTTON = 2
 RIGHT_BUTTON = 3
 
-
-class PseudoEvent:
-	x = 0
-	y = 0
-	state = 0
-
 class AbstractController:
 
 	draw = False
