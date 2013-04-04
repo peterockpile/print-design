@@ -246,6 +246,7 @@ class AppCanvas(gtk.DrawingArea):
 		return [x_new, y_new]
 
 	def point_doc_to_win(self, point=[0.0, 0.0]):
+		if not point:return []
 		if len(point) == 2:
 			return self.doc_to_win(point)
 		else:
@@ -263,6 +264,7 @@ class AppCanvas(gtk.DrawingArea):
 		return [x_new, y_new]
 
 	def point_win_to_doc(self, point=[0.0, 0.0]):
+		if not point:return []
 		if len(point) == 2:
 			return self.win_to_doc(point)
 		else:

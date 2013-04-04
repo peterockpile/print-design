@@ -326,6 +326,42 @@ class PathsCreator(PolyLineCreator):
 	def __init__(self, canvas, presenter):
 		PolyLineCreator.__init__(self, canvas, presenter)
 
+	def standby(self):
+		self.init_timer()
+		self.cursor = []
+		self.repaint()
+		self.point = self.canvas.point_win_to_doc(self.point)
+		self.curve_point = self.canvas.point_win_to_doc(self.curve_point)
+		self.control_point0 = self.canvas.point_win_to_doc(self.control_point0)
+		self.control_point1 = self.canvas.point_win_to_doc(self.control_point1)
+		self.control_point2 = self.canvas.point_win_to_doc(self.control_point2)
+
+	def restore(self):
+		self.point = self.canvas.point_doc_to_win(self.point)
+		self.curve_point = self.canvas.point_doc_to_win(self.curve_point)
+		self.control_point0 = self.canvas.point_doc_to_win(self.control_point0)
+		self.control_point1 = self.canvas.point_doc_to_win(self.control_point1)
+		self.control_point2 = self.canvas.point_doc_to_win(self.control_point2)
+		self.repaint()
+
+	def update_from_obj(self):
+		self.paths = libgeom.apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
+		path = self.paths[-1]
+		if path[-1] == const.CURVE_OPENED:
+			self.path = path
+			self.points = self.path[1]
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths)
+			last = libgeom.bezier_base_point(self.points[-1])
+			self.control_point0 = self.canvas.point_doc_to_win(last)
+			self.point = [] + self.control_point0
+			self.control_point2 = [] + self.control_point0
+			self.curve_point = [] + self.control_point0
+		else:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths)
+		self.draw = True
+
 	def mouse_down(self, event):
 		if event.button == LEFT_BUTTON:
 			if not self.draw:
