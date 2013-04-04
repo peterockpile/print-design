@@ -15,16 +15,15 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
-from copy import deepcopy
-
 import gtk, gobject
 
-from uc2 import libgeom
+from uc2.libgeom import contra_point, bezier_base_point, apply_trafo_to_paths, \
+						is_point_in_rect2
 from uc2.formats.pdxf import const, model
 
 from pdesign import modes, config
 
-from pdesign.view.controllers import AbstractController, PseudoEvent
+from pdesign.view.controllers import AbstractController
 
 RENDERING_DELAY = 50
 
@@ -262,7 +261,7 @@ class PolyLineCreator(AbstractCreator):
 		self.draw = False
 
 	def update_from_obj(self):
-		self.paths = libgeom.apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
+		self.paths = apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
 		path = self.paths[-1]
 		if path[-1] == const.CURVE_OPENED:
 			self.path = path
@@ -275,14 +274,14 @@ class PolyLineCreator(AbstractCreator):
 		self.draw = True
 
 	def add_point(self, point):
-		subpoint = libgeom.bezier_base_point(point)
+		subpoint = bezier_base_point(point)
 		if self.path[0]:
 			w = h = config.curve_point_sensitivity_size
 			start = self.canvas.point_doc_to_win(self.path[0])
 			if self.points:
 				p = self.canvas.point_doc_to_win(self.points[-1])
-				last = libgeom.bezier_base_point(p)
-				if libgeom.is_point_in_rect2(subpoint, start, w, h) and len(self.points) > 1:
+				last = bezier_base_point(p)
+				if is_point_in_rect2(subpoint, start, w, h) and len(self.points) > 1:
 					self.path[2] = const.CURVE_CLOSED
 					self.points.append([] + self.path[0])
 					if not self.ctrl_mask:
@@ -290,11 +289,11 @@ class PolyLineCreator(AbstractCreator):
 					else:
 						self.draw = False
 					self.repaint()
-				elif not libgeom.is_point_in_rect2(subpoint, last, w, h):
+				elif not is_point_in_rect2(subpoint, last, w, h):
 					self.points.append(self.canvas.point_win_to_doc(point))
 					self.path[1] = self.points
 			else:
-				if not libgeom.is_point_in_rect2(subpoint, start, w, h):
+				if not is_point_in_rect2(subpoint, start, w, h):
 					self.points.append(self.canvas.point_win_to_doc(point))
 					self.path[1] = self.points
 		else:
@@ -345,14 +344,14 @@ class PathsCreator(PolyLineCreator):
 		self.repaint()
 
 	def update_from_obj(self):
-		self.paths = libgeom.apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
+		self.paths = apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
 		path = self.paths[-1]
 		if path[-1] == const.CURVE_OPENED:
 			self.path = path
 			self.points = self.path[1]
 			paths = self.canvas.paths_doc_to_win(self.paths)
 			self.canvas.renderer.paint_curve(paths)
-			last = libgeom.bezier_base_point(self.points[-1])
+			last = bezier_base_point(self.points[-1])
 			self.control_point0 = self.canvas.point_doc_to_win(last)
 			self.point = [] + self.control_point0
 			self.control_point2 = [] + self.control_point0
@@ -368,7 +367,6 @@ class PathsCreator(PolyLineCreator):
 				self.draw = True
 				self.clear_data()
 			self.curve_point = [event.x, event.y]
-
 			self.control_point2 = []
 			self.create = True
 			self.init_timer()
@@ -392,7 +390,8 @@ class PathsCreator(PolyLineCreator):
 					self.curve_point = [event.x, event.y]
 				elif self.control_point2:
 					self.point = [] + self.curve_point
-					self.control_point1 = libgeom.contra_point(self.control_point2, self.curve_point)
+					self.control_point1 = contra_point(self.control_point2,
+															 self.curve_point)
 					self.add_point([self.control_point0, self.control_point1,
 								self.curve_point, const.NODE_SYMMETRICAL])
 					self.control_point0 = [] + self.control_point2
@@ -434,7 +433,8 @@ class PathsCreator(PolyLineCreator):
 			if not self.path[0]: cursor = []
 			path = []
 			if self.control_point0:
-				self.control_point1 = libgeom.contra_point(self.control_point2, self.curve_point)
+				self.control_point1 = contra_point(self.control_point2,
+												self.curve_point)
 				path = [self.point, [self.control_point0,
 									self.control_point1,
 									self.curve_point]]
