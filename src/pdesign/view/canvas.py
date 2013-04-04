@@ -245,6 +245,14 @@ class AppCanvas(gtk.DrawingArea):
 		y_new = m22 * y + dy
 		return [x_new, y_new]
 
+	def point_doc_to_win(self, point=[0.0, 0.0]):
+		if len(point) == 2:
+			return self.doc_to_win(point)
+		else:
+			return [self.doc_to_win(point[0]),
+				self.doc_to_win(point[1]),
+				self.doc_to_win(point[2]), point[3]]
+
 	def win_to_doc(self, point=[0, 0]):
 		x, y = point
 		x = float(x)
@@ -254,6 +262,14 @@ class AppCanvas(gtk.DrawingArea):
 		y_new = (y - dy) / m22
 		return [x_new, y_new]
 
+	def point_win_to_doc(self, point=[0.0, 0.0]):
+		if len(point) == 2:
+			return self.win_to_doc(point)
+		else:
+			return [self.win_to_doc(point[0]),
+				self.win_to_doc(point[1]),
+				self.win_to_doc(point[2]), point[3]]
+
 	def paths_doc_to_win(self, paths):
 		result = []
 		for path in paths:
@@ -261,13 +277,7 @@ class AppCanvas(gtk.DrawingArea):
 			new_points = []
 			new_path.append(self.doc_to_win(path[0]))
 			for point in path[1]:
-				if len(point) == 2:
-					new_points.append(self.doc_to_win(point))
-				else:
-					new_points.append([self.doc_to_win(point[0]),
-									self.doc_to_win(point[1]),
-									self.doc_to_win(point[2]),
-									point[3]])
+				new_points.append(self.point_doc_to_win(point))
 			new_path.append(new_points)
 			new_path.append(path[2])
 			result.append(new_path)

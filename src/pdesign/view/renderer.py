@@ -279,7 +279,7 @@ class PDRenderer(CairoRenderer):
 		self.ctx.stroke()
 		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
 
-	def paint_curve(self, paths, cursor=[], trace_path=[]):
+	def paint_curve(self, paths, cursor=[], trace_path=[], cpoint=[]):
 		self.start_soft_repaint()
 		if paths:
 			for path in paths:
@@ -327,8 +327,32 @@ class PDRenderer(CairoRenderer):
 				x2, y2 = point[2]
 				self.ctx.curve_to(x0, y0, x1, y1, x2, y2)
 				self.ctx.stroke()
+				if cpoint:
+					self.ctx.set_source_rgb(*config.control_line_stroke_color)
+					self.ctx.set_line_width(config.control_line_stroke_width)
+					self.ctx.set_dash(config.control_line_stroke_dash)
+					self.ctx.move_to(*trace_path[0])
+					self.ctx.line_to(x0, y0)
+					self.ctx.stroke()
+					self.ctx.move_to(x2, y2)
+					self.ctx.line_to(x1, y1)
+					self.ctx.stroke()
+					self.ctx.move_to(x2, y2)
+					self.ctx.line_to(*cpoint)
+					self.ctx.stroke()
+					self.ctx.set_dash([])
+					for point in [[x0, y0], [x1, y1], cpoint]:
+						self.draw_curve_point(point,
+								config.control_point_size,
+								config.control_point_fill,
+								config.control_point_stroke,
+								config.control_point_stroke_width)
+					self.draw_curve_point([x2, y2],
+							config.line_point_size,
+							config.line_point_fill,
+							config.line_point_stroke,
+							config.line_point_stroke_width)
 			else:
-
 				if paths[-1][1]:
 					end_point = paths[-1][1][-1]
 					if len(end_point) == 2:
