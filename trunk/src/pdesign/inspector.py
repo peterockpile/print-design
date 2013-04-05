@@ -250,3 +250,13 @@ class DocumentInspector:
 		pages = doc.get_pages()
 		if len(pages) - 1: return True
 		return False
+
+	def is_draft_view(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.draft_view
+
+	def is_stroke_view(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.stroke_view

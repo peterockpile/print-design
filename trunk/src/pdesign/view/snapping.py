@@ -25,12 +25,14 @@ class SnapManager:
 	snap_to_grid = False
 	snap_to_guides = False
 	snap_to_objects = False
+	snap_to_page = False
 
 	def __init__(self, presenter):
 
 		self.presenter = presenter
 		self.doc = self.presenter.doc_presenter
 		self.methods = self.presenter.methods
+		self.canvas = self.presenter.canvas
 
 	def snap_point(self, point):pass
 

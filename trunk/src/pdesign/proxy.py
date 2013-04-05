@@ -32,7 +32,9 @@ class AppProxy:
 		self.app = app
 		self.insp = app.inspector
 
-	def stub(self, *args):
+	def stub(self, *args):pass
+
+	def stubd(self, *args):
 		dialogs.about_dialog(self.mw)
 
 	def update_references(self):
@@ -101,43 +103,29 @@ class AppProxy:
 	def deselect(self, *args):
 		self.app.current_doc.selection.clear()
 
-	def stroke_view(self, action=None):
-		if self.stroke_view_flag:
-			self.stroke_view_flag = False
-			return
-		if not action is None:
+	def stroke_view(self, action):
+		if self.insp.is_doc():
 			canvas = self.app.current_doc.canvas
-			if canvas.stroke_view:
+			if canvas.stroke_view and not action.get_active():
 				canvas.stroke_view = False
 				canvas.force_redraw()
-				if action.menuitem.get_active():
-					self.stroke_view_flag = True
-					action.menuitem.set_active(False)
-			else:
+				return
+			if not canvas.stroke_view and action.get_active():
 				canvas.stroke_view = True
 				canvas.force_redraw()
-				if not action.menuitem.get_active():
-					self.stroke_view_flag = True
-					action.menuitem.set_active(True)
+				return
 
-	def draft_view(self, action=None):
-		if self.draft_view_flag:
-			self.draft_view_flag = False
-			return
-		if not action is None:
+	def draft_view(self, action):
+		if self.insp.is_doc():
 			canvas = self.app.current_doc.canvas
-			if canvas.draft_view:
+			if canvas.draft_view and not action.get_active():
 				canvas.draft_view = False
 				canvas.force_redraw()
-				if action.menuitem.get_active():
-					self.draft_view_flag = True
-					action.menuitem.set_active(False)
-			else:
+				return
+			if not canvas.draft_view and action.get_active():
 				canvas.draft_view = True
 				canvas.force_redraw()
-				if not action.menuitem.get_active():
-					self.draft_view_flag = True
-					action.menuitem.set_active(True)
+				return
 
 	def zoom_in(self, *args):
 		self.app.current_doc.canvas.zoom_in()
