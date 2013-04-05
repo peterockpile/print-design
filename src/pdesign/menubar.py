@@ -70,8 +70,8 @@ class AppMenubar(gtk.MenuBar):
 
 		#----VIEW MENU
 		self.view_item, self.view_menu = self.create_menu(_("_View"))
-		items = [('STROKE_VIEW',),
-				('DRAFT_VIEW',),
+		items = ['STROKE_VIEW',
+				'DRAFT_VIEW',
 				 None,
 				 'ZOOM_100',
 				 'ZOOM_IN',
@@ -79,6 +79,14 @@ class AppMenubar(gtk.MenuBar):
 				 None,
 				 'ZOOM_PAGE',
 				 'ZOOM_SELECTED',
+#				 None,
+#				 ('SHOW_GRID',),
+#				 ('SHOW_GUIDES',),
+#				 None,
+#				 ('SNAP_TO_GRID',),
+#				 ('SNAP_TO_GUIDES',),
+#				 ('SNAP_TO_OBJECTS',),
+#				 ('SNAP_TO_PAGE',),
 				 None,
 				 'FORCE_REDRAW',
 		]
@@ -177,13 +185,6 @@ class AppMenubar(gtk.MenuBar):
 		for item in items:
 			if item is None:
 				parent.append(gtk.SeparatorMenuItem())
-			elif type(item)is types.TupleType:
-				action = self.actions[item[0]]
-				menuitem = gtk.CheckMenuItem(action.tooltip)
-				action.connect_proxy(menuitem)
-				action.menuitem = menuitem
-				menuitem.set_active(False)
-				parent.append(menuitem)
 			else:
 				action = self.actions[item]
 				menuitem = action.create_menu_item()

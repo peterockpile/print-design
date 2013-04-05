@@ -50,6 +50,35 @@ class AppAction(gtk.Action):
 	def receiver(self, *args):
 		self.set_sensitive(self.validator())
 
+class AppToggleAction(gtk.ToggleAction):
+
+	def __init__(self, name, label, tooltip, icon, shortcut,
+				 callable, channels, validator, checker, args=[]):
+
+		gtk.Action.__init__(self, name, label, tooltip, icon)
+		self.menuitem = None
+		self.tooltip = tooltip
+		self.shortcut = shortcut
+		self.callable = callable
+		self.events = events
+		self.validator = validator
+		self.checker = checker
+		self.args = args
+		self.icon = icon
+
+		self.connect('activate', self.callable)
+
+		self.channels = channels
+		self.validator = validator
+
+		if channels:
+			for channel in channels:
+				events.connect(channel, self.receiver)
+
+	def receiver(self, *args):
+		self.set_sensitive(self.validator())
+		self.set_active(self.checker())
+
 def create_actions(app):
 	insp = app.inspector
 	proxy = app.proxy
@@ -165,10 +194,6 @@ def create_actions(app):
 	 proxy.deselect, [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED], insp.is_selection],
 
 	#------ View -------
-	['STROKE_VIEW', _('Stroke View'), _('Stroke View'), None, '<Shift>F9',
-	 proxy.stroke_view, [NO_DOCS, DOC_CHANGED], insp.is_doc],
-	['DRAFT_VIEW', _('Draft View'), _('Draft View'), None, None,
-	 proxy.draft_view, [NO_DOCS, DOC_CHANGED], insp.is_doc],
 
 	['ZOOM_IN', _('Zoom in'), _('Zoom in'), gtk.STOCK_ZOOM_IN, '<Control>equal',
 	 proxy.zoom_in, [NO_DOCS, DOC_CHANGED], insp.is_doc],
@@ -262,9 +287,42 @@ def create_actions(app):
 	events.SELECTION_CHANGED], insp.is_selection],
 	]
 
+	toggle_entries = [
+	['STROKE_VIEW', _('Stroke View'), _('Stroke View'), None, '<Shift>F9',
+	 proxy.stroke_view, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_stroke_view],
+	['DRAFT_VIEW', _('Draft View'), _('Draft View'), None, None,
+	 proxy.draft_view, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_draft_view],
+
+#	['SHOW_GRID', _('Show grid'), _('Show grid'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+#	['SHOW_GUIDES', _('Show guides'), _('Show guides'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+#
+#	['SNAP_TO_GRID', _('Snap to grid'), _('Snap to grid'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+#	['SNAP_TO_GUIDES', _('Snap to guides'), _('Snap to guides'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+#	['SNAP_TO_OBJECTS', _('Snap to objects'), _('Snap to objects'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+#	['SNAP_TO_PAGE', _('Snap to page'), _('Snap to page'), None, None,
+#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+
+	]
+
 	for entry in entries:
 		action = AppAction(entry[0], entry[1], entry[2], entry[3],
 						   entry[4], entry[5], entry[6], entry[7])
+
+		actions[entry[0]] = action
+		if not action.shortcut is None:
+			actiongroup.add_action_with_accel(action, action.shortcut)
+			action.set_accel_group(accelgroup)
+		else:
+			actiongroup.add_action(action)
+
+	for entry in toggle_entries:
+		action = AppToggleAction(entry[0], entry[1], entry[2], entry[3],
+						   entry[4], entry[5], entry[6], entry[7], entry[8])
 
 		actions[entry[0]] = action
 		if not action.shortcut is None:
