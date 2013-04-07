@@ -283,7 +283,11 @@ class PolyLineCreator(AbstractCreator):
 				last = bezier_base_point(p)
 				if is_point_in_rect2(subpoint, start, w, h) and len(self.points) > 1:
 					self.path[2] = const.CURVE_CLOSED
-					self.points.append([] + self.path[0])
+					if len(point) == 2:
+						self.points.append([] + self.path[0])
+					else:
+						p = self.canvas.point_win_to_doc(point)
+						self.points.append([p[0], p[1], [] + self.path[0], p[3]])
 					if not self.ctrl_mask:
 						self.release_curve()
 					else:
