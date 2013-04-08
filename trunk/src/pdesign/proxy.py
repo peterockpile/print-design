@@ -127,6 +127,18 @@ class AppProxy:
 				canvas.force_redraw()
 				return
 
+	def draw_page_border(self, action):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.draw_page_border and not action.get_active():
+				canvas.draw_page_border = False
+				canvas.force_redraw()
+				return
+			if not canvas.draw_page_border and action.get_active():
+				canvas.draw_page_border = True
+				canvas.force_redraw()
+				return
+
 	def snap_to_grid(self, action):
 		if self.insp.is_doc():
 			snap = self.app.current_doc.snap

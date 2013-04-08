@@ -54,6 +54,7 @@ class AppCanvas(gtk.DrawingArea):
 	resize_marker = 0
 	stroke_view = False
 	draft_view = False
+	draw_page_border = True
 
 	def __init__(self, parent):
 

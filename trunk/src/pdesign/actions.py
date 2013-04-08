@@ -298,8 +298,8 @@ def create_actions(app):
 #	['SHOW_GUIDES', _('Show guides'), _('Show guides'), None, None,
 #	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
 #
-#	['SHOW_PAGE', _('Show page border'), _('Show page border'), None, None,
-#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+	['SHOW_PAGE', _('Show page border'), _('Show page border'), None, None,
+	 proxy.draw_page_border, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_draw_page_border],
 
 	['SNAP_TO_GRID', _('Snap to grid'), _('Snap to grid'), None, '<Control>Y',
 	 proxy.snap_to_grid, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_snap_to_grid],
