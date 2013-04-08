@@ -29,15 +29,17 @@ from pdesign import _, config, events
 from pdesign.dialogs import ProgressDialog
 from widgets.docarea import DocArea
 
-from eventloop import EventLoop
-from api import PresenterAPI
-from view.selection import Selection
+from pdesign.eventloop import EventLoop
+from pdesign.api import PresenterAPI
+from pdesign.view.selection import Selection
+from pdesign.view.snapping import SnapManager
 
 class PD_Presenter:
 
 	doc_presenter = None
 	doc_file = ''
 	doc_name = ''
+
 
 	model = None
 	methods = None
@@ -52,6 +54,7 @@ class PD_Presenter:
 	canvas = None
 	selection = None
 	traced_objects = None
+	snap = None
 
 
 
@@ -104,6 +107,7 @@ class PD_Presenter:
 		self.api.view = self.canvas
 		self.app.mw.add_tab(self.docarea)
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.modified)
+		self.snap = SnapManager(self)
 		self.traced_objects = [
 							self.eventloop,
 							self.api,
@@ -115,6 +119,7 @@ class PD_Presenter:
 							self.canvas.renderer,
 							self.canvas,
 							self.selection,
+							self.snap,
 							self
 							]
 
