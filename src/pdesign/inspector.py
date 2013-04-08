@@ -261,6 +261,11 @@ class DocumentInspector:
 		if doc is None: return False
 		return self.app.current_doc.canvas.stroke_view
 
+	def is_draw_page_border(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.draw_page_border
+
 	def is_snap_to_grid(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False

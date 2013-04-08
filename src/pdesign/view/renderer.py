@@ -54,7 +54,8 @@ class PDRenderer(CairoRenderer):
 		self.cms = self.presenter.cms
 		self.win_ctx = self.canvas.window.cairo_create()
 		self.start()
-		self.paint_page_border()
+		if self.canvas.draw_page_border:
+			self.paint_page_border()
 		self.render_doc()
 #		self.finalize()
 		self.paint_selection()
@@ -73,13 +74,13 @@ class PDRenderer(CairoRenderer):
 		self.ctx = cairo.Context(self.surface)
 		self.ctx.set_source_rgb(*CAIRO_WHITE)
 		self.ctx.paint()
+		self.ctx.set_matrix(self.canvas.matrix)
 
 	def finalize(self):
 		self.win_ctx.set_source_surface(self.surface)
 		self.win_ctx.paint()
 
 	def paint_page_border(self):
-		self.ctx.set_matrix(self.canvas.matrix)
 		self.ctx.set_line_width(1.0 / self.canvas.zoom)
 		offset = 5.0 / self.canvas.zoom
 		w, h = self.canvas.presenter.get_page_size()
