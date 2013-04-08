@@ -306,7 +306,7 @@ class PolyLineCreator(AbstractCreator):
 
 	def release_curve(self):
 		if self.points:
-			if config.curve_autoclose_flag:
+			if config.curve_autoclose_flag and self.path[2] == const.CURVE_OPENED:
 				self.path[2] = const.CURVE_CLOSED
 				self.points.append([] + self.path[0])
 			paths = self.paths
