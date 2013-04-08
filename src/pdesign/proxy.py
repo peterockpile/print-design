@@ -127,6 +127,46 @@ class AppProxy:
 				canvas.force_redraw()
 				return
 
+	def snap_to_grid(self, action):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_grid and not action.get_active():
+				snap.snap_to_grid = False
+				return
+			if not snap.snap_to_grid and action.get_active():
+				snap.snap_to_grid = True
+				return
+
+	def snap_to_guides(self, action):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_guides and not action.get_active():
+				snap.snap_to_guides = False
+				return
+			if not snap.snap_to_guides and action.get_active():
+				snap.snap_to_guides = True
+				return
+
+	def snap_to_objects(self, action):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_objects and not action.get_active():
+				snap.snap_to_objects = False
+				return
+			if not snap.snap_to_objects and action.get_active():
+				snap.snap_to_objects = True
+				return
+
+	def snap_to_page(self, action):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_page and not action.get_active():
+				snap.snap_to_page = False
+				return
+			if not snap.snap_to_page and action.get_active():
+				snap.snap_to_page = True
+				return
+
 	def zoom_in(self, *args):
 		self.app.current_doc.canvas.zoom_in()
 

@@ -260,3 +260,23 @@ class DocumentInspector:
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
 		return self.app.current_doc.canvas.stroke_view
+
+	def is_snap_to_grid(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_grid
+
+	def is_snap_to_guides(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_guides
+
+	def is_snap_to_objects(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_objects
+
+	def is_snap_to_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_page
