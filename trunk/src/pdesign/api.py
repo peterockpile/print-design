@@ -110,6 +110,10 @@ class AbstractAPI:
 		self.presenter.docarea.hruler.queue_draw()
 		self.presenter.docarea.vruler.queue_draw()
 
+	def _set_layer_properties(self, layer, prop):
+		layer.properties = prop
+
+
 	def _set_selection(self, objs):
 		self.selection.objs = [] + objs
 		self.selection.update()
@@ -947,6 +951,24 @@ class PresenterAPI(AbstractAPI):
 			False]
 		self.add_undo(transaction)
 		self.selection.update()
+
+	def set_layer_properties(self, layer, prop):
+		before = layer.properties
+		after = prop
+		sel_before = [] + self.selection.objs
+
+		self.selection.clear()
+		self._set_layer_properties(layer, prop)
+
+		transaction = [
+			[[self._set_layer_properties, layer, before],
+			[self._set_selection, sel_before], ],
+			[[self._set_layer_properties, layer, after],
+			[self._set_selection, []]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
 
 
 

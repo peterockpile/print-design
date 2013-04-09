@@ -261,6 +261,14 @@ class DocumentInspector:
 		if doc is None: return False
 		return self.app.current_doc.canvas.stroke_view
 
+	def is_grid_visible(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		methods = self.app.current_doc.methods
+		grid_layer = methods.get_gird_layer()
+		if grid_layer.properties[0]: return True
+		return False
+
 	def is_draw_page_border(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
