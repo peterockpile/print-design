@@ -68,6 +68,14 @@ class AppMenubar(gtk.MenuBar):
 		]
 		self.add_items(self.edit_menu, items)
 
+		#----SNAP TO Submenu
+		self.snap_to_item, self.snap_to_menu = self.create_menu(_("_Snap to"))
+		items = ['SNAP_TO_GRID',
+				 'SNAP_TO_GUIDES',
+				 'SNAP_TO_OBJECTS',
+				 'SNAP_TO_PAGE', ]
+		self.add_items(self.snap_to_menu, items)
+
 		#----VIEW MENU
 		self.view_item, self.view_menu = self.create_menu(_("_View"))
 		items = ['STROKE_VIEW',
@@ -84,10 +92,7 @@ class AppMenubar(gtk.MenuBar):
 #				 ('SHOW_GUIDES',),
 				 'SHOW_PAGE',
 				 None,
-				 'SNAP_TO_GRID',
-				 'SNAP_TO_GUIDES',
-				 'SNAP_TO_OBJECTS',
-				 'SNAP_TO_PAGE',
+				 self.snap_to_item,
 				 None,
 				 'FORCE_REDRAW',
 		]
@@ -186,8 +191,10 @@ class AppMenubar(gtk.MenuBar):
 		for item in items:
 			if item is None:
 				parent.append(gtk.SeparatorMenuItem())
-			else:
+			elif isinstance(item, str):
 				action = self.actions[item]
 				menuitem = action.create_menu_item()
 				action.menuitem = menuitem
 				parent.append(menuitem)
+			else:
+				parent.append(item)
