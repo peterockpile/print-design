@@ -293,8 +293,8 @@ def create_actions(app):
 	['DRAFT_VIEW', _('Draft View'), _('Draft View'), None, None,
 	 proxy.draft_view, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_draft_view],
 
-#	['SHOW_GRID', _('Show grid'), _('Show grid'), None, None,
-#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
+	['SHOW_GRID', _('Show grid'), _('Show grid'), None, None,
+	 proxy.show_grid, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_grid_visible],
 #	['SHOW_GUIDES', _('Show guides'), _('Show guides'), None, None,
 #	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
 #

@@ -23,7 +23,7 @@ class SnapManager:
 	methods = None
 
 	snap_to_grid = False
-	snap_to_guides = False
+	snap_to_guides = True
 	snap_to_objects = False
 	snap_to_page = False
 

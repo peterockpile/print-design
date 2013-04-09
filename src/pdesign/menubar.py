@@ -88,7 +88,7 @@ class AppMenubar(gtk.MenuBar):
 				 'ZOOM_PAGE',
 				 'ZOOM_SELECTED',
 				 None,
-#				 ('SHOW_GRID',),
+				 'SHOW_GRID',
 #				 ('SHOW_GUIDES',),
 				 'SHOW_PAGE',
 				 None,

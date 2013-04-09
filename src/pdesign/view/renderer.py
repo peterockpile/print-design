@@ -17,7 +17,7 @@
 
 from copy import deepcopy
 
-import cairo
+import cairo, math
 
 from uc2.formats.pdxf import model
 from uc2.formats.pdxf.crenderer import CairoRenderer
@@ -57,6 +57,7 @@ class PDRenderer(CairoRenderer):
 		if self.canvas.draw_page_border:
 			self.paint_page_border()
 		self.render_doc()
+		self.render_grid()
 #		self.finalize()
 		self.paint_selection()
 
@@ -113,6 +114,45 @@ class PDRenderer(CairoRenderer):
 				stroke = self.stroke_style[1]
 				stroke[1] = 1.0 / self.canvas.zoom
 			self.render(self.ctx, layer.childs)
+
+	#------GRID RENDERING
+
+	def render_grid(self):
+		methods = self.presenter.methods
+		grid_layer = methods.get_gird_layer()
+		if grid_layer.properties[0]:
+			self.ctx.set_matrix(self.direct_matrix)
+			w, h = self.presenter.get_page_size()
+			x, y, dx, dy = grid_layer.grid
+			#FIXME: different coords!
+			x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
+			dx = dx * self.canvas.zoom
+			dy = dy * self.canvas.zoom
+			if dx < 10.0: dx = dx * math.ceil(10.0 / dx)
+			if dy < 10.0: dy = dy * math.ceil(10.0 / dy)
+			sx = (x0 / dx - math.floor(x0 / dx)) * dx
+			sy = (y0 / dy - math.floor(y0 / dy)) * dy
+			self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+			self.ctx.set_source_rgba(*[0.0, 0.0, 1.0, 0.15])
+			self.ctx.set_line_width(1.0)
+			i = 0
+			pos = 0
+			while pos < self.width:
+				pos = sx + i * dx
+				i += 1
+				self.ctx.move_to(pos, 0)
+				self.ctx.line_to(pos, self.height)
+				self.ctx.stroke()
+			i = 0
+			pos = 0
+			while pos < self.height:
+				pos = sy + i * dy
+				i += 1
+				self.ctx.move_to(0, pos)
+				self.ctx.line_to(self.width, pos)
+				self.ctx.stroke()
+			self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
+
 
 	#------MARKER RENDERING
 
@@ -261,6 +301,8 @@ class PDRenderer(CairoRenderer):
 		self.start_soft_repaint()
 		self._paint_selection()
 		self.end_soft_repaint()
+
+	#------DRAWING MARKER RENDERING
 
 	def draw_curve_point(self, point, size, fill, stroke, stroke_width):
 		if len(point) == 2:
