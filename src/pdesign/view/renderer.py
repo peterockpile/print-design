@@ -19,7 +19,7 @@ from copy import deepcopy
 
 import cairo, math
 
-from uc2.formats.pdxf import model
+from uc2.formats.pdxf import model, const
 from uc2.formats.pdxf.crenderer import CairoRenderer
 from uc2 import libcairo
 
@@ -120,12 +120,17 @@ class PDRenderer(CairoRenderer):
 	def render_grid(self):
 		methods = self.presenter.methods
 		grid_layer = methods.get_gird_layer()
-		if grid_layer.properties[0]:
+		if methods.is_layer_visible(grid_layer):
 			self.ctx.set_matrix(self.direct_matrix)
 			w, h = self.presenter.get_page_size()
 			x, y, dx, dy = grid_layer.grid
-			#FIXME: different coords!
-			x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
+			origin = self.presenter.model.doc_origin
+			if origin == const.DOC_ORIGIN_LL:
+				x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
+			elif origin == const.DOC_ORIGIN_LU:
+				x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, h / 2.0 + y])
+			else:
+				x0, y0 = self.canvas.point_doc_to_win([x, y])
 			dx = dx * self.canvas.zoom
 			dy = dy * self.canvas.zoom
 			if dx < 10.0: dx = dx * math.ceil(10.0 / dx)
@@ -152,7 +157,6 @@ class PDRenderer(CairoRenderer):
 				self.ctx.line_to(self.width, pos)
 				self.ctx.stroke()
 			self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
-
 
 	#------MARKER RENDERING
 
