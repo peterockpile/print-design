@@ -63,10 +63,6 @@ class AppConfig(UCConfig):
 	palette_cell_horizontal = 40
 	palette_orientation = 1
 
-	# 0 - tabbed 
-	# 1 - windowed 
-	interface_type = 0
-
 	mw_maximized = 0
 
 	mw_width = 1000
@@ -83,11 +79,6 @@ class AppConfig(UCConfig):
 	ruler_min_tick_step = 3
 	ruler_min_text_step = 50
 	ruler_max_text_step = 100
-
-	# 0 - page center
-	# 1 - lower-left page corner
-	# 2 - upper-left page corner 
-	ruler_coordinates = 1
 
 	default_unit = uc2const.UNIT_MM
 
@@ -113,6 +104,10 @@ class AppConfig(UCConfig):
 
 	rotation_step = 5.0 #in degrees
 	stroke_sensitive_size = 5.0 #in pixels
+
+	#============== SNAPPING OPTIONS ================
+
+	snap_distance = 10.0 #in pixels
 
 	#============== BEZIER CURVE OPTIONS ================
 	curve_autoclose_flag = 0
