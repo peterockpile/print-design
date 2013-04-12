@@ -22,7 +22,7 @@ from uc2 import uc2const
 from uc2.utils import system
 from uc2.utils.fs import expanduser_unicode
 
-from pdesign import events
+from pdesign import events, appconst
 
 class AppData:
 
@@ -108,6 +108,14 @@ class AppConfig(UCConfig):
 	#============== SNAPPING OPTIONS ================
 
 	snap_distance = 10.0 #in pixels
+	snap_order = [appconst.SNAP_TO_GUIDES,
+				appconst.SNAP_TO_GRID,
+				appconst.SNAP_TO_OBJECTS,
+				appconst.SNAP_TO_PAGE]
+	snap_to_grid = False
+	snap_to_guides = True
+	snap_to_objects = False
+	snap_to_page = False
 
 	#============== BEZIER CURVE OPTIONS ================
 	curve_autoclose_flag = 0
