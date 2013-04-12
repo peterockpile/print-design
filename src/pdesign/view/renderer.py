@@ -121,7 +121,12 @@ class PDRenderer(CairoRenderer):
 		methods = self.presenter.methods
 		grid_layer = methods.get_gird_layer()
 		if methods.is_layer_visible(grid_layer):
+
 			self.ctx.set_matrix(self.direct_matrix)
+			self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+			self.ctx.set_source_rgba(*grid_layer.color)
+			self.ctx.set_line_width(1.0)
+
 			w, h = self.presenter.get_page_size()
 			x, y, dx, dy = grid_layer.grid
 			origin = self.presenter.model.doc_origin
@@ -133,23 +138,20 @@ class PDRenderer(CairoRenderer):
 				x0, y0 = self.canvas.point_doc_to_win([x, y])
 			dx = dx * self.canvas.zoom
 			dy = dy * self.canvas.zoom
-			if dx < 10.0: dx = dx * math.ceil(10.0 / dx)
-			if dy < 10.0: dy = dy * math.ceil(10.0 / dy)
+			sdist = config.snap_distance
+			if dx < sdist: dx = dx * math.ceil(sdist / dx)
+			if dy < sdist: dy = dy * math.ceil(sdist / dy)
 			sx = (x0 / dx - math.floor(x0 / dx)) * dx
 			sy = (y0 / dy - math.floor(y0 / dy)) * dy
-			self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
-			self.ctx.set_source_rgba(*[0.0, 0.0, 1.0, 0.15])
-			self.ctx.set_line_width(1.0)
-			i = 0
-			pos = 0
+
+			i = pos = 0
 			while pos < self.width:
 				pos = sx + i * dx
 				i += 1
 				self.ctx.move_to(pos, 0)
 				self.ctx.line_to(pos, self.height)
 				self.ctx.stroke()
-			i = 0
-			pos = 0
+			i = pos = 0
 			while pos < self.height:
 				pos = sy + i * dy
 				i += 1
