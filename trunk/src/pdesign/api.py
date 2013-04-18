@@ -159,8 +159,6 @@ class AbstractAPI:
 
 	def _normalize_rect(self, rect):
 		x0, y0, x1, y1 = rect
-		x0, y0 = self.view.win_to_doc([x0, y0])
-		x1, y1 = self.view.win_to_doc([x1, y1])
 		new_rect = [0, 0, 0, 0]
 		if x0 < x1:
 			new_rect[0] = x0
@@ -387,7 +385,7 @@ class PresenterAPI(AbstractAPI):
 		self.selection.set(objs)
 		self.selection.update()
 
-#/////////// CREATORS //////////////////////
+	#---------------- CREATORS -------------------
 	def create_rectangle(self, rect):
 		rect = self._normalize_rect(rect)
 		parent = self.presenter.active_layer
