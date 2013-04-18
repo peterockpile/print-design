@@ -23,6 +23,8 @@ import gobject
 from pdesign import config
 from pdesign import modes
 
+from uc2 import libgeom
+
 RENDERING_DELAY = 50
 
 ZOOM_IN = 1.25
@@ -36,8 +38,12 @@ class AbstractController:
 
 	draw = False
 	canvas = None
+	snap = None
 	start = []
 	end = []
+	start_doc = []
+	end_doc = []
+	check_snap = False
 
 	counter = 0
 	timer = None
@@ -53,6 +59,8 @@ class AbstractController:
 		self.api = presenter.api
 		self.start = []
 		self.end = []
+		self.start_doc = []
+		self.end_doc = []
 
 	def set_cursor(self):
 		if self.mode is None:
@@ -69,8 +77,11 @@ class AbstractController:
 	def mouse_double_click(self, event): pass
 
 	def mouse_down(self, event):
+		self.snap = self.presenter.snap
 		self.start = []
 		self.end = []
+		self.start_doc = []
+		self.end_doc = []
 
 		self.counter = 0
 		if not  self.timer is None:
@@ -81,6 +92,9 @@ class AbstractController:
 			self.draw = True
 			self.start = [event.x, event.y]
 			self.end = [event.x, event.y]
+			if self.check_snap:
+				flag, self.start, self.start_doc = self.snap.snap_point(self.start)
+				flag, self.end, self.end_doc = self.snap.snap_point(self.end)
 			self.counter = 0
 			self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 		elif event.button == MIDDLE_BUTTON:
@@ -93,12 +107,16 @@ class AbstractController:
 				self.draw = False
 				self.counter = 0
 				self.end = [event.x, event.y]
+				if self.check_snap:
+					flag, self.end, self.end_doc = self.snap.snap_point(self.end)
 				self.canvas.renderer.stop_draw_frame(self.start, self.end)
 				self.do_action(event)
 
 	def mouse_move(self, event):
 		if self.draw:
 			self.end = [event.x, event.y]
+			if self.check_snap:
+				flag, self.end, self.end_doc = self.snap.snap_point(self.end)
 
 
 	def wheel(self, event):
@@ -292,6 +310,7 @@ class MoveController(AbstractController):
 		self.trafo = []
 
 	def mouse_down(self, event):
+		self.snap = self.presenter.snap
 		if event.button == LEFT_BUTTON:
 			self.start = [event.x, event.y]
 			self.move = True
@@ -323,6 +342,8 @@ class MoveController(AbstractController):
 					new[0] = self.start[0]
 			self.end = new
 			self.trafo = self._calc_trafo(self.start, self.end)
+			bbox = self.presenter.selection.bbox
+			self.trafo = self.snap.snap_bbox(bbox, self.trafo)
 		else:
 			point = [event.x, event.y]
 			dpoint = self.canvas.win_to_doc(point)
@@ -350,6 +371,8 @@ class MoveController(AbstractController):
 			self.move = False
 			if self.moved:
 				self.trafo = self._calc_trafo(self.start, self.end)
+				bbox = self.presenter.selection.bbox
+				self.trafo = self.snap.snap_bbox(bbox, self.trafo)
 				self.api.transform_selected(self.trafo, self.copy)
 			elif event.state & gtk.gdk.SHIFT_MASK:
 				self.canvas.select_at_point(self.start, True)
@@ -395,6 +418,7 @@ class TransformController(AbstractController):
 
 
 	def mouse_down(self, event):
+		self.snap = self.presenter.snap
 		if event.button == LEFT_BUTTON:
 			self.start = [event.x, event.y]
 			self.move = True
@@ -471,6 +495,7 @@ class TransformController(AbstractController):
 		start_point = self.canvas.win_to_doc(self.start)
 		end_point = self.canvas.win_to_doc(self.end)
 		bbox = self.presenter.selection.bbox
+		middle_points = libgeom.bbox_middle_points(bbox)
 		w = bbox[2] - bbox[0]
 		h = bbox[3] - bbox[1]
 		m11 = m22 = 1.0
@@ -496,10 +521,28 @@ class TransformController(AbstractController):
 				dy -= h * (m22 - 1.0) / 2.0
 		if mark == 1:
 			dy = end_point[1] - start_point[1]
-			m22 = (h + dy) / h
-			dy = -(bbox[1] * m22 - bbox[1])
 			if shift:
-				dy -= h * (m22 - 1.0) / 2.0
+				m22 = (h + 2.0 * dy) / h
+				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+				#---- snapping
+				point = middle_points[1]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dy = p_doc[1] - point[1]
+				m22 = (h + 2.0 * dy) / h
+				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+				#---- snapping
+			else:
+				m22 = (h + dy) / h
+				dy = -(bbox[1] * m22 - bbox[1])
+				#---- snapping
+				point = middle_points[1]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dy = p_doc[1] - point[1]
+				m22 = (h + dy) / h
+				dy = -(bbox[1] * m22 - bbox[1])
+				#---- snapping
 		if mark == 2:
 			dy = end_point[1] - start_point[1]
 			dx = end_point[0] - start_point[0]
@@ -520,16 +563,52 @@ class TransformController(AbstractController):
 				dy -= h * (m22 - 1.0) / 2.0
 		if mark == 3:
 			dx = start_point[0] - end_point[0]
-			m11 = (w + dx) / w
-			dx = -(bbox[2] * m11 - bbox[2])
 			if shift:
-				dx += w * (m11 - 1.0) / 2.0
+				m11 = (w + 2.0 * dx) / w
+				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+				#---- snapping
+				point = middle_points[0]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dx = point[0] - p_doc[0]
+				m11 = (w + 2.0 * dx) / w
+				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+				#---- snapping
+			else:
+				m11 = (w + dx) / w
+				dx = -(bbox[2] * m11 - bbox[2])
+				#---- snapping
+				point = middle_points[0]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dx = point[0] - p_doc[0]
+				m11 = (w + dx) / w
+				dx = -(bbox[2] * m11 - bbox[2])
+				#---- snapping
 		if mark == 5:
 			dx = end_point[0] - start_point[0]
-			m11 = (w + dx) / w
-			dx = -(bbox[0] * m11 - bbox[0])
 			if shift:
-				dx -= w * (m11 - 1.0) / 2.0
+				m11 = (w + 2.0 * dx) / w
+				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+				#---- snapping
+				point = middle_points[2]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dx = p_doc[0] - point[0]
+				m11 = (w + 2.0 * dx) / w
+				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+				#---- snapping
+			else:
+				m11 = (w + dx) / w
+				dx = -(bbox[0] * m11 - bbox[0])
+				#---- snapping
+				point = middle_points[2]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dx = p_doc[0] - point[0]
+				m11 = (w + dx) / w
+				dx = -(bbox[0] * m11 - bbox[0])
+				#---- snapping
 		if mark == 6:
 			dy = start_point[1] - end_point[1]
 			dx = start_point[0] - end_point[0]
@@ -550,10 +629,28 @@ class TransformController(AbstractController):
 				dy += h * (m22 - 1.0) / 2.0
 		if mark == 7:
 			dy = start_point[1] - end_point[1]
-			m22 = (h + dy) / h
-			dy = -(bbox[3] * m22 - bbox[3])
 			if shift:
-				dy += h * (m22 - 1.0) / 2.0
+				m22 = (h + 2.0 * dy) / h
+				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+				#---- snapping
+				point = middle_points[3]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dy = point[1] - p_doc[1]
+				m22 = (h + 2.0 * dy) / h
+				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+				#---- snapping
+			else:
+				m22 = (h + dy) / h
+				dy = -(bbox[3] * m22 - bbox[3])
+				#---- snapping
+				point = middle_points[3]
+				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				f, p, p_doc = self.snap.snap_point(p, False)
+				dy = point[1] - p_doc[1]
+				m22 = (h + dy) / h
+				dy = -(bbox[3] * m22 - bbox[3])
+				#---- snapping
 		if mark == 8:
 			dy = start_point[1] - end_point[1]
 			dx = end_point[0] - start_point[0]

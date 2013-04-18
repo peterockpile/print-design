@@ -33,8 +33,13 @@ RIGHT_BUTTON = 3
 
 class AbstractCreator(AbstractController):
 
+	check_snap = True
+
 	def __init__(self, canvas, presenter):
 		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):
+		AbstractController.mouse_down(self, event)
 
 	def mouse_move(self, event):
 		if self.draw:
@@ -61,7 +66,7 @@ class RectangleCreator(AbstractCreator):
 		if self.start and self.end:
 			if abs(self.end[0] - self.start[0]) > 2 and \
 			abs(self.end[1] - self.start[1]) > 2:
-				rect = self.start + self.end
+				rect = self.start_doc + self.end_doc
 				self.api.create_rectangle(rect)
 
 class EllipseCreator(AbstractCreator):
@@ -75,7 +80,7 @@ class EllipseCreator(AbstractCreator):
 		if self.start and self.end:
 			if abs(self.end[0] - self.start[0]) > 2 and \
 			abs(self.end[1] - self.start[1]) > 2:
-				rect = self.start + self.end
+				rect = self.start_doc + self.end_doc
 				self.api.create_ellipse(rect)
 
 class PolygonCreator(AbstractCreator):
@@ -89,7 +94,7 @@ class PolygonCreator(AbstractCreator):
 		if self.start and self.end:
 			if abs(self.end[0] - self.start[0]) > 2 and \
 			abs(self.end[1] - self.start[1]) > 2:
-				rect = self.start + self.end
+				rect = self.start_doc + self.end_doc
 				self.api.create_polygon(rect)
 
 class TextBlockCreator(AbstractCreator):
@@ -103,10 +108,10 @@ class TextBlockCreator(AbstractCreator):
 		if self.start and self.end:
 			if abs(self.end[0] - self.start[0]) > 2 and \
 			abs(self.end[1] - self.start[1]) > 2:
-				rect = self.start + self.end
+				rect = self.start_doc + self.end_doc
 				self.api.create_text(rect)
 			else:
-				rect = self.start + self.start
+				rect = self.start_doc + self.end_doc
 				self.api.create_text(rect, width=const.TEXTBLOCK_WIDTH)
 
 class PolyLineCreator(AbstractCreator):
@@ -122,6 +127,7 @@ class PolyLineCreator(AbstractCreator):
 
 	#Actual event point
 	point = []
+	doc_point = []
 	ctrl_mask = False
 	alt_mask = False
 
@@ -136,6 +142,7 @@ class PolyLineCreator(AbstractCreator):
 		AbstractCreator.__init__(self, canvas, presenter)
 
 	def start_(self):
+		self.snap = self.presenter.snap
 		self.init_flags()
 		self.init_data()
 		self.init_timer()
@@ -167,7 +174,8 @@ class PolyLineCreator(AbstractCreator):
 			if not self.draw:
 				self.draw = True
 				self.clear_data()
-			self.point = [event.x, event.y]
+			point = [event.x, event.y]
+			flag, self.point, self.doc_point = self.snap.snap_point(point)
 			self.create = True
 			self.init_timer()
 		elif event.button == MIDDLE_BUTTON:
@@ -180,7 +188,9 @@ class PolyLineCreator(AbstractCreator):
 			self.alt_mask = False
 			if event.state & gtk.gdk.CONTROL_MASK: self.ctrl_mask = True
 			if event.state & gtk.gdk.MOD1_MASK : self.alt_mask = True
-			self.add_point([event.x, event.y])
+			point = [event.x, event.y]
+			flag, point, doc_point = self.snap.snap_point(point)
+			self.add_point(point, doc_point)
 			self.repaint()
 
 	def mouse_double_click(self, event):
@@ -193,8 +203,9 @@ class PolyLineCreator(AbstractCreator):
 		if self.draw:
 			if self.create:
 				if self.point:
-					self.add_point(self.point)
+					self.add_point(self.point, self.doc_point)
 					self.point = []
+					self.doc_point = []
 				self.cursor = [event.x, event.y]
 				self.set_drawing_timer()
 			else:
@@ -216,14 +227,18 @@ class PolyLineCreator(AbstractCreator):
 	def repaint(self):
 		if self.path[0] or self.paths:
 			paths = self.canvas.paths_doc_to_win(self.paths)
-			cursor = self.cursor
+			if self.cursor:
+				flag, cursor, doc_point = self.snap.snap_point(self.cursor)
+			else:
+				cursor = []
 			if not self.path[0]: cursor = []
 			self.canvas.renderer.paint_curve(paths, cursor)
 		return True
 
 	def continuous_draw(self):
 		if self.create and self.cursor:
-			self.add_point(self.cursor)
+			flag, point, doc_point = self.snap.snap_point(self.cursor)
+			self.add_point(point, doc_point)
 			self.repaint()
 		else:
 			self.init_timer()
@@ -248,6 +263,7 @@ class PolyLineCreator(AbstractCreator):
 		self.points = []
 		self.path = [[], [], const.CURVE_OPENED]
 		self.point = []
+		self.doc_point = []
 		self.obj = None
 
 	def clear_data(self):
@@ -255,6 +271,7 @@ class PolyLineCreator(AbstractCreator):
 		self.points = []
 		self.path = [[], [], const.CURVE_OPENED]
 		self.point = []
+		self.doc_point = []
 
 	def init_flags(self):
 		self.create = False
@@ -273,7 +290,7 @@ class PolyLineCreator(AbstractCreator):
 			self.canvas.renderer.paint_curve(paths)
 		self.draw = True
 
-	def add_point(self, point):
+	def add_point(self, point, doc_point):
 		subpoint = bezier_base_point(point)
 		if self.path[0]:
 			w = h = config.curve_point_sensitivity_size
@@ -286,7 +303,7 @@ class PolyLineCreator(AbstractCreator):
 					if len(point) == 2:
 						self.points.append([] + self.path[0])
 					else:
-						p = self.canvas.point_win_to_doc(point)
+						p = doc_point
 						self.points.append([p[0], p[1], [] + self.path[0], p[3]])
 					if not self.ctrl_mask:
 						self.release_curve()
@@ -294,14 +311,14 @@ class PolyLineCreator(AbstractCreator):
 						self.draw = False
 					self.repaint()
 				elif not is_point_in_rect2(subpoint, last, w, h):
-					self.points.append(self.canvas.point_win_to_doc(point))
+					self.points.append(doc_point)
 					self.path[1] = self.points
 			else:
 				if not is_point_in_rect2(subpoint, start, w, h):
-					self.points.append(self.canvas.point_win_to_doc(point))
+					self.points.append(doc_point)
 					self.path[1] = self.points
 		else:
-			self.path[0] = self.canvas.point_win_to_doc(point)
+			self.path[0] = doc_point
 			self.paths.append(self.path)
 
 	def release_curve(self):
@@ -325,6 +342,10 @@ class PathsCreator(PolyLineCreator):
 	control_point0 = []
 	control_point1 = []
 	control_point2 = []
+	curve_point_doc = []
+	control_point0_doc = []
+	control_point1_doc = []
+	control_point2_doc = []
 
 	def __init__(self, canvas, presenter):
 		PolyLineCreator.__init__(self, canvas, presenter)
@@ -333,18 +354,13 @@ class PathsCreator(PolyLineCreator):
 		self.init_timer()
 		self.cursor = []
 		self.repaint()
-		self.point = self.canvas.point_win_to_doc(self.point)
-		self.curve_point = self.canvas.point_win_to_doc(self.curve_point)
-		self.control_point0 = self.canvas.point_win_to_doc(self.control_point0)
-		self.control_point1 = self.canvas.point_win_to_doc(self.control_point1)
-		self.control_point2 = self.canvas.point_win_to_doc(self.control_point2)
 
 	def restore(self):
-		self.point = self.canvas.point_doc_to_win(self.point)
-		self.curve_point = self.canvas.point_doc_to_win(self.curve_point)
-		self.control_point0 = self.canvas.point_doc_to_win(self.control_point0)
-		self.control_point1 = self.canvas.point_doc_to_win(self.control_point1)
-		self.control_point2 = self.canvas.point_doc_to_win(self.control_point2)
+		self.point = self.canvas.point_doc_to_win(self.point_doc)
+		self.curve_point = self.canvas.point_doc_to_win(self.curve_point_doc)
+		self.control_point0 = self.canvas.point_doc_to_win(self.control_point0_doc)
+		self.control_point1 = self.canvas.point_doc_to_win(self.control_point1_doc)
+		self.control_point2 = self.canvas.point_doc_to_win(self.control_point2_doc)
 		self.repaint()
 
 	def update_from_obj(self):
@@ -357,9 +373,13 @@ class PathsCreator(PolyLineCreator):
 			self.canvas.renderer.paint_curve(paths)
 			last = bezier_base_point(self.points[-1])
 			self.control_point0 = self.canvas.point_doc_to_win(last)
+			self.control_point0_doc = [] + last
 			self.point = [] + self.control_point0
+			self.point_doc = [] + last
 			self.control_point2 = [] + self.control_point0
+			self.control_point2_doc = [] + last
 			self.curve_point = [] + self.control_point0
+			self.curve_point_doc = [] + last
 		else:
 			paths = self.canvas.paths_doc_to_win(self.paths)
 			self.canvas.renderer.paint_curve(paths)
@@ -370,8 +390,10 @@ class PathsCreator(PolyLineCreator):
 			if not self.draw:
 				self.draw = True
 				self.clear_data()
-			self.curve_point = [event.x, event.y]
+			p = [event.x, event.y]
+			flag, self.curve_point, self.curve_point_doc = self.snap.snap_point(p)
 			self.control_point2 = []
+			self.control_point2_doc = []
 			self.create = True
 			self.init_timer()
 		elif event.button == MIDDLE_BUTTON:
@@ -382,40 +404,50 @@ class PathsCreator(PolyLineCreator):
 			self.create = False
 			self.ctrl_mask = False
 			self.alt_mask = False
-			self.control_point2 = [event.x, event.y]
+			p = [event.x, event.y]
+			flag, self.control_point2, self.control_point2_doc = self.snap.snap_point(p)
 			if event.state & gtk.gdk.CONTROL_MASK: self.ctrl_mask = True
 			if event.state & gtk.gdk.MOD1_MASK : self.alt_mask = True
 			if self.path[0]:
 				if self.alt_mask:
-					self.point = [event.x, event.y]
-					self.add_point([event.x, event.y])
-					self.control_point0 = [event.x, event.y]
+					p = [event.x, event.y]
+					flag, self.point, self.point_doc = self.snap.snap_point(p)
+					self.add_point([] + self.point, [] + self.point_doc)
+					self.control_point0 = [] + self.point
 					self.cursor = [event.x, event.y]
-					self.curve_point = [event.x, event.y]
+					self.curve_point = [] + self.point
 				elif self.control_point2:
 					self.point = [] + self.curve_point
+					self.point_doc = [] + self.curve_point_doc
 					self.control_point1 = contra_point(self.control_point2,
 															 self.curve_point)
+					self.control_point1_doc = contra_point(self.control_point2_doc,
+															 self.curve_point_doc)
 					self.add_point([self.control_point0, self.control_point1,
-								self.curve_point, const.NODE_SYMMETRICAL])
+								self.curve_point, const.NODE_SYMMETRICAL],
+								[self.control_point0_doc, self.control_point1_doc,
+								self.curve_point_doc, const.NODE_SYMMETRICAL])
 					self.control_point0 = [] + self.control_point2
-					self.cursor = [event.x, event.y]
-					self.curve_point = [event.x, event.y]
+					self.control_point0_doc = [] + self.control_point2_doc
+					p = [event.x, event.y]
+					self.cursor = [] + p
+					flag, self.curve_point, self.curve_point_doc = self.snap.snap_point(p)
 			else:
-				self.point = [event.x, event.y]
-				self.add_point([event.x, event.y])
-				self.control_point0 = [event.x, event.y]
+				p = [event.x, event.y]
+				flag, self.point, self.point_doc = self.snap.snap_point(p)
+				self.add_point(self.point, self.point_doc)
+				self.control_point0 = [] + self.point
+				self.control_point0_doc = [] + self.point_doc
 			self.repaint()
 
 	def mouse_move(self, event):
 		if self.draw:
-			if self.create:
-				self.control_point2 = [event.x, event.y]
-				self.cursor = [event.x, event.y]
-			else:
-				self.control_point2 = [event.x, event.y]
-				self.cursor = [event.x, event.y]
-				self.curve_point = [event.x, event.y]
+			p = [event.x, event.y]
+			flag, self.control_point2, self.control_point2_doc = self.snap.snap_point(p)
+			self.cursor = [] + p
+			if not self.create:
+				self.curve_point = [] + self.control_point2
+				self.curve_point_doc = [] + self.control_point2_doc
 			self.set_repaint_timer()
 		else:
 			self.init_timer()
@@ -453,6 +485,10 @@ class PathsCreator(PolyLineCreator):
 		self.control_point0 = []
 		self.control_point1 = []
 		self.control_point2 = []
+		self.curve_point_doc = []
+		self.control_point0_doc = []
+		self.control_point1_doc = []
+		self.control_point2_doc = []
 
 
 
