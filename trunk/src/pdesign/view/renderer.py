@@ -139,8 +139,21 @@ class PDRenderer(CairoRenderer):
 			dx = dx * self.canvas.zoom
 			dy = dy * self.canvas.zoom
 			sdist = config.snap_distance
-			if dx < sdist: dx = dx * math.ceil(sdist / dx)
-			if dy < sdist: dy = dy * math.ceil(sdist / dy)
+
+			i = 0.0
+			while dx < sdist + 3:
+				i = i + 0.5
+				dx = dx * 10.0 * i
+			if dx / 2.0 > sdist + 3:
+				dx = dx / 2.0
+
+			i = 0.0
+			while dy < sdist + 3:
+				i = i + 0.5
+				dy = dy * 10.0 * i
+			if dy / 2.0 > sdist + 3:
+				dy = dy / 2.0
+
 			sx = (x0 / dx - math.floor(x0 / dx)) * dx
 			sy = (y0 / dy - math.floor(y0 / dy)) * dy
 
@@ -180,8 +193,31 @@ class PDRenderer(CairoRenderer):
 			path = libcairo.convert_bbox_to_cpath(start + end)
 			self._draw_frame(path)
 
+	def reflect_snap(self):
+		if config.show_snap:
+			snap = self.presenter.snap.active_snap
+			if not snap[0] is None or not snap[1] is None:
+				self.ctx.set_matrix(self.direct_matrix)
+				self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+				self.ctx.set_line_width(1.0)
+				self.ctx.set_dash(config.snap_line_dash)
+				self.ctx.set_source_rgba(*config.snap_line_color)
+				if not snap[0] is None:
+					x_win = self.canvas.point_doc_to_win([snap[0], 0])[0]
+					self.ctx.move_to(x_win, 0)
+					self.ctx.line_to(x_win, self.height)
+					self.ctx.stroke()
+				if not snap[1] is None:
+					y_win = self.canvas.point_doc_to_win([0, snap[1]])[1]
+					self.ctx.move_to(0, y_win)
+					self.ctx.line_to(self.width, y_win)
+					self.ctx.stroke()
+				self.presenter.snap.active_snap = [None, None]
+
+
 	def _draw_frame(self, path):
 		self.start_soft_repaint()
+		self.reflect_snap()
 		self.ctx.set_matrix(self.direct_matrix)
 		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
 		self.ctx.set_line_width(1.0)
