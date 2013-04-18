@@ -117,6 +117,10 @@ class AppConfig(UCConfig):
 	snap_to_objects = False
 	snap_to_page = False
 
+	show_snap = True
+	snap_line_dash = [5, 5]
+	snap_line_color = (1.0, 0.0, 0.0, 1.0)
+
 	#============== BEZIER CURVE OPTIONS ================
 	curve_autoclose_flag = 0
 
