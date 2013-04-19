@@ -497,29 +497,37 @@ class TransformController(AbstractController):
 		end_point = self.canvas.win_to_doc(self.end)
 		bbox = self.presenter.selection.bbox
 		middle_points = libgeom.bbox_middle_points(bbox)
+		bbox_points = libgeom.bbox_points(bbox)
 		w = bbox[2] - bbox[0]
 		h = bbox[3] - bbox[1]
 		m11 = m22 = 1.0
 		m12 = m21 = 0.0
 		dx = dy = 0.0
 		if mark == 0:
-			dy = end_point[1] - start_point[1]
 			dx = start_point[0] - end_point[0]
-			if control:
-				m11 = (w + dx) / w
-				m22 = (h + dy) / h
-			else:
-				if abs(dx) < abs(dy):
-					change = dx
-					m11 = m22 = (w + change) / w
-				else:
-					change = dy
-					m11 = m22 = (h + change) / h
-			dy = -(bbox[1] * m22 - bbox[1])
-			dx = -(bbox[2] * m11 - bbox[2])
+			dy = end_point[1] - start_point[1]
 			if shift:
-				dx += w * (m11 - 1.0) / 2.0
-				dy -= h * (m22 - 1.0) / 2.0
+				if control:
+					m11 = (w + 2.0 * dx) / w
+					m22 = (h + 2.0 * dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + 2.0 * dx) / w
+					else:
+						m11 = m22 = (h + 2.0 * dy) / h
+				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+			else:
+				if control:
+					m11 = (w + dx) / w
+					m22 = (h + dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + dx) / w
+					else:
+						m11 = m22 = (h + dy) / h
+				dx = -(bbox[2] * m11 - bbox[2])
+				dy = -(bbox[1] * m22 - bbox[1])
 		if mark == 1:
 			dy = end_point[1] - start_point[1]
 			if shift:
@@ -545,23 +553,32 @@ class TransformController(AbstractController):
 				dy = -(bbox[1] * m22 - bbox[1])
 				#---- snapping
 		if mark == 2:
-			dy = end_point[1] - start_point[1]
 			dx = end_point[0] - start_point[0]
-			if control:
-				m11 = (w + dx) / w
-				m22 = (h + dy) / h
-			else:
-				if abs(dx) < abs(dy):
-					change = dx
-					m11 = m22 = (w + change) / w
-				else:
-					change = dy
-					m11 = m22 = (h + change) / h
-			dy = -(bbox[1] * m22 - bbox[1])
-			dx = -(bbox[0] * m11 - bbox[0])
+			dy = end_point[1] - start_point[1]
 			if shift:
-				dx -= w * (m11 - 1.0) / 2.0
-				dy -= h * (m22 - 1.0) / 2.0
+				if control:
+					m11 = (w + 2.0 * dx) / w
+					m22 = (h + 2.0 * dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + 2.0 * dx) / w
+					else:
+						m11 = m22 = (h + 2.0 * dy) / h
+				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+			else:
+				if control:
+					m11 = (w + dx) / w
+					m22 = (h + dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						change = dx
+						m11 = m22 = (w + change) / w
+					else:
+						change = dy
+						m11 = m22 = (h + change) / h
+				dx = -(bbox[0] * m11 - bbox[0])
+				dy = -(bbox[1] * m22 - bbox[1])
 		if mark == 3:
 			dx = start_point[0] - end_point[0]
 			if shift:
@@ -611,23 +628,30 @@ class TransformController(AbstractController):
 				dx = -(bbox[0] * m11 - bbox[0])
 				#---- snapping
 		if mark == 6:
-			dy = start_point[1] - end_point[1]
 			dx = start_point[0] - end_point[0]
-			if control:
-				m11 = (w + dx) / w
-				m22 = (h + dy) / h
-			else:
-				if abs(dx) < abs(dy):
-					change = dx
-					m11 = m22 = (w + change) / w
-				else:
-					change = dy
-					m11 = m22 = (h + change) / h
-			dx = -(bbox[2] * m11 - bbox[2])
-			dy = -(bbox[3] * m22 - bbox[3])
+			dy = start_point[1] - end_point[1]
 			if shift:
-				dx += w * (m11 - 1.0) / 2.0
-				dy += h * (m22 - 1.0) / 2.0
+				if control:
+					m11 = (w + 2.0 * dx) / w
+					m22 = (h + 2.0 * dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + 2.0 * dx) / w
+					else:
+						m11 = m22 = (h + 2.0 * dy) / h
+				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+			else:
+				if control:
+					m11 = (w + dx) / w
+					m22 = (h + dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + dx) / w
+					else:
+						m11 = m22 = (h + dy) / h
+				dx = -(bbox[2] * m11 - bbox[2])
+				dy = -(bbox[3] * m22 - bbox[3])
 		if mark == 7:
 			dy = start_point[1] - end_point[1]
 			if shift:
@@ -653,23 +677,30 @@ class TransformController(AbstractController):
 				dy = -(bbox[3] * m22 - bbox[3])
 				#---- snapping
 		if mark == 8:
-			dy = start_point[1] - end_point[1]
 			dx = end_point[0] - start_point[0]
-			if control:
-				m11 = (w + dx) / w
-				m22 = (h + dy) / h
-			else:
-				if abs(dx) < abs(dy):
-					change = dx
-					m11 = m22 = (w + change) / w
-				else:
-					change = dy
-					m11 = m22 = (h + change) / h
-			dy = -(bbox[3] * m22 - bbox[3])
-			dx = -(bbox[0] * m11 - bbox[0])
+			dy = start_point[1] - end_point[1]
 			if shift:
-				dx -= w * (m11 - 1.0) / 2.0
-				dy += h * (m22 - 1.0) / 2.0
+				if control:
+					m11 = (w + 2.0 * dx) / w
+					m22 = (h + 2.0 * dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + 2.0 * dx) / w
+					else:
+						m11 = m22 = (h + 2.0 * dy) / h
+				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+			else:
+				if control:
+					m11 = (w + dx) / w
+					m22 = (h + dy) / h
+				else:
+					if abs(dx) < abs(dy):
+						m11 = m22 = (w + dx) / w
+					else:
+						m11 = m22 = (h + dy) / h
+				dx = -(bbox[0] * m11 - bbox[0])
+				dy = -(bbox[3] * m22 - bbox[3])
 
 		if mark == 11:
 			change_x = end_point[0] - start_point[0]
