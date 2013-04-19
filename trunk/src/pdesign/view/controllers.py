@@ -497,12 +497,12 @@ class TransformController(AbstractController):
 		end_point = self.canvas.win_to_doc(self.end)
 		bbox = self.presenter.selection.bbox
 		middle_points = libgeom.bbox_middle_points(bbox)
-		bbox_points = libgeom.bbox_points(bbox)
 		w = bbox[2] - bbox[0]
 		h = bbox[3] - bbox[1]
 		m11 = m22 = 1.0
 		m12 = m21 = 0.0
 		dx = dy = 0.0
+		snap = [None, None]
 		if mark == 0:
 			dx = start_point[0] - end_point[0]
 			dy = end_point[1] - start_point[1]
@@ -510,24 +510,118 @@ class TransformController(AbstractController):
 				if control:
 					m11 = (w + 2.0 * dx) / w
 					m22 = (h + 2.0 * dy) / h
+					dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+					dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = (w + 2.0 * dx) / w
+						dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[1]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = p_doc[1] - point[1]
+						m22 = (h + 2.0 * dy) / h
+						dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + 2.0 * dx) / w
 					else:
 						m11 = m22 = (h + 2.0 * dy) / h
-				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
-				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+					dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = m22 = (w + 2.0 * dx) / w
+						dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+						dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[1]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = p_doc[1] - point[1]
+							m11 = m22 = (h + 2.0 * dy) / h
+							dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+							dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping	
 			else:
 				if control:
 					m11 = (w + dx) / w
 					m22 = (h + dy) / h
+					dx = -(bbox[2] * m11 - bbox[2])
+					dy = -(bbox[1] * m22 - bbox[1])
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = (w + dx) / w
+						dx = -(bbox[2] * m11 - bbox[2])
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[1]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = p_doc[1] - point[1]
+						m22 = (h + dy) / h
+						dy = -(bbox[1] * m22 - bbox[1])
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + dx) / w
 					else:
 						m11 = m22 = (h + dy) / h
-				dx = -(bbox[2] * m11 - bbox[2])
-				dy = -(bbox[1] * m22 - bbox[1])
+					dx = -(bbox[2] * m11 - bbox[2])
+					dy = -(bbox[1] * m22 - bbox[1])
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = m22 = (w + dx) / w
+						dx = -(bbox[2] * m11 - bbox[2])
+						dy = -(bbox[1] * m22 - bbox[1])
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[1]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = p_doc[1] - point[1]
+							m11 = m22 = (h + dy) / h
+							dx = -(bbox[2] * m11 - bbox[2])
+							dy = -(bbox[1] * m22 - bbox[1])
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping					
 		if mark == 1:
 			dy = end_point[1] - start_point[1]
 			if shift:
@@ -535,7 +629,8 @@ class TransformController(AbstractController):
 				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
 				#---- snapping
 				point = middle_points[1]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dy = p_doc[1] - point[1]
 				m22 = (h + 2.0 * dy) / h
@@ -546,7 +641,8 @@ class TransformController(AbstractController):
 				dy = -(bbox[1] * m22 - bbox[1])
 				#---- snapping
 				point = middle_points[1]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dy = p_doc[1] - point[1]
 				m22 = (h + dy) / h
@@ -559,26 +655,118 @@ class TransformController(AbstractController):
 				if control:
 					m11 = (w + 2.0 * dx) / w
 					m22 = (h + 2.0 * dy) / h
+					dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+					dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = (w + 2.0 * dx) / w
+						dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[1]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = p_doc[1] - point[1]
+						m22 = (h + 2.0 * dy) / h
+						dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + 2.0 * dx) / w
 					else:
 						m11 = m22 = (h + 2.0 * dy) / h
-				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
-				dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+					dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = m22 = (w + 2.0 * dx) / w
+						dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+						dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[1]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = p_doc[1] - point[1]
+							m11 = m22 = (h + 2.0 * dy) / h
+							dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+							dy = -(bbox[1] * m22 - bbox[1]) - h * (m22 - 1.0) / 2.0
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 			else:
 				if control:
 					m11 = (w + dx) / w
 					m22 = (h + dy) / h
+					dx = -(bbox[0] * m11 - bbox[0])
+					dy = -(bbox[1] * m22 - bbox[1])
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = (w + dx) / w
+						dx = -(bbox[0] * m11 - bbox[0])
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[1]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = p_doc[1] - point[1]
+						m22 = (h + dy) / h
+						dy = -(bbox[1] * m22 - bbox[1])
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
-						change = dx
-						m11 = m22 = (w + change) / w
+						m11 = m22 = (w + dx) / w
 					else:
-						change = dy
-						m11 = m22 = (h + change) / h
-				dx = -(bbox[0] * m11 - bbox[0])
-				dy = -(bbox[1] * m22 - bbox[1])
+						m11 = m22 = (h + dy) / h
+					dx = -(bbox[0] * m11 - bbox[0])
+					dy = -(bbox[1] * m22 - bbox[1])
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = m22 = (w + dx) / w
+						dx = -(bbox[0] * m11 - bbox[0])
+						dy = -(bbox[1] * m22 - bbox[1])
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[1]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = p_doc[1] - point[1]
+							m11 = m22 = (h + dy) / h
+							dx = -(bbox[0] * m11 - bbox[0])
+							dy = -(bbox[1] * m22 - bbox[1])
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping			
 		if mark == 3:
 			dx = start_point[0] - end_point[0]
 			if shift:
@@ -586,7 +774,8 @@ class TransformController(AbstractController):
 				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
 				#---- snapping
 				point = middle_points[0]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dx = point[0] - p_doc[0]
 				m11 = (w + 2.0 * dx) / w
@@ -597,7 +786,8 @@ class TransformController(AbstractController):
 				dx = -(bbox[2] * m11 - bbox[2])
 				#---- snapping
 				point = middle_points[0]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dx = point[0] - p_doc[0]
 				m11 = (w + dx) / w
@@ -610,7 +800,8 @@ class TransformController(AbstractController):
 				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
 				#---- snapping
 				point = middle_points[2]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dx = p_doc[0] - point[0]
 				m11 = (w + 2.0 * dx) / w
@@ -621,7 +812,8 @@ class TransformController(AbstractController):
 				dx = -(bbox[0] * m11 - bbox[0])
 				#---- snapping
 				point = middle_points[2]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dx = p_doc[0] - point[0]
 				m11 = (w + dx) / w
@@ -634,24 +826,118 @@ class TransformController(AbstractController):
 				if control:
 					m11 = (w + 2.0 * dx) / w
 					m22 = (h + 2.0 * dy) / h
+					dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+					dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = (w + 2.0 * dx) / w
+						dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[3]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = point[1] - p_doc[1]
+						m22 = (h + 2.0 * dy) / h
+						dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + 2.0 * dx) / w
 					else:
 						m11 = m22 = (h + 2.0 * dy) / h
-				dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
-				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+					dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = m22 = (w + 2.0 * dx) / w
+						dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+						dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[3]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = point[1] - p_doc[1]
+							m11 = m22 = (h + 2.0 * dy) / h
+							dx = -(bbox[2] * m11 - bbox[2]) + w * (m11 - 1.0) / 2.0
+							dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 			else:
 				if control:
 					m11 = (w + dx) / w
 					m22 = (h + dy) / h
+					dx = -(bbox[2] * m11 - bbox[2])
+					dy = -(bbox[3] * m22 - bbox[3])
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = (w + dx) / w
+						dx = -(bbox[2] * m11 - bbox[2])
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[3]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = point[1] - p_doc[1]
+						m22 = (h + dy) / h
+						dy = -(bbox[3] * m22 - bbox[3])
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + dx) / w
 					else:
 						m11 = m22 = (h + dy) / h
-				dx = -(bbox[2] * m11 - bbox[2])
-				dy = -(bbox[3] * m22 - bbox[3])
+					dx = -(bbox[2] * m11 - bbox[2])
+					dy = -(bbox[3] * m22 - bbox[3])
+					#---- snapping
+					point = middle_points[0]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = point[0] - p_doc[0]
+						m11 = m22 = (w + dx) / w
+						dx = -(bbox[2] * m11 - bbox[2])
+						dy = -(bbox[1] * m22 - bbox[1])
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[3]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = point[1] - p_doc[1]
+							m11 = m22 = (h + dy) / h
+							dx = -(bbox[2] * m11 - bbox[2])
+							dy = -(bbox[3] * m22 - bbox[3])
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping	
 		if mark == 7:
 			dy = start_point[1] - end_point[1]
 			if shift:
@@ -659,7 +945,8 @@ class TransformController(AbstractController):
 				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
 				#---- snapping
 				point = middle_points[3]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dy = point[1] - p_doc[1]
 				m22 = (h + 2.0 * dy) / h
@@ -670,7 +957,8 @@ class TransformController(AbstractController):
 				dy = -(bbox[3] * m22 - bbox[3])
 				#---- snapping
 				point = middle_points[3]
-				p = libgeom.apply_trafo_to_point(point, [m11, m21, m12, m22, dx, dy])
+				trafo = [m11, m21, m12, m22, dx, dy]
+				p = libgeom.apply_trafo_to_point(point, trafo)
 				f, p, p_doc = self.snap.snap_point(p, False)
 				dy = point[1] - p_doc[1]
 				m22 = (h + dy) / h
@@ -683,24 +971,118 @@ class TransformController(AbstractController):
 				if control:
 					m11 = (w + 2.0 * dx) / w
 					m22 = (h + 2.0 * dy) / h
+					dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+					dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = (w + 2.0 * dx) / w
+						dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[3]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = point[1] - p_doc[1]
+						m22 = (h + 2.0 * dy) / h
+						dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + 2.0 * dx) / w
 					else:
 						m11 = m22 = (h + 2.0 * dy) / h
-				dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
-				dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+					dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = m22 = (w + 2.0 * dx) / w
+						dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+						dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[3]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = point[1] - p_doc[1]
+							m11 = m22 = (h + 2.0 * dy) / h
+							dx = -(bbox[0] * m11 - bbox[0]) - w * (m11 - 1.0) / 2.0
+							dy = -(bbox[3] * m22 - bbox[3]) + h * (m22 - 1.0) / 2.0
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 			else:
 				if control:
 					m11 = (w + dx) / w
 					m22 = (h + dy) / h
+					dx = -(bbox[0] * m11 - bbox[0])
+					dy = -(bbox[3] * m22 - bbox[3])
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = (w + dx) / w
+						dx = -(bbox[0] * m11 - bbox[0])
+						snap[0] = self.snap.active_snap[0]
+					point = middle_points[3]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+					if f:
+						dy = point[1] - p_doc[1]
+						m22 = (h + dy) / h
+						dy = -(bbox[3] * m22 - bbox[3])
+						snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 				else:
 					if abs(dx) < abs(dy):
 						m11 = m22 = (w + dx) / w
 					else:
 						m11 = m22 = (h + dy) / h
-				dx = -(bbox[0] * m11 - bbox[0])
-				dy = -(bbox[3] * m22 - bbox[3])
+					dx = -(bbox[0] * m11 - bbox[0])
+					dy = -(bbox[3] * m22 - bbox[3])
+					#---- snapping
+					point = middle_points[2]
+					trafo = [m11, m21, m12, m22, dx, dy]
+					p = libgeom.apply_trafo_to_point(point, trafo)
+					f, p, p_doc = self.snap.snap_point(p, False, snap_y=False)
+					if f:
+						dx = p_doc[0] - point[0]
+						m11 = m22 = (w + dx) / w
+						dx = -(bbox[0] * m11 - bbox[0])
+						dy = -(bbox[3] * m22 - bbox[3])
+						snap[0] = self.snap.active_snap[0]
+					else:
+						point = middle_points[3]
+						trafo = [m11, m21, m12, m22, dx, dy]
+						p = libgeom.apply_trafo_to_point(point, trafo)
+						f, p, p_doc = self.snap.snap_point(p, False, snap_x=False)
+						if f:
+							dy = point[1] - p_doc[1]
+							m11 = m22 = (h + dy) / h
+							dx = -(bbox[0] * m11 - bbox[0])
+							dy = -(bbox[3] * m22 - bbox[3])
+							snap[1] = self.snap.active_snap[1]
+					self.snap.active_snap = snap
+					#---- snapping
 
 		if mark == 11:
 			change_x = end_point[0] - start_point[0]
