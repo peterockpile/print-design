@@ -426,6 +426,7 @@ class TransformController(AbstractController):
 				self.canvas.renderer.show_move_frame()
 				self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 			else:
+				self.offset_start = [] + self.selection.center_offset
 				self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_center)
 
 	def mouse_up(self, event):
@@ -720,9 +721,9 @@ class TransformController(AbstractController):
 			end = self.canvas.win_to_doc(self.end)
 			dx = end[0] - start[0]
 			dy = end[1] - start[1]
-			x, y = self.selection.center_offset
-			self.selection.center_offset = [x + dx, y + dy]
+			x, y = self.offset_start
+			cp = libgeom.bbox_center(self.selection.bbox)
+			f, win_p, doc_p = self.snap.snap_point([cp[0] + x + dx, cp[1] + y + dy], False)
+			self.selection.center_offset = [doc_p[0] - cp[0], doc_p[1] - cp[1]]
 			self.canvas.renderer.paint_selection()
-			self.start = self.end
-			self.end = []
 		return True
