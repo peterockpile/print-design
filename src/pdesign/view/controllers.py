@@ -343,7 +343,7 @@ class MoveController(AbstractController):
 			self.end = new
 			self.trafo = self._calc_trafo(self.start, self.end)
 			bbox = self.presenter.selection.bbox
-			self.trafo = self.snap.snap_bbox(bbox, self.trafo)
+			self.trafo = self._snap(bbox, self.trafo)
 		else:
 			point = [event.x, event.y]
 			dpoint = self.canvas.win_to_doc(point)
@@ -372,7 +372,7 @@ class MoveController(AbstractController):
 			if self.moved:
 				self.trafo = self._calc_trafo(self.start, self.end)
 				bbox = self.presenter.selection.bbox
-				self.trafo = self.snap.snap_bbox(bbox, self.trafo)
+				self.trafo = self._snap(bbox, self.trafo)
 				self.api.transform_selected(self.trafo, self.copy)
 			elif event.state & gtk.gdk.SHIFT_MASK:
 				self.canvas.select_at_point(self.start, True)
@@ -389,6 +389,55 @@ class MoveController(AbstractController):
 			self.copy = True
 			cursor = self.app.cursors[modes.COPY_MODE]
 			self.canvas.set_temp_cursor(cursor)
+
+	def _snap(self, bbox, trafo):
+		result = [] + trafo
+		points = libgeom.bbox_middle_points(bbox)
+		tr_points = libgeom.apply_trafo_to_points(points, trafo)
+		active_snap = [None, None]
+
+		shift_x = []
+		snap_x = []
+		for point in [tr_points[0], tr_points[2], tr_points[1]]:
+			flag, wp, dp = self.snap.snap_point(point, False, snap_y=False)
+			if flag:
+				shift_x.append(dp[0] - point[0])
+				snap_x.append(dp[0])
+		if shift_x:
+			if len(shift_x) > 1:
+				if abs(shift_x[0]) < abs(shift_x[1]):
+					dx = shift_x[0]
+					active_snap[0] = snap_x[0]
+				else:
+					dx = shift_x[1]
+					active_snap[0] = snap_x[1]
+			else:
+				dx = shift_x[0]
+				active_snap[0] = snap_x[0]
+			result[4] += dx
+
+		shift_y = []
+		snap_y = []
+		for point in [tr_points[1], tr_points[3], tr_points[2]]:
+			flag, wp, dp = self.snap.snap_point(point, False, snap_x=False)
+			if flag:
+				shift_y.append(dp[1] - point[1])
+				snap_y.append(dp[1])
+		if shift_y:
+			if len(shift_y) > 1:
+				if abs(shift_y[0]) < abs(shift_y[1]):
+					dy = shift_y[0]
+					active_snap[1] = snap_y[0]
+				else:
+					dy = shift_y[1]
+					active_snap[1] = snap_y[1]
+			else:
+				dy = shift_y[0]
+				active_snap[1] = snap_y[0]
+			result[5] += dy
+
+		self.snap.active_snap = [] + active_snap
+		return result
 
 class TransformController(AbstractController):
 

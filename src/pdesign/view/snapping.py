@@ -18,7 +18,6 @@
 import math
 
 from uc2.formats.pdxf import const
-from uc2 import libgeom
 
 from pdesign import config
 from pdesign.appconst import SNAP_TO_GRID, SNAP_TO_GUIDES, SNAP_TO_OBJECTS, SNAP_TO_PAGE
@@ -58,10 +57,6 @@ class SnapManager:
 						SNAP_TO_GUIDES:self.snap_point_to_guides,
 						SNAP_TO_OBJECTS:self.snap_point_to_objects,
 						SNAP_TO_PAGE:self.snap_point_to_page, }
-		self.snap_bbox_dict = {SNAP_TO_GRID:self.snap_bbox_to_grid,
-						SNAP_TO_GUIDES:self.snap_bbox_to_guides,
-						SNAP_TO_OBJECTS:self.snap_bbox_to_objects,
-						SNAP_TO_PAGE:self.snap_bbox_to_page, }
 		el = self.presenter.eventloop
 		el.connect(el.VIEW_CHANGED, self.update)
 		el.connect(el.DOC_MODIFIED, self.update)
@@ -113,7 +108,7 @@ class SnapManager:
 
 	def _calc_page_grid(self):
 		w, h = self.presenter.get_page_size()
-		self.page_grid = [[-w / 2.0, 0, w / 2.0], [-h / 2.0, 0, h / 2.0]]
+		self.page_grid = [[-w / 2.0, 0.0, w / 2.0], [-h / 2.0, 0.0, h / 2.0]]
 
 	#---------- Point snapping --------------------
 
@@ -208,80 +203,3 @@ class SnapManager:
 
 		return ret, [x, y], [x_doc, y_doc]
 
-	#---------- Bbox snapping --------------------
-
-	def snap_bbox(self, bbox, trafo):
-		if not trafo[1] == 0 or not trafo[2] == 0:
-			return trafo
-		result = [] + trafo
-
-		points = libgeom.bbox_middle_points(bbox)
-		tr_points = libgeom.apply_trafo_to_points(points, trafo)
-		active_snap = [None, None]
-
-		if trafo[0] == 1.0 and trafo[3] == 1.0:
-			shift_x = []
-			snap_x = []
-			for point in [tr_points[0], tr_points[2], tr_points[1]]:
-				flag, wp, dp = self.snap_point(point, False, snap_y=False)
-				if flag:
-					shift_x.append(dp[0] - point[0])
-					snap_x.append(dp[0])
-			if shift_x:
-				if len(shift_x) > 1:
-					if abs(shift_x[0]) < abs(shift_x[1]):
-						dx = shift_x[0]
-						active_snap[0] = snap_x[0]
-					else:
-						dx = shift_x[1]
-						active_snap[0] = snap_x[1]
-				else:
-					dx = shift_x[0]
-					active_snap[0] = snap_x[0]
-				result[4] += dx
-
-			shift_y = []
-			snap_y = []
-			for point in [tr_points[1], tr_points[3], tr_points[2]]:
-				flag, wp, dp = self.snap_point(point, False, snap_x=False)
-				if flag:
-					shift_y.append(dp[1] - point[1])
-					snap_y.append(dp[1])
-			if shift_y:
-				if len(shift_y) > 1:
-					if abs(shift_y[0]) < abs(shift_y[1]):
-						dy = shift_y[0]
-						active_snap[1] = snap_y[0]
-					else:
-						dy = shift_y[1]
-						active_snap[1] = snap_y[1]
-				else:
-					dy = shift_y[0]
-					active_snap[1] = snap_y[0]
-				result[5] += dy
-
-		elif trafo[0] == 1.0 and not trafo[3] == 1.0:
-			pass
-		elif not trafo[0] == 1.0 and trafo[3] == 1.0:
-			pass
-
-		else:
-			pass
-
-		self.active_snap = [] + active_snap
-
-		return result
-
-	def snap_bbox_to_grid(self, bbox, trafo):
-		ret = False
-		result = [] + trafo
-		return ret, result
-
-	def snap_bbox_to_guides(self, bbox, trafo):
-		return False, trafo
-
-	def snap_bbox_to_objects(self, bbox, trafo):
-		return False, trafo
-
-	def snap_bbox_to_page(self, bbox, trafo):
-		return False, trafo
