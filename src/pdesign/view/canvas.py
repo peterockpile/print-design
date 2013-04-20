@@ -21,8 +21,8 @@ import cairo
 
 from uc2.uc2const import mm_to_pt
 from uc2.libcairo import normalize_bbox
-from pdesign import modes, events
 
+from pdesign import modes, events, config
 from pdesign.view import controllers
 from pdesign.view import creators
 from pdesign.view.renderer import PDRenderer
@@ -55,6 +55,7 @@ class AppCanvas(gtk.DrawingArea):
 	stroke_view = False
 	draft_view = False
 	draw_page_border = True
+	show_snapping = config.show_snap
 
 	def __init__(self, parent):
 

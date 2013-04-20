@@ -90,6 +90,7 @@ class AppMenubar(gtk.MenuBar):
 				 None,
 				 'SHOW_GRID',
 #				 ('SHOW_GUIDES',),
+				 'SHOW_SNAP',
 				 'SHOW_PAGE',
 				 None,
 				 self.snap_to_item,
