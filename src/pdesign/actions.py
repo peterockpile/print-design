@@ -304,13 +304,13 @@ def create_actions(app):
 	 proxy.draw_page_border, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_draw_page_border],
 
 
-	['SNAP_TO_GRID', _('Snap to grid'), _('Snap to grid'), None, '<Control>Y',
+	['SNAP_TO_GRID', _('Snap to grid'), _('Snap to grid'), icons.STOCK_SNAP_TO_GRID, '<Control>Y',
 	 proxy.snap_to_grid, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_snap_to_grid],
-	['SNAP_TO_GUIDES', _('Snap to guides'), _('Snap to guides'), None, '<Control>I',
+	['SNAP_TO_GUIDES', _('Snap to guides'), _('Snap to guides'), icons.STOCK_SNAP_TO_GUIDES, '<Control>I',
 	 proxy.snap_to_guides, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_snap_to_guides],
-	['SNAP_TO_OBJECTS', _('Snap to objects'), _('Snap to objects'), None, None,
+	['SNAP_TO_OBJECTS', _('Snap to objects'), _('Snap to objects'), icons.STOCK_SNAP_TO_OBJECTS, None,
 	 proxy.snap_to_objects, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_snap_to_objects],
-	['SNAP_TO_PAGE', _('Snap to page'), _('Snap to page'), None, None,
+	['SNAP_TO_PAGE', _('Snap to page'), _('Snap to page'), icons.STOCK_SNAP_TO_PAGE, None,
 	 proxy.snap_to_page, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_snap_to_page],
 
 	]
