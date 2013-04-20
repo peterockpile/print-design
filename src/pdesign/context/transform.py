@@ -19,7 +19,7 @@ import os
 import gtk
 
 from pdesign import _, config
-from pdesign.widgets import ActionButton, AngleSpin
+from pdesign.widgets import ActionButton, AngleSpin, ActionToggleButton
 
 class ActionPlugin(gtk.HBox):
 
@@ -108,5 +108,21 @@ class ToCurvePlugin(ActionPlugin):
 		self.but = ActionButton(self.actions['CONVERT_TO_CURVES'])
 		self.pack_start(self.but, False, False, 0)
 
+class SnappingPlugin(ActionPlugin):
+
+	name = 'SnappingPlugin'
+
+	def build(self):
+		self.but = ActionToggleButton(self.actions['SNAP_TO_GRID'])
+		self.pack_start(self.but, False, False, 0)
+
+		self.but = ActionToggleButton(self.actions['SNAP_TO_GUIDES'])
+		self.pack_start(self.but, False, False, 0)
+
+		self.but = ActionToggleButton(self.actions['SNAP_TO_OBJECTS'])
+		self.pack_start(self.but, False, False, 0)
+
+		self.but = ActionToggleButton(self.actions['SNAP_TO_PAGE'])
+		self.pack_start(self.but, False, False, 0)
 
 
