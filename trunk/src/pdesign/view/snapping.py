@@ -63,7 +63,22 @@ class SnapManager:
 		el.connect(el.PAGE_CHANGED, self.update)
 
 	def update(self, *args):
+		if self.snap_to_guides:
+			self.update_guides_grid()
+		if self.snap_to_grid:
+			self.update_grid()
+		if self.snap_to_objects:
+			self.update_objects_grid()
+		if self.snap_to_page:
+			self.update_page_grid()
+
+	def update_grid(self):
 		self._calc_grid()
+
+	def update_guides_grid(self):pass
+	def update_objects_grid(self):pass
+
+	def update_page_grid(self):
 		self._calc_page_grid()
 
 	def _calc_grid(self):
