@@ -194,7 +194,7 @@ class PDRenderer(CairoRenderer):
 			self._draw_frame(path)
 
 	def reflect_snap(self):
-		if config.show_snap:
+		if self.canvas.show_snapping:
 			snap = self.presenter.snap.active_snap
 			if not snap[0] is None or not snap[1] is None:
 				self.ctx.set_matrix(self.direct_matrix)

@@ -139,6 +139,17 @@ class AppProxy:
 				canvas.force_redraw()
 				return
 
+	def show_snapping(self, action):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.show_snapping and not action.get_active():
+				canvas.show_snapping = False
+				return
+			if not canvas.show_snapping and action.get_active():
+				canvas.show_snapping = True
+				self.app.current_doc.snap.active_snap = [None, None]
+				return
+
 	def show_grid(self, action):
 		if self.insp.is_doc():
 			methods = self.app.current_doc.methods
