@@ -233,6 +233,7 @@ class PD_Presenter:
 			if layer.properties[1]:layers.append(layer)
 		for layer in self.methods.get_master_layers():
 			if layer.properties[1]:layers.append(layer)
+		return layers
 
 	def get_visible_layers(self, page=None):
 		if page is None: page = self.active_page
@@ -243,6 +244,7 @@ class PD_Presenter:
 			if layer.properties[0]:layers.append(layer)
 		for layer in self.methods.get_master_layers():
 			if layer.properties[0]:layers.append(layer)
+		return layers
 
 	def get_page_size(self, page=None):
 		if page is None:
