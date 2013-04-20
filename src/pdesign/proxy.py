@@ -163,6 +163,7 @@ class AppProxy:
 				return
 			if not snap.snap_to_grid and action.get_active():
 				snap.snap_to_grid = True
+				snap.update_grid()
 				return
 
 	def snap_to_guides(self, action):
@@ -173,6 +174,7 @@ class AppProxy:
 				return
 			if not snap.snap_to_guides and action.get_active():
 				snap.snap_to_guides = True
+				snap.update_guides_grid()
 				return
 
 	def snap_to_objects(self, action):
@@ -183,6 +185,7 @@ class AppProxy:
 				return
 			if not snap.snap_to_objects and action.get_active():
 				snap.snap_to_objects = True
+				snap.update_objects_grid()
 				return
 
 	def snap_to_page(self, action):
@@ -193,6 +196,7 @@ class AppProxy:
 				return
 			if not snap.snap_to_page and action.get_active():
 				snap.snap_to_page = True
+				snap.update_page_grid()
 				return
 
 	def zoom_in(self, *args):
