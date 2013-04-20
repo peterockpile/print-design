@@ -17,6 +17,7 @@
 
 import math
 
+from uc2 import libgeom
 from uc2.formats.pdxf import const
 
 from pdesign import config
@@ -44,6 +45,7 @@ class SnapManager:
 	grid_win = []
 	grid_doc = []
 	page_grid = []
+	objects_grid = []
 
 	def __init__(self, presenter):
 
@@ -76,7 +78,16 @@ class SnapManager:
 		self._calc_grid()
 
 	def update_guides_grid(self):pass
-	def update_objects_grid(self):pass
+
+	def update_objects_grid(self):
+		self.objects_grid = [[], []]
+		layers = self.presenter.get_visible_layers()
+		for layer in layers:
+			for object in layer.childs:
+				points = libgeom.bbox_middle_points(object.cache_bbox)
+				for point in points:
+					self.objects_grid[0].append(point[0])
+					self.objects_grid[1].append(point[1])
 
 	def update_page_grid(self):
 		self._calc_page_grid()
@@ -124,6 +135,35 @@ class SnapManager:
 	def _calc_page_grid(self):
 		w, h = self.presenter.get_page_size()
 		self.page_grid = [[-w / 2.0, 0.0, w / 2.0], [-h / 2.0, 0.0, h / 2.0]]
+
+	def _snap_point_to_dict(self, point, doc_point, dict):
+		ret = False
+		self.active_snap = [None, None]
+		x = point[0]
+		x_doc = doc_point[0]
+		y = point[1]
+		y_doc = doc_point[1]
+		snap_dist = config.snap_distance / self.canvas.zoom
+
+		if self.snap_x:
+			for item in dict[0]:
+				if abs(item - doc_point[0]) < snap_dist:
+					ret = True
+					x = self.canvas.point_doc_to_win([item, doc_point[1]])[0]
+					x_doc = item
+					self.active_snap[0] = x_doc
+					break
+
+		if self.snap_y:
+			for item in dict[1]:
+				if abs(item - doc_point[1]) < snap_dist:
+					ret = True
+					y = self.canvas.point_doc_to_win([doc_point[0], item])[1]
+					y_doc = item
+					self.active_snap[1] = y_doc
+					break
+
+		return ret, [x, y], [x_doc, y_doc]
 
 	#---------- Point snapping --------------------
 
@@ -187,34 +227,8 @@ class SnapManager:
 		return False, point, doc_point
 
 	def snap_point_to_objects(self, point, doc_point):
-		return False, point, doc_point
+		return self._snap_point_to_dict(point, doc_point, self.objects_grid)
 
 	def snap_point_to_page(self, point, doc_point):
-		ret = False
-		self.active_snap = [None, None]
-		x = point[0]
-		x_doc = doc_point[0]
-		y = point[1]
-		y_doc = doc_point[1]
-		snap_dist = config.snap_distance / self.canvas.zoom
-
-		if self.snap_x:
-			for item in self.page_grid[0]:
-				if abs(item - doc_point[0]) < snap_dist:
-					ret = True
-					x = self.canvas.point_doc_to_win([item, doc_point[1]])[0]
-					x_doc = item
-					self.active_snap[0] = x_doc
-					break
-
-		if self.snap_y:
-			for item in self.page_grid[1]:
-				if abs(item - doc_point[1]) < snap_dist:
-					ret = True
-					y = self.canvas.point_doc_to_win([doc_point[0], item])[1]
-					y_doc = item
-					self.active_snap[1] = y_doc
-					break
-
-		return ret, [x, y], [x_doc, y_doc]
+		return self._snap_point_to_dict(point, doc_point, self.page_grid)
 
