@@ -68,6 +68,14 @@ class AppMenubar(gtk.MenuBar):
 		]
 		self.add_items(self.edit_menu, items)
 
+		#----SHOW TO Submenu
+		self.show_item, self.show_menu = self.create_menu(_("_Show"))
+		items = ['SHOW_GRID',
+#				 'SHOW_GUIDES',
+				 'SHOW_SNAP',
+				 'SHOW_PAGE', ]
+		self.add_items(self.show_menu, items)
+
 		#----SNAP TO Submenu
 		self.snap_to_item, self.snap_to_menu = self.create_menu(_("_Snap to"))
 		items = ['SNAP_TO_GRID',
@@ -88,10 +96,7 @@ class AppMenubar(gtk.MenuBar):
 				 'ZOOM_PAGE',
 				 'ZOOM_SELECTED',
 				 None,
-				 'SHOW_GRID',
-#				 ('SHOW_GUIDES',),
-				 'SHOW_SNAP',
-				 'SHOW_PAGE',
+				 self.show_item,
 				 None,
 				 self.snap_to_item,
 				 None,
