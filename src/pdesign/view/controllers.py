@@ -972,7 +972,7 @@ class TransformController(AbstractController):
 						dx = point[0] - p_doc[0]
 						m11 = m22 = (w + dx) / w
 						dx = -(bbox[2] * m11 - bbox[2])
-						dy = -(bbox[1] * m22 - bbox[1])
+						dy = -(bbox[3] * m22 - bbox[3])
 						snap[0] = self.snap.active_snap[0]
 					else:
 						point = middle_points[3]
