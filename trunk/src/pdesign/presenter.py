@@ -224,6 +224,26 @@ class PD_Presenter:
 	def set_active_layer(self, page, layer_num=0):
 		self.active_layer = self.doc_presenter.methods.get_layer(page, layer_num)
 
+	def get_editable_layers(self, page=None):
+		if page is None: page = self.active_page
+		layers = []
+		for layer in self.methods.get_desktop_layers():
+			if layer.properties[1]:layers.append(layer)
+		for layer in page.childs:
+			if layer.properties[1]:layers.append(layer)
+		for layer in self.methods.get_master_layers():
+			if layer.properties[1]:layers.append(layer)
+
+	def get_visible_layers(self, page=None):
+		if page is None: page = self.active_page
+		layers = []
+		for layer in self.methods.get_desktop_layers():
+			if layer.properties[0]:layers.append(layer)
+		for layer in page.childs:
+			if layer.properties[0]:layers.append(layer)
+		for layer in self.methods.get_master_layers():
+			if layer.properties[0]:layers.append(layer)
+
 	def get_page_size(self, page=None):
 		if page is None:
 			page = self.active_page
