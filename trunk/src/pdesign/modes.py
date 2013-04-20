@@ -51,7 +51,8 @@ RESIZE_MODE13 = 30
 RESIZE_MODE10_COPY = 31
 RESIZE_MODE11_COPY = 32
 RESIZE_MODE13_COPY = 33
-
+VGUIDE_MODE = 34
+HGUIDE_MODE = 35
 
 MODE_LIST = [SELECT_MODE, SHAPER_MODE, ZOOM_MODE, LINE_MODE,
 			CURVE_MODE, RECT_MODE, ELLIPSE_MODE, TEXT_MODE,
@@ -89,6 +90,8 @@ def get_cursors():
 			RESIZE_MODE11_COPY:('cur_resize11_copy.png', (10, 10)),
 			RESIZE_MODE13:('cur_resize13.png', (10, 10)),
 			RESIZE_MODE13_COPY:('cur_resize13_copy.png', (10, 10)),
+			VGUIDE_MODE:('cur_vguide.png', (12, 12)),
+			HGUIDE_MODE:('cur_hguide.png', (12, 12)),
 			}
 	keys = cursors.keys()
 	for key in keys:
