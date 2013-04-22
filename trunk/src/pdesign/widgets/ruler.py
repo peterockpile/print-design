@@ -201,7 +201,7 @@ class Ruler(gtk.DrawingArea):
 			self.window.set_cursor(self.guide_cursor)
 
 	def mouse_down(self, widget, event):
-		w, h = self.allocation[2:]
+		x, y, w, h = self.allocation
 		w = float(w)
 		h = float(h)
 		self.width = w
