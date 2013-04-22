@@ -295,9 +295,8 @@ def create_actions(app):
 
 	['SHOW_GRID', _('Show grid'), _('Show grid'), None, None,
 	 proxy.show_grid, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_grid_visible],
-#	['SHOW_GUIDES', _('Show guides'), _('Show guides'), None, None,
-#	 proxy.stub, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_doc],
-#
+	['SHOW_GUIDES', _('Show guides'), _('Show guides'), None, None,
+	 proxy.show_guides, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_guides_visible],
 	['SHOW_SNAP', _('Show active snapping'), _('Show active snapping'), None, None,
 	 proxy.show_snapping, [NO_DOCS, DOC_CHANGED], insp.is_doc, insp.is_show_snapping],
 	['SHOW_PAGE', _('Show page border'), _('Show page border'), None, None,

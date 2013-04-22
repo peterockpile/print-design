@@ -71,7 +71,7 @@ class AppMenubar(gtk.MenuBar):
 		#----SHOW TO Submenu
 		self.show_item, self.show_menu = self.create_menu(_("_Show"))
 		items = ['SHOW_GRID',
-#				 'SHOW_GUIDES',
+				 'SHOW_GUIDES',
 				 'SHOW_SNAP',
 				 'SHOW_PAGE', ]
 		self.add_items(self.show_menu, items)

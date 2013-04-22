@@ -261,6 +261,14 @@ class DocumentInspector:
 		if doc is None: return False
 		return self.app.current_doc.canvas.stroke_view
 
+	def is_guides_visible(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		methods = self.app.current_doc.methods
+		guide_layer = methods.get_guide_layer()
+		if guide_layer.properties[0]: return True
+		return False
+
 	def is_grid_visible(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
