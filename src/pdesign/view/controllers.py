@@ -20,19 +20,13 @@ import math
 import gtk
 import gobject
 
-from pdesign import config
-from pdesign import modes
-
 from uc2 import libgeom
 
-RENDERING_DELAY = 50
+from pdesign import config, modes
+from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
 
 ZOOM_IN = 1.25
 ZOOM_OUT = 0.8
-
-LEFT_BUTTON = 1
-MIDDLE_BUTTON = 2
-RIGHT_BUTTON = 3
 
 class AbstractController:
 

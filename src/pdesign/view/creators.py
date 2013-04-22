@@ -22,14 +22,9 @@ from uc2.libgeom import contra_point, bezier_base_point, apply_trafo_to_paths, \
 from uc2.formats.pdxf import const, model
 
 from pdesign import modes, config
-
+from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
 from pdesign.view.controllers import AbstractController
 
-RENDERING_DELAY = 50
-
-LEFT_BUTTON = 1
-MIDDLE_BUTTON = 2
-RIGHT_BUTTON = 3
 
 class AbstractCreator(AbstractController):
 
@@ -54,6 +49,21 @@ class AbstractCreator(AbstractController):
 					mark = self.selection.is_point_over_marker(dpoint)[0]
 					self.canvas.resize_marker = mark
 					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+
+class VGuideCreator(AbstractCreator):
+
+	mode = modes.VGUIDE_MODE
+
+	def __init__(self, canvas, presenter):
+		AbstractCreator.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):pass
+	def mouse_up(self, event):
+		self.canvas.restore_mode()
+
+	def mouse_move(self, event):print 'here'
+	def repaint(self):pass
+
 
 class RectangleCreator(AbstractCreator):
 
