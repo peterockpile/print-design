@@ -242,3 +242,38 @@ class SnapManager:
 	def snap_point_to_page(self, point, doc_point):
 		return self._snap_point_to_dict(point, doc_point, self.page_grid)
 
+	def is_over_guide(self, point):
+		doc_point = self.canvas.point_win_to_doc(point)
+		ret = False
+		dict = self.guides_grid
+
+		active_guide = None
+		pos = 0
+		orient = 0
+		snap_dist = config.snap_distance / (2.0 * self.canvas.zoom)
+
+		for item in dict[0]:
+			if abs(item - doc_point[0]) < snap_dist:
+				ret = True
+				pos = item
+				orient = uc2const.VERTICAL
+				break
+
+		for item in dict[1]:
+			if abs(item - doc_point[1]) < snap_dist:
+				ret = True
+				pos = item
+				orient = uc2const.HORIZONTAL
+				break
+
+		if ret: active_guide = self.find_guide(pos, orient)
+		return ret, active_guide
+
+	def find_guide(self, pos, orient):
+		guide_layer = self.methods.get_guide_layer()
+		if not self.methods.is_layer_visible(guide_layer): return
+		for child in guide_layer.childs:
+			if child.cid == model.GUIDE:
+				if child.orientation == orient and child.position == pos:
+					return child
+		return None
