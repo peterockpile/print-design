@@ -117,11 +117,12 @@ class PDRenderer(CairoRenderer):
 				stroke[1] = 1.0 / self.canvas.zoom
 			self.render(self.ctx, layer.childs)
 
-	#------GRID RENDERING
+	#------GUIDES RENDERING
 	def render_guides(self):
 		guides = []
 		methods = self.presenter.methods
 		guide_layer = methods.get_guide_layer()
+		if not methods.is_layer_visible(guide_layer): return
 		for child in guide_layer.childs:
 			if child.cid == model.GUIDE:
 				guides.append(child)
@@ -143,61 +144,62 @@ class PDRenderer(CairoRenderer):
 					self.ctx.line_to(x_win, self.height)
 					self.ctx.stroke()
 
+	#------GRID RENDERING
 	def render_grid(self):
 		methods = self.presenter.methods
 		grid_layer = methods.get_gird_layer()
-		if methods.is_layer_visible(grid_layer):
+		if not methods.is_layer_visible(grid_layer):return
 
-			self.ctx.set_matrix(self.direct_matrix)
-			self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
-			self.ctx.set_source_rgba(*grid_layer.color)
-			self.ctx.set_line_width(1.0)
+		self.ctx.set_matrix(self.direct_matrix)
+		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+		self.ctx.set_source_rgba(*grid_layer.color)
+		self.ctx.set_line_width(1.0)
 
-			w, h = self.presenter.get_page_size()
-			x, y, dx, dy = grid_layer.grid
-			origin = self.presenter.model.doc_origin
-			if origin == const.DOC_ORIGIN_LL:
-				x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
-			elif origin == const.DOC_ORIGIN_LU:
-				x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, h / 2.0 + y])
-			else:
-				x0, y0 = self.canvas.point_doc_to_win([x, y])
-			dx = dx * self.canvas.zoom
-			dy = dy * self.canvas.zoom
-			sdist = config.snap_distance
+		w, h = self.presenter.get_page_size()
+		x, y, dx, dy = grid_layer.grid
+		origin = self.presenter.model.doc_origin
+		if origin == const.DOC_ORIGIN_LL:
+			x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
+		elif origin == const.DOC_ORIGIN_LU:
+			x0, y0 = self.canvas.point_doc_to_win([-w / 2.0 + x, h / 2.0 + y])
+		else:
+			x0, y0 = self.canvas.point_doc_to_win([x, y])
+		dx = dx * self.canvas.zoom
+		dy = dy * self.canvas.zoom
+		sdist = config.snap_distance
 
-			i = 0.0
-			while dx < sdist + 3:
-				i = i + 0.5
-				dx = dx * 10.0 * i
-			if dx / 2.0 > sdist + 3:
-				dx = dx / 2.0
+		i = 0.0
+		while dx < sdist + 3:
+			i = i + 0.5
+			dx = dx * 10.0 * i
+		if dx / 2.0 > sdist + 3:
+			dx = dx / 2.0
 
-			i = 0.0
-			while dy < sdist + 3:
-				i = i + 0.5
-				dy = dy * 10.0 * i
-			if dy / 2.0 > sdist + 3:
-				dy = dy / 2.0
+		i = 0.0
+		while dy < sdist + 3:
+			i = i + 0.5
+			dy = dy * 10.0 * i
+		if dy / 2.0 > sdist + 3:
+			dy = dy / 2.0
 
-			sx = (x0 / dx - math.floor(x0 / dx)) * dx
-			sy = (y0 / dy - math.floor(y0 / dy)) * dy
+		sx = (x0 / dx - math.floor(x0 / dx)) * dx
+		sy = (y0 / dy - math.floor(y0 / dy)) * dy
 
-			i = pos = 0
-			while pos < self.width:
-				pos = sx + i * dx
-				i += 1
-				self.ctx.move_to(pos, 0)
-				self.ctx.line_to(pos, self.height)
-				self.ctx.stroke()
-			i = pos = 0
-			while pos < self.height:
-				pos = sy + i * dy
-				i += 1
-				self.ctx.move_to(0, pos)
-				self.ctx.line_to(self.width, pos)
-				self.ctx.stroke()
-			self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
+		i = pos = 0
+		while pos < self.width:
+			pos = sx + i * dx
+			i += 1
+			self.ctx.move_to(pos, 0)
+			self.ctx.line_to(pos, self.height)
+			self.ctx.stroke()
+		i = pos = 0
+		while pos < self.height:
+			pos = sy + i * dy
+			i += 1
+			self.ctx.move_to(0, pos)
+			self.ctx.line_to(self.width, pos)
+			self.ctx.stroke()
+		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
 
 	#------MARKER RENDERING
 
