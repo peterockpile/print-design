@@ -15,6 +15,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+LEFT_BUTTON = 1
+MIDDLE_BUTTON = 2
+RIGHT_BUTTON = 3
+
+RENDERING_DELAY = 50
+
 SNAP_TO_GRID = 0
 SNAP_TO_GUIDES = 1
 SNAP_TO_OBJECTS = 2
