@@ -50,21 +50,6 @@ class AbstractCreator(AbstractController):
 					self.canvas.resize_marker = mark
 					self.canvas.set_temp_mode(modes.RESIZE_MODE)
 
-class VGuideCreator(AbstractCreator):
-
-	mode = modes.VGUIDE_MODE
-
-	def __init__(self, canvas, presenter):
-		AbstractCreator.__init__(self, canvas, presenter)
-
-	def mouse_down(self, event):pass
-	def mouse_up(self, event):
-		self.canvas.restore_mode()
-
-	def mouse_move(self, event):print 'here'
-	def repaint(self):pass
-
-
 class RectangleCreator(AbstractCreator):
 
 	mode = modes.RECT_MODE
