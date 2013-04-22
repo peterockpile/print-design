@@ -215,7 +215,7 @@ class AppCanvas(gtk.DrawingArea):
 		self.mw.v_adj.set_value(-y)
 
 	def _keep_center(self):
-		x, y, w, h = self.allocation
+		w, h = self.allocation[2:]
 		w = float(w)
 		h = float(h)
 		if not w == self.width or not h == self.height:
@@ -291,7 +291,7 @@ class AppCanvas(gtk.DrawingArea):
 	def _fit_to_page(self):
 		width, height = self.presenter.get_page_size()
 
-		x, y, w, h = self.allocation
+		w, h = self.allocation[2:]
 		w = float(w)
 		h = float(h)
 		self.width = w
@@ -335,7 +335,7 @@ class AppCanvas(gtk.DrawingArea):
 		self._zoom(zoom)
 
 	def zoom_to_rectangle(self, start, end):
-		x, y, w, h = self.allocation
+		w, h = self.allocation[2:]
 		w = float(w)
 		h = float(h)
 		self.width = w

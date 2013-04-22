@@ -87,8 +87,8 @@ class AbstractController:
 			self.start = [event.x, event.y]
 			self.end = [event.x, event.y]
 			if self.check_snap:
-				flag, self.start, self.start_doc = self.snap.snap_point(self.start)
-				flag, self.end, self.end_doc = self.snap.snap_point(self.end)
+				self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
+				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 			self.counter = 0
 			self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
 		elif event.button == MIDDLE_BUTTON:
@@ -102,7 +102,7 @@ class AbstractController:
 				self.counter = 0
 				self.end = [event.x, event.y]
 				if self.check_snap:
-					flag, self.end, self.end_doc = self.snap.snap_point(self.end)
+					self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 				self.canvas.renderer.stop_draw_frame(self.start, self.end)
 				self.do_action(event)
 
@@ -110,7 +110,7 @@ class AbstractController:
 		if self.draw:
 			self.end = [event.x, event.y]
 			if self.check_snap:
-				flag, self.end, self.end_doc = self.snap.snap_point(self.end)
+				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 
 
 	def wheel(self, event):
@@ -308,7 +308,7 @@ class GuideController(AbstractController):
 	def mouse_move(self, event):
 		self.end = [event.x, event.y]
 		if not self.draw:
-			ret, guide = self.snap.is_over_guide(self.end)
+			ret = self.snap.is_over_guide(self.end)[0]
 			if not ret:
 				self.canvas.restore_mode()
 
@@ -316,12 +316,12 @@ class GuideController(AbstractController):
 		self.end = [event.x, event.y]
 		self.draw = False
 		if self.mode == modes.HGUIDE_MODE and self.end[1] > 0:
-			f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)
+			p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)[2]
 			pos = p_doc[1]
 			orient = uc2const.HORIZONTAL
 			self.presenter.api.set_guide_propeties(self.guide, pos, orient)
 		elif self.mode == modes.VGUIDE_MODE and self.end[0] > 0:
-			f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)
+			p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)[2]
 			orient = uc2const.VERTICAL
 			pos = p_doc[0]
 			self.presenter.api.set_guide_propeties(self.guide, pos, orient)
@@ -356,9 +356,9 @@ class GuideController(AbstractController):
 		orient = uc2const.HORIZONTAL
 		if self.end:
 			if self.mode == modes.HGUIDE_MODE:
-				f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)
+				p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)[2]
 			else:
-				f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)
+				p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)[2]
 				orient = uc2const.VERTICAL
 		self.canvas.renderer.paint_guide_dragging(p_doc, orient)
 		return True
