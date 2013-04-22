@@ -212,12 +212,26 @@ class Ruler(gtk.DrawingArea):
 
 	def mouse_up(self, widget, event):
 		self.pointer = [event.x, event.y]
+		if self.orient == HORIZONTAL:
+			y_win = self.pointer[1] - self.height
+			if y_win > 0.0:
+				p = [self.pointer[0], y_win]
+				f, p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)
+				self.presenter.api.create_guides([[p_doc[1], HORIZONTAL], ])
+		else:
+			x_win = self.pointer[0] - self.width
+			if x_win > 0.0:
+				p = [x_win, self.pointer[1]]
+				f, p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)
+				self.presenter.api.create_guides([[p_doc[0], VERTICAL], ])
+
 		self.set_cursor(DEFAULT_CURSOR)
 		if not  self.timer is None:
 			gobject.source_remove(self.timer)
 		self.draw_guide = False
 		self.pointer = []
 		self.repaint_guide()
+		self.canvas.selection_repaint()
 
 	def mouse_move(self, widget, event):
 		if self.draw_guide:
