@@ -113,6 +113,9 @@ class AbstractAPI:
 	def _set_layer_properties(self, layer, prop):
 		layer.properties = prop
 
+	def _set_guide_properties(self, guide, pos, orient):
+		guide.position = pos
+		guide.orientation = orient
 
 	def _set_selection(self, objs):
 		self.selection.objs = [] + objs
@@ -981,6 +984,39 @@ class PresenterAPI(AbstractAPI):
 			False]
 		self.add_undo(transaction)
 		self.selection.update()
+
+	def set_guide_propeties(self, guide, pos, orient):
+		pos_before = guide.position
+		orient_before = guide.orientation
+		self._set_guide_properties(guide, pos, orient)
+		pos_after = pos
+		orient_after = orient
+		transaction = [
+			[[self._set_guide_properties, guide, pos_before, orient_before], ],
+			[[self._set_guide_properties, guide, pos_after, orient_after], ],
+			False]
+		self.add_undo(transaction)
+
+	def delete_guides(self, objs=[]):
+		if objs:
+			objs_list = []
+			parent = self.methods.get_guide_layer()
+			for obj in objs:
+				objs_list.append([obj, parent, -1])
+			self._delete_objects(objs_list)
+			transaction = [
+				[[self._insert_objects, objs_list]],
+				[[self._delete_objects, objs_list]],
+				False]
+			self.add_undo(transaction)
+
+	def delete_all_guides(self):
+		guides = []
+		guide_layer = self.methods.get_guide_layer()
+		for child in guide_layer.childs:
+			if child.cid == model.GUIDE:
+				guides.append(child)
+		self.delete_guides(guides)
 
 
 
