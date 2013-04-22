@@ -138,9 +138,7 @@ class AbstractAPI:
 
 	def _get_layers_snapshot(self):
 		layers_snapshot = []
-		model = self.presenter.model
-		page = self.presenter.active_page
-		layers = page.childs + model.childs[1].childs
+		layers = self.presenter.get_editable_layers()
 		for layer in layers:
 			layers_snapshot.append([layer, [] + layer.childs])
 		return layers_snapshot
