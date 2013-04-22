@@ -209,6 +209,15 @@ def create_actions(app):
 	gtk.STOCK_REFRESH, '<Alt>R', proxy.force_redraw,
 	[NO_DOCS, DOC_CHANGED], insp.is_doc],
 
+	['PAGE_FRAME', _('Create page frame'), _('Create page frame'), icons.STOCK_PAGE_FRAME, None,
+	 proxy.create_page_border, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['PAGE_GUIDE_FRAME', _('Guides along page border'), _('Guides along page border'),
+	icons.STOCK_PAGE_GUIDE_FRAME, None, proxy.create_guide_border, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['REMOVE_ALL_GUIDES', _('Remove all guides'), _('Remove all guides'), icons.STOCK_REMOVE_ALL_GUIDES, None,
+	 proxy.remove_all_guides, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+	['GUIDES_AT_CENTER', _('Guides at page center'), _('Guides at page center'), icons.STOCK_GUIDES_AT_CENTER, None,
+	 proxy.create_guides_at_center, [NO_DOCS, DOC_CHANGED], insp.is_doc],
+
 	#------ Layout -------
 	['INSERT_PG', _('Insert page...'), _('Insert page'), None, None,
 	 proxy.insert_page, [NO_DOCS, DOC_CHANGED], insp.is_doc],
