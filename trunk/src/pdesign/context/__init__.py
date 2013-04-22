@@ -19,17 +19,18 @@ import os, gtk
 
 from pdesign import _, config, events
 from pdesign.context.transform import GroupPlugin, MirrorPlugin, RotatePlugin, \
-									ToCurvePlugin, CombinePlugin, SnappingPlugin
+ToCurvePlugin, CombinePlugin, SnappingPlugin, PageBorderPlugin
 from pdesign.context.units import UnitsPlugin
 from pdesign.context.resize import ResizePlugin
 from pdesign.context.page_format import PageFormatPlugin
 from pdesign.context.jump import JumpPlugin
 
 PLUGINS = [UnitsPlugin, GroupPlugin, MirrorPlugin, RotatePlugin, ResizePlugin,
-		PageFormatPlugin, ToCurvePlugin, JumpPlugin, CombinePlugin, SnappingPlugin ]
+		PageFormatPlugin, ToCurvePlugin, JumpPlugin, CombinePlugin, SnappingPlugin,
+		PageBorderPlugin, ]
 
 NO_DOC = []
-DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', 'JumpPlugin', 'SnappingPlugin']
+DEFAULT = ['PageFormatPlugin', 'UnitsPlugin', 'JumpPlugin', 'SnappingPlugin', 'PageBorderPlugin']
 MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'SnappingPlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin', 'SnappingPlugin']

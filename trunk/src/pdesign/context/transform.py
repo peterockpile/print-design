@@ -125,4 +125,17 @@ class SnappingPlugin(ActionPlugin):
 		self.but = ActionToggleButton(self.actions['SNAP_TO_PAGE'])
 		self.pack_start(self.but, False, False, 0)
 
+class PageBorderPlugin(ActionPlugin):
+
+	name = 'PageBorderPlugin'
+
+	def build(self):
+		self.but = ActionButton(self.actions['PAGE_FRAME'])
+		self.pack_start(self.but, False, False, 0)
+		self.but = ActionButton(self.actions['PAGE_GUIDE_FRAME'])
+		self.pack_start(self.but, False, False, 0)
+		self.but = ActionButton(self.actions['GUIDES_AT_CENTER'])
+		self.pack_start(self.but, False, False, 0)
+		self.but = ActionButton(self.actions['REMOVE_ALL_GUIDES'])
+		self.pack_start(self.but, False, False, 0)
 
