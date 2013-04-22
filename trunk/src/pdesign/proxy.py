@@ -166,6 +166,23 @@ class AppProxy:
 				api.set_layer_properties(grid_layer, prop)
 				return
 
+	def show_guides(self, action):
+		if self.insp.is_doc():
+			methods = self.app.current_doc.methods
+			api = self.app.current_doc.api
+			guide_layer = methods.get_guide_layer()
+			if guide_layer.properties[0] and not action.get_active():
+				prop = [] + guide_layer.properties
+				prop[0] = 0
+				api.set_layer_properties(guide_layer, prop)
+				return
+			if not guide_layer.properties[0] and action.get_active():
+				prop = [] + guide_layer.properties
+				prop[0] = 1
+				api.set_layer_properties(guide_layer, prop)
+				self.app.current_doc.snap.update_guides_grid()
+				return
+
 	def snap_to_grid(self, action):
 		if self.insp.is_doc():
 			snap = self.app.current_doc.snap
