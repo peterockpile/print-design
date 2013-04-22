@@ -17,6 +17,7 @@
 
 import math
 
+from uc2 import uc2const
 from pdesign import dialogs
 from pdesign import modes, config
 from pdesign.dialogs import prefs
@@ -226,6 +227,28 @@ class AppProxy:
 				snap.snap_to_page = True
 				snap.update_page_grid()
 				return
+
+	def create_page_border(self, *args):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_rectangle([-w / 2.0, -h / 2.0, w / 2.0, h / 2.0])
+
+	def create_guide_border(self, *args):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_guides([[-w / 2.0, uc2const.VERTICAL],
+						[ -h / 2.0, uc2const.HORIZONTAL],
+						[ w / 2.0, uc2const.VERTICAL],
+						[h / 2.0, uc2const.HORIZONTAL]])
+
+	def create_guides_at_center(self, *args):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_guides([[0, uc2const.VERTICAL],
+						[ 0, uc2const.HORIZONTAL]])
+
+	def remove_all_guides(self, *args):
+		self.app.current_doc.api.delete_all_guides()
 
 	def zoom_in(self, *args):
 		self.app.current_doc.canvas.zoom_in()
