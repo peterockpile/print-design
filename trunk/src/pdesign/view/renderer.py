@@ -19,6 +19,7 @@ from copy import deepcopy
 
 import cairo, math
 
+from uc2 import uc2const
 from uc2.formats.pdxf import model, const
 from uc2.formats.pdxf.crenderer import CairoRenderer
 from uc2 import libcairo
@@ -214,6 +215,26 @@ class PDRenderer(CairoRenderer):
 					self.ctx.stroke()
 				self.presenter.snap.active_snap = [None, None]
 
+	def paint_guide_dragging(self, point=[], orient=uc2const.HORIZONTAL):
+		self.start_soft_repaint()
+		self.ctx.set_matrix(self.direct_matrix)
+		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+		self.ctx.set_line_width(1.0)
+		self.ctx.set_dash(config.guide_line_dash)
+		self.ctx.set_source_rgba(*config.guide_line_dragging_color)
+		if point:
+			if orient == uc2const.HORIZONTAL:
+				y_win = self.canvas.point_doc_to_win(point)[1]
+				self.ctx.move_to(0, y_win)
+				self.ctx.line_to(self.width, y_win)
+				self.ctx.stroke()
+			else:
+				x_win = self.canvas.point_doc_to_win(point)[0]
+				self.ctx.move_to(x_win, 0)
+				self.ctx.line_to(x_win, self.height)
+				self.ctx.stroke()
+			self.reflect_snap()
+		self.end_soft_repaint()
 
 	def _draw_frame(self, path):
 		self.start_soft_repaint()
