@@ -81,6 +81,7 @@ class SnapManager:
 	def update_guides_grid(self):
 		self.guides_grid = [[], []]
 		guide_layer = self.methods.get_guide_layer()
+		if not self.methods.is_layer_visible(guide_layer): return
 		for child in guide_layer.childs:
 			if child.cid == model.GUIDE:
 				if child.orientation == uc2const.HORIZONTAL:
