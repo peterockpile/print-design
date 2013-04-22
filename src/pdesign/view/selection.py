@@ -99,9 +99,7 @@ class Selection:
 
 	def select_by_rect(self, rect, flag=False):
 		result = []
-		model = self.presenter.model
-		page = self.presenter.active_page
-		layers = page.childs + model.childs[1].childs
+		layers = self.presenter.get_editable_layers()
 		for layer in layers:
 			for obj in layer.childs:
 				if is_bbox_in_rect(rect, obj.cache_bbox):
@@ -115,9 +113,7 @@ class Selection:
 
 	def _select_at_point(self, point):
 		result = []
-		model = self.presenter.model
-		page = self.presenter.active_page
-		layers = page.childs + model.childs[1].childs
+		layers = self.presenter.get_editable_layers()
 		layers.reverse()
 		rect = point + point
 		win_point = self.presenter.canvas.doc_to_win(point)
@@ -147,9 +143,7 @@ class Selection:
 
 	def select_all(self):
 		result = []
-		model = self.presenter.model
-		page = self.presenter.active_page
-		layers = page.childs + model.childs[1].childs
+		layers = self.presenter.get_editable_layers()
 		for layer in layers:
 			result += layer.childs
 		self.set(result)
