@@ -19,14 +19,17 @@ import operator
 from math import floor, ceil
 
 import gtk
+import gobject
 import cairo
 
-from uc2.uc2const import unit_dict
+from uc2.uc2const import unit_dict, HORIZONTAL, VERTICAL
 from uc2.formats.pdxf import const
 from uc2.utils import system
 
-from pdesign import _, config, events
+from pdesign import _, config, events, modes
+from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
 
+DEFAULT_CURSOR = -1
 SIZE = 18
 
 tick_lengths = (5, 4, 2, 2)
@@ -144,9 +147,6 @@ class RulerCorner(gtk.DrawingArea):
 			painter.line_to(job[3], job[4])
 			painter.stroke()
 
-HORIZONTAL = 0
-VERTICAL = 1
-
 class Ruler(gtk.DrawingArea):
 
 	exposed = False
@@ -154,12 +154,12 @@ class Ruler(gtk.DrawingArea):
 	def __init__(self, docarea, orient):
 		gtk.DrawingArea.__init__(self)
 		self.docarea = docarea
+		self.app = docarea.app
 		self.mw = docarea.app.mw
 		self.orient = orient
 		self.presenter = docarea.presenter
 		self.eventloop = self.presenter.eventloop
 		self.doc = self.presenter.model
-		self.viewport = docarea.canvas
 
 		self.origin = self.presenter.model.doc_origin
 		self.positions = None
@@ -170,10 +170,76 @@ class Ruler(gtk.DrawingArea):
 		else:
 			self.set_size_request(-1, SIZE)
 
+		self.default_cursor = gtk.gdk.Cursor(gtk.gdk.LEFT_PTR)
+		if self.orient == HORIZONTAL:
+			self.guide_cursor = self.app.cursors[modes.HGUIDE_MODE]
+		else:
+			self.guide_cursor = self.app.cursors[modes.VGUIDE_MODE]
+
+		self.set_property("can-focus", True)
+
+		self.add_events(gtk.gdk.BUTTON_PRESS_MASK |
+					gtk.gdk.POINTER_MOTION_MASK |
+					gtk.gdk.BUTTON_RELEASE_MASK)
+
+		self.pointer = []
+		self.draw_guide = False
+
 		self.connect('expose_event', self.repaint)
+		self.connect('button_press_event', self.mouse_down)
+		self.connect('motion_notify_event', self.mouse_move)
+		self.connect('button_release_event', self.mouse_up)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.check_config)
 		events.connect(events.CONFIG_MODIFIED, self.check_config)
+
+	#------ Guides creation
+	def set_cursor(self, mode=0):
+		if mode == DEFAULT_CURSOR:
+			self.window.set_cursor(self.default_cursor)
+		else:
+			self.window.set_cursor(self.guide_cursor)
+
+	def mouse_down(self, widget, event):
+		x, y, w, h = self.allocation
+		w = float(w)
+		h = float(h)
+		self.width = w
+		self.height = h
+		self.draw_guide = True
+		self.set_cursor()
+		self.timer = gobject.timeout_add(RENDERING_DELAY, self.repaint_guide)
+
+	def mouse_up(self, widget, event):
+		self.pointer = [event.x, event.y]
+		self.set_cursor(DEFAULT_CURSOR)
+		if not  self.timer is None:
+			gobject.source_remove(self.timer)
+		self.draw_guide = False
+		self.pointer = []
+		self.repaint_guide()
+
+	def mouse_move(self, widget, event):
+		if self.draw_guide:
+			self.pointer = [event.x, event.y]
+
+	def repaint_guide(self, *args):
+		p_doc = []
+		orient = HORIZONTAL
+		if self.draw_guide and self.pointer:
+			if self.orient == HORIZONTAL:
+				y_win = self.pointer[1] - self.height
+				p = [self.pointer[0], y_win]
+				f, p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)
+			else:
+				x_win = self.pointer[0] - self.width
+				p = [x_win, self.pointer[1]]
+				f, p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)
+				orient = VERTICAL
+		self.canvas.renderer.paint_guide_dragging(p_doc, orient)
+		return True
+
+	#------ Guides creation
 
 	def check_config(self, *args):
 		if not self.origin == self.presenter.model.doc_origin:
@@ -192,12 +258,12 @@ class Ruler(gtk.DrawingArea):
 		self.positions = None
 
 	def get_positions(self):
-		self.viewport = self.presenter.canvas
+		self.canvas = self.presenter.canvas
 		scale = 1.0
 		x = y = 0
-		if not self.viewport is None:
-			x, y = self.viewport.win_to_doc([0, 0])
-			scale = self.viewport.zoom
+		if not self.canvas is None:
+			x, y = self.canvas.win_to_doc([0, 0])
+			scale = self.canvas.zoom
 
 		w, h = self.presenter.get_page_size()
 		if self.origin == const.DOC_ORIGIN_LL:
@@ -334,6 +400,7 @@ class Ruler(gtk.DrawingArea):
 		if not self.exposed:
 			self.update_colors()
 			self.exposed = True
+			self.set_cursor(DEFAULT_CURSOR)
 
 		r, g, b = self.border_color
 		r0, g0, b0 = self.bg_color
