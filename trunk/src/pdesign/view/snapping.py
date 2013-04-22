@@ -31,6 +31,7 @@ class SnapManager:
 	canvas = None
 
 	active_snap = [None, None]
+	active_guide = None
 
 	snap_to_grid = config.snap_to_grid
 	snap_to_guides = config.snap_to_guides
@@ -247,7 +248,6 @@ class SnapManager:
 		ret = False
 		dict = self.guides_grid
 
-		active_guide = None
 		pos = 0
 		orient = 0
 		snap_dist = config.snap_distance / (2.0 * self.canvas.zoom)
@@ -266,8 +266,8 @@ class SnapManager:
 				orient = uc2const.HORIZONTAL
 				break
 
-		if ret: active_guide = self.find_guide(pos, orient)
-		return ret, active_guide
+		if ret: self.active_guide = self.find_guide(pos, orient)
+		return ret, self.active_guide
 
 	def find_guide(self, pos, orient):
 		guide_layer = self.methods.get_guide_layer()
