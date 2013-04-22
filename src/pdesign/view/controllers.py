@@ -20,7 +20,7 @@ import math
 import gtk
 import gobject
 
-from uc2 import libgeom
+from uc2 import libgeom, uc2const
 
 from pdesign import config, modes
 from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
@@ -236,6 +236,7 @@ class SelectController(AbstractController):
 		AbstractController.__init__(self, canvas, presenter)
 
 	def mouse_move(self, event):
+		self.snap = self.presenter.snap
 		if self.draw:
 			AbstractController.mouse_move(self, event)
 		else:
@@ -250,6 +251,8 @@ class SelectController(AbstractController):
 					mark = self.selection.is_point_over_marker(dpoint)[0]
 					self.canvas.resize_marker = mark
 					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+				elif self.snap.is_over_guide(point)[0]:
+					self.canvas.set_temp_mode(modes.GUIDE_MODE)
 
 	def do_action(self, event):
 		if self.start and self.end:
@@ -288,6 +291,77 @@ class PickController(AbstractController):
 		if not self.callback(obj):
 			self.callback = None
 			self.canvas.restore_mode()
+
+class GuideController(AbstractController):
+
+	mode = modes.HGUIDE_MODE
+	guide = None
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):
+		self.draw = True
+		self.end = [event.x, event.y]
+		self.timer = gobject.timeout_add(RENDERING_DELAY, self.repaint)
+
+	def mouse_move(self, event):
+		self.end = [event.x, event.y]
+		if not self.draw:
+			ret, guide = self.snap.is_over_guide(self.end)
+			if not ret:
+				self.canvas.restore_mode()
+
+	def mouse_up(self, event):
+		self.end = [event.x, event.y]
+		self.draw = False
+		if self.mode == modes.HGUIDE_MODE and self.end[1] > 0:
+			f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)
+			pos = p_doc[1]
+			orient = uc2const.HORIZONTAL
+			self.presenter.api.set_guide_propeties(self.guide, pos, orient)
+		elif self.mode == modes.VGUIDE_MODE and self.end[0] > 0:
+			f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)
+			orient = uc2const.VERTICAL
+			pos = p_doc[0]
+			self.presenter.api.set_guide_propeties(self.guide, pos, orient)
+		else:
+			self.presenter.api.delete_guides([self.guide])
+		self.repaint()
+		self.canvas.selection_repaint()
+		self.canvas.restore_mode()
+
+	def start_(self):
+		self.snap = self.presenter.snap
+		if not self.snap.active_guide is None:
+			self.guide = self.snap.active_guide
+
+	def stop_(self):
+		if not  self.timer is None:
+			gobject.source_remove(self.timer)
+		self.end = []
+		self.guide = None
+
+	def set_cursor(self):
+		if not self.guide is None:
+			if self.guide.orientation == uc2const.HORIZONTAL:
+				mode = modes.HGUIDE_MODE
+			else:
+				mode = modes.VGUIDE_MODE
+			self.mode = mode
+			self.canvas.set_canvas_cursor(mode)
+
+	def repaint(self, *args):
+		p_doc = []
+		orient = uc2const.HORIZONTAL
+		if self.end:
+			if self.mode == modes.HGUIDE_MODE:
+				f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_x=False)
+			else:
+				f, p, p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)
+				orient = uc2const.VERTICAL
+		self.canvas.renderer.paint_guide_dragging(p_doc, orient)
+		return True
 
 class MoveController(AbstractController):
 
