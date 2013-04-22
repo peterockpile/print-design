@@ -59,6 +59,7 @@ class PDRenderer(CairoRenderer):
 			self.paint_page_border()
 		self.render_doc()
 		self.render_grid()
+		self.render_guides()
 #		self.finalize()
 		self.paint_selection()
 
@@ -117,6 +118,30 @@ class PDRenderer(CairoRenderer):
 			self.render(self.ctx, layer.childs)
 
 	#------GRID RENDERING
+	def render_guides(self):
+		guides = []
+		methods = self.presenter.methods
+		guide_layer = methods.get_guide_layer()
+		for child in guide_layer.childs:
+			if child.cid == model.GUIDE:
+				guides.append(child)
+		if guides:
+			self.ctx.set_matrix(self.direct_matrix)
+			self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+			self.ctx.set_line_width(1.0)
+			self.ctx.set_dash(config.guide_line_dash)
+			self.ctx.set_source_rgba(*guide_layer.color)
+			for item in guides:
+				if item.orientation == uc2const.HORIZONTAL:
+					y_win = self.canvas.point_doc_to_win([0, item.position])[1]
+					self.ctx.move_to(0, y_win)
+					self.ctx.line_to(self.width, y_win)
+					self.ctx.stroke()
+				else:
+					x_win = self.canvas.point_doc_to_win([item.position, 0])[0]
+					self.ctx.move_to(x_win, 0)
+					self.ctx.line_to(x_win, self.height)
+					self.ctx.stroke()
 
 	def render_grid(self):
 		methods = self.presenter.methods
