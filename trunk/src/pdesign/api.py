@@ -24,7 +24,6 @@ from uc2.formats.pdxf import const
 from uc2 import libgeom, uc2const
 
 from pdesign import _
-from pdesign import config
 from pdesign import events
 from pdesign import dialogs
 from pdesign import modes

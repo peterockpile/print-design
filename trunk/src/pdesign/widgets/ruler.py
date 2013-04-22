@@ -16,7 +16,7 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
 import operator
-from math import floor, ceil
+from math import floor
 
 import gtk
 import gobject
@@ -26,8 +26,8 @@ from uc2.uc2const import unit_dict, HORIZONTAL, VERTICAL
 from uc2.formats.pdxf import const
 from uc2.utils import system
 
-from pdesign import _, config, events, modes
-from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
+from pdesign import config, events, modes
+from pdesign.appconst import RENDERING_DELAY
 
 DEFAULT_CURSOR = -1
 SIZE = 18
@@ -201,7 +201,7 @@ class Ruler(gtk.DrawingArea):
 			self.window.set_cursor(self.guide_cursor)
 
 	def mouse_down(self, widget, event):
-		x, y, w, h = self.allocation
+		w, h = self.allocation[2:]
 		w = float(w)
 		h = float(h)
 		self.width = w
@@ -216,13 +216,13 @@ class Ruler(gtk.DrawingArea):
 			y_win = self.pointer[1] - self.height
 			if y_win > 0.0:
 				p = [self.pointer[0], y_win]
-				f, p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)
+				p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)[1:]
 				self.presenter.api.create_guides([[p_doc[1], HORIZONTAL], ])
 		else:
 			x_win = self.pointer[0] - self.width
 			if x_win > 0.0:
 				p = [x_win, self.pointer[1]]
-				f, p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)
+				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
 				self.presenter.api.create_guides([[p_doc[0], VERTICAL], ])
 
 		self.set_cursor(DEFAULT_CURSOR)
@@ -244,11 +244,11 @@ class Ruler(gtk.DrawingArea):
 			if self.orient == HORIZONTAL:
 				y_win = self.pointer[1] - self.height
 				p = [self.pointer[0], y_win]
-				f, p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)
+				p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)[1:]
 			else:
 				x_win = self.pointer[0] - self.width
 				p = [x_win, self.pointer[1]]
-				f, p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)
+				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
 				orient = VERTICAL
 		self.canvas.renderer.paint_guide_dragging(p_doc, orient)
 		return True
