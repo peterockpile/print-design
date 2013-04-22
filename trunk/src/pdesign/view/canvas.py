@@ -115,6 +115,7 @@ class AppCanvas(gtk.DrawingArea):
 		modes.POLYGON_MODE: creators.PolygonCreator(self, self.presenter),
 		modes.MOVE_MODE: controllers.MoveController(self, self.presenter),
 		modes.RESIZE_MODE: controllers.TransformController(self, self.presenter),
+		modes.VGUIDE_MODE: creators.VGuideCreator(self, self.presenter),
 		}
 		return ctrls
 
