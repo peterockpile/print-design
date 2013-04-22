@@ -444,8 +444,23 @@ class PresenterAPI(AbstractAPI):
 			False]
 		self._set_selection(sel_after)
 		self.add_undo(transaction)
-		self.selection.update()
 
+	def create_guides(self, vals=[]):
+		if vals:
+			objs_list = []
+			parent = self.methods.get_guide_layer()
+			for val in vals:
+				pos, orient = val
+				obj = model.Guide(self.pdxf_cfg, parent, pos, orient)
+				objs_list.append([obj, parent, -1])
+				obj.update()
+			self._insert_objects(objs_list)
+			transaction = [
+				[[self._delete_objects, objs_list]],
+				[[self._insert_objects, objs_list]],
+				False]
+			self.add_undo(transaction)
+			self.selection.update()
 
 #///////////////////////////////////////////
 
