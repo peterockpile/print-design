@@ -125,6 +125,7 @@ class ObjectTreeModel(gtk.TreeStore):
 		self.guide_layer_icon = self.load_icon('object-guide-layer.png')
 		self.master_layers_icon = self.load_icon('object-master-layers.png')
 		self.desktop_layers_icon = self.load_icon('object-desktop-layers.png')
+		self.guide_icon = self.load_icon('object-guide.png')
 
 		self.group_icon = self.load_icon('object-group.png')
 		self.container_icon = self.load_icon('object-container.png')
@@ -177,6 +178,7 @@ class ObjectTreeModel(gtk.TreeStore):
 		if obj.cid == model.GUIDE_LAYER:return self.guide_layer_icon
 		if obj.cid == model.MASTER_LAYERS:return self.master_layers_icon
 		if obj.cid == model.DESKTOP_LAYERS:return self.desktop_layers_icon
+		if obj.cid == model.GUIDE:return self.guide_icon
 
 		if obj.cid == model.GROUP:return self.group_icon
 		if obj.cid == model.CONTAINER:return self.container_icon
