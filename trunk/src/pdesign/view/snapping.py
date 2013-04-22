@@ -17,8 +17,8 @@
 
 import math
 
-from uc2 import libgeom
-from uc2.formats.pdxf import const
+from uc2 import libgeom, uc2const
+from uc2.formats.pdxf import const, model
 
 from pdesign import config
 from pdesign.appconst import SNAP_TO_GRID, SNAP_TO_GUIDES, SNAP_TO_OBJECTS, SNAP_TO_PAGE
@@ -46,6 +46,7 @@ class SnapManager:
 	grid_doc = []
 	page_grid = []
 	objects_grid = []
+	guides_grid = []
 
 	def __init__(self, presenter):
 
@@ -77,7 +78,15 @@ class SnapManager:
 	def update_grid(self):
 		self._calc_grid()
 
-	def update_guides_grid(self):pass
+	def update_guides_grid(self):
+		self.guides_grid = [[], []]
+		guide_layer = self.methods.get_guide_layer()
+		for child in guide_layer.childs:
+			if child.cid == model.GUIDE:
+				if child.orientation == uc2const.HORIZONTAL:
+					self.guides_grid[1].append(child.position)
+				else:
+					self.guides_grid[0].append(child.position)
 
 	def update_objects_grid(self):
 		self.objects_grid = [[], []]
@@ -224,7 +233,7 @@ class SnapManager:
 		return ret, [x, y], [x_doc, y_doc]
 
 	def snap_point_to_guides(self, point, doc_point):
-		return False, point, doc_point
+		return self._snap_point_to_dict(point, doc_point, self.guides_grid)
 
 	def snap_point_to_objects(self, point, doc_point):
 		return self._snap_point_to_dict(point, doc_point, self.objects_grid)
