@@ -19,8 +19,10 @@ import gtk
 
 from pdesign import _, config, appconst
 from pdesign.dialogs.prefs import test
+from pdesign.dialogs.prefs.cms_prefs import CmsPrefsPlugin
 
-PLUGINS = [test.TestPlugin, test.Test1Plugin, test.Test2Plugin, test.Test3Plugin]
+PLUGINS = [CmsPrefsPlugin, test.TestPlugin, test.Test1Plugin, test.Test2Plugin,
+		 test.Test3Plugin]
 
 def get_prefs_dialog(app):
 	parent = app.mw
@@ -59,6 +61,7 @@ class PrefsContainer(gtk.HPaned):
 		self.viewer = PluginViewer(self)
 		self.add1(self.viewer)
 		self.load_plugin(self.plugins[0])
+		self.show_all()
 
 	def build_model(self):
 		self.model = PrefsNode(_('Preferences'), gtk.STOCK_PREFERENCES)
@@ -91,7 +94,8 @@ class PrefsContainer(gtk.HPaned):
 class PrefsNode:
 
 	short_title = ''
-	icon = gtk.STOCK_DIRECTORY
+	icon_stock = gtk.STOCK_DIRECTORY
+	icon = None
 	childs = []
 	leaf = False
 
@@ -99,7 +103,7 @@ class PrefsNode:
 		self.childs = []
 		self.short_title = title
 		if not icon is None:
-			self.icon = icon
+			self.icon_stock = icon
 
 class PluginViewer(gtk.VBox):
 
@@ -190,5 +194,7 @@ class ObjectTreeModel(gtk.TreeStore):
 		return self.model_dict[path.__str__()]
 
 	def get_icon(self, obj):
-		return gtk.Image().render_icon(obj.icon, gtk.ICON_SIZE_MENU)
+		if obj.icon is None:
+			return gtk.Image().render_icon(obj.icon_stock, gtk.ICON_SIZE_MENU)
+		return obj.icon
 
