@@ -110,6 +110,7 @@ class MainWindow(gtk.Window):
 			self.nb_frame.remove(self.nb_splash)
 			self.nb_frame.add(self.nb)
 			self.tools_frame.add(self.tools)
+			self.tools.show_all()
 			self.ctx_bar.set_visible(True)
 			self.ctx_line.set_visible(True)
 			self.tools_frame.show_all()
