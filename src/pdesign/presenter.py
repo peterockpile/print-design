@@ -197,8 +197,6 @@ class PD_Presenter:
 		pages = self.get_pages()
 		if pages.index(self.active_page) < len(pages) - 1:
 			self.api.set_active_page(pages.index(self.active_page) + 1)
-#			self.set_active_page(pages.index(self.active_page) + 1)
-#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
@@ -206,8 +204,6 @@ class PD_Presenter:
 		pages = self.get_pages()
 		if pages.index(self.active_page):
 			self.api.set_active_page(pages.index(self.active_page) - 1)
-#			self.set_active_page(pages.index(self.active_page) - 1)
-#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
@@ -216,12 +212,10 @@ class PD_Presenter:
 		current_index = pages.index(self.active_page)
 		if index >= 0 and index <> current_index:
 			self.api.set_active_page(index)
-#			self.set_active_page(index)
-#			self.selection.clear()
 			self.eventloop.emit(self.eventloop.PAGE_CHANGED)
 			events.emit(events.PAGE_CHANGED, self)
 
-	def set_active_layer(self, page, layer_num=0):
+	def set_active_layer(self, page, layer_num= -1):
 		self.active_layer = self.doc_presenter.methods.get_layer(page, layer_num)
 
 	def get_editable_layers(self, page=None):
