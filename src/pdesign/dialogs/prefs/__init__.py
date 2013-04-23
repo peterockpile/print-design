@@ -41,6 +41,7 @@ def get_prefs_dialog(app):
 
 	ret = dialog.run()
 	if ret == gtk.RESPONSE_ACCEPT:
+		content.apply_changes()
 		app.proxy.force_redraw()
 	dialog.destroy()
 
@@ -81,6 +82,10 @@ class PrefsContainer(gtk.HPaned):
 		self.add2(plg)
 		plg.show_all()
 		self.current_plg = plg
+
+	def apply_changes(self):
+		for item in self.plugins:
+			item.apply_changes()
 
 
 class PrefsNode:
