@@ -15,9 +15,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+import os
+
 import gtk
 
-from pdesign import appconst
+from pdesign import appconst, config
 
 class GenericPrefsPlugin(gtk.VBox):
 
@@ -25,7 +27,9 @@ class GenericPrefsPlugin(gtk.VBox):
 	name = ''
 	title = ''
 	short_title = ''
-	icon = gtk.STOCK_PROPERTIES
+	icon_stock = gtk.STOCK_PROPERTIES
+	icon_file = ''
+	icon = None
 	cid = appconst.PREFS_APP_PLUGIN
 	childs = []
 	built = False
@@ -34,6 +38,10 @@ class GenericPrefsPlugin(gtk.VBox):
 	def __init__(self, app):
 		gtk.VBox.__init__(self)
 		self.app = app
+		if self.icon_file:
+			self.icon = self.load_icon(self.icon_file)
+		else:
+			self.icon = gtk.Image().render_icon(self.icon_stock, gtk.ICON_SIZE_MENU)
 
 	def build(self):
 		title = gtk.Label()
@@ -43,3 +51,9 @@ class GenericPrefsPlugin(gtk.VBox):
 		self.built = True
 
 	def apply_changes(self):pass
+
+	def load_icon(self, path):
+		loader = gtk.gdk.pixbuf_new_from_file
+		file = os.path.join(config.resource_dir, 'icons', 'preferences', path)
+		pixbuf = loader(file)
+		return pixbuf
