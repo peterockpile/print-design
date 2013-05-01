@@ -1,4 +1,4 @@
-#Fri Apr 12 12:13:53 EEST 2013
+#Tue Apr 23 17:56:15 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
@@ -14,6 +14,9 @@ encoding//src/pdesign/context/transform.py=utf-8
 encoding//src/pdesign/context/units.py=utf-8
 encoding//src/pdesign/dialogs/__init__.py=utf-8
 encoding//src/pdesign/dialogs/prefs/__init__.py=utf-8
+encoding//src/pdesign/dialogs/prefs/cms_prefs.py=utf-8
+encoding//src/pdesign/dialogs/prefs/generic.py=utf-8
+encoding//src/pdesign/dialogs/prefs/test.py=utf-8
 encoding//src/pdesign/eventloop.py=utf-8
 encoding//src/pdesign/events.py=utf-8
 encoding//src/pdesign/icons.py=utf-8
