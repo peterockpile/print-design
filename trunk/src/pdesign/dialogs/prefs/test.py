@@ -26,8 +26,8 @@ class TestPlugin(GenericPrefsPlugin):
 	title = _('Test Preference Plugin')
 	short_title = _('Test Plugin')
 
-	def __init__(self, app):
-		GenericPrefsPlugin.__init__(self, app)
+	def __init__(self, app, pdxf_config):
+		GenericPrefsPlugin.__init__(self, app, pdxf_config)
 
 class Test1Plugin(GenericPrefsPlugin):
 
@@ -35,8 +35,8 @@ class Test1Plugin(GenericPrefsPlugin):
 	title = _('Test1 Preference Plugin')
 	short_title = _('Test1 Plugin')
 
-	def __init__(self, app):
-		GenericPrefsPlugin.__init__(self, app)
+	def __init__(self, app, pdxf_config):
+		GenericPrefsPlugin.__init__(self, app, pdxf_config)
 
 class Test2Plugin(GenericPrefsPlugin):
 
@@ -45,8 +45,8 @@ class Test2Plugin(GenericPrefsPlugin):
 	short_title = _('Test2 Plugin')
 	cid = appconst.PREFS_DOC_PLUGIN
 
-	def __init__(self, app):
-		GenericPrefsPlugin.__init__(self, app)
+	def __init__(self, app, pdxf_config):
+		GenericPrefsPlugin.__init__(self, app, pdxf_config)
 
 class Test3Plugin(GenericPrefsPlugin):
 
@@ -55,5 +55,5 @@ class Test3Plugin(GenericPrefsPlugin):
 	short_title = _('Test3 Plugin')
 	cid = appconst.PREFS_DOC_PLUGIN
 
-	def __init__(self, app):
-		GenericPrefsPlugin.__init__(self, app)
+	def __init__(self, app, pdxf_config):
+		GenericPrefsPlugin.__init__(self, app, pdxf_config)
