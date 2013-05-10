@@ -35,8 +35,9 @@ class GenericPrefsPlugin(gtk.VBox):
 	built = False
 	leaf = True
 
-	def __init__(self, app):
+	def __init__(self, app, pdxf_config):
 		gtk.VBox.__init__(self)
+		self.pdxf_config = pdxf_config
 		self.app = app
 		if self.icon_file:
 			self.icon = self.load_icon(self.icon_file)
@@ -49,6 +50,7 @@ class GenericPrefsPlugin(gtk.VBox):
 		self.pack_start(title, False, False, 0)
 		self.pack_start(gtk.HSeparator(), False, False, 5)
 		self.built = True
+		self.set_border_width(5)
 
 	def apply_changes(self):pass
 

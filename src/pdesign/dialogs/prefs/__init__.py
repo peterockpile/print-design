@@ -17,6 +17,7 @@
 
 import gtk
 
+from uc2.formats.pdxf.pdxf_config import PDXF_Config
 from pdesign import _, config, appconst
 from pdesign.dialogs.prefs import test
 from pdesign.dialogs.prefs.cms_prefs import CmsPrefsPlugin
@@ -55,6 +56,7 @@ class PrefsContainer(gtk.HPaned):
 
 	def __init__(self, app):
 		self.app = app
+		self.pdxf_config = PDXF_Config()
 		gtk.HPaned.__init__(self)
 		self.set_size_request(700, 400)
 		self.build_model()
@@ -70,7 +72,7 @@ class PrefsContainer(gtk.HPaned):
 		self.doc_prefs = PrefsNode(_('New document'), gtk.STOCK_NEW)
 		self.model.childs.append(self.doc_prefs)
 		for item in PLUGINS:
-			plg = item(self.app)
+			plg = item(self.app, self.pdxf_config)
 			if plg.cid == appconst.PREFS_APP_PLUGIN:
 				self.app_prefs.childs.append(plg)
 			else:
