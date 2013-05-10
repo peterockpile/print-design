@@ -17,7 +17,7 @@
 
 import os, math
 
-import gtk
+import gtk, gobject
 
 from uc2.uc2const import unit_dict, point_dict
 from uc2 import uc2const
@@ -174,6 +174,18 @@ class ActionToggleButton(gtk.ToggleButton):
 		self.set_property('relief', gtk.RELIEF_NONE)
 		self.set_tooltip_text(action.tooltip)
 		action.connect_proxy(self)
+
+class SimpleListCombo(gtk.ComboBox):
+
+	def __init__(self):
+		self.liststore = gtk.ListStore(gobject.TYPE_STRING)
+		gtk.ComboBox.__init__(self, self.liststore)
+		cell = gtk.CellRendererText()
+		self.pack_start(cell, True)
+		self.add_attribute(cell, 'text', 0)
+
+	def clear(self):
+		self.liststore.clear()
 
 class KeepRatioLabel(gtk.EventBox):
 

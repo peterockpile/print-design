@@ -134,7 +134,7 @@ class FillLabel(gtk.Label):
 			elif self.colorspace == uc2const.COLOR_LAB:
 				l, a, b = self.color
 				text += ' L-%d a-%d b-%d' % (l * 255, a * 255, b * 255)
-			elif self.colorspace == uc2const.COLOR_GRAY:
+			elif self.colorspace == uc2const.COLOR_GREY:
 				gray, = self.color
 				text += ' gray-%d' % (gray * 255)
 			elif self.colorspace == uc2const.COLOR_SPOT:
