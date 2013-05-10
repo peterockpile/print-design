@@ -164,6 +164,10 @@ class AppConfig(UCConfig):
 	lab_profiles = {}
 	gray_profiles = {}
 
+	rgb_profile = ''
+	cmyk_profile = ''
+	lab_profile = ''
+	gray_profile = ''
 	display_profile = ''
 
 	#============== I/O SECTION ===================
