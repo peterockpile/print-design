@@ -1,4 +1,4 @@
-#Sat May 11 11:41:05 EEST 2013
+#Sat May 11 13:31:11 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
@@ -29,6 +29,7 @@ encoding//src/pdesign/plugins/plg_caption.py=utf-8
 encoding//src/pdesign/prefs/__init__.py=utf-8
 encoding//src/pdesign/prefs/cms_prefs.py=utf-8
 encoding//src/pdesign/prefs/generic.py=utf-8
+encoding//src/pdesign/prefs/profilemngr.py=utf-8
 encoding//src/pdesign/prefs/test.py=utf-8
 encoding//src/pdesign/presenter.py=utf-8
 encoding//src/pdesign/proxy.py=utf-8

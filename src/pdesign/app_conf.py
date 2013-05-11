@@ -177,6 +177,7 @@ class AppConfig(UCConfig):
 	export_dir = '~'
 	make_backup = 1
 	resource_dir = ''
+	profile_import_dir = '~'
 
 	def __init__(self, path):
 		pass

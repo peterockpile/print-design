@@ -125,7 +125,7 @@ class ProfileManager(gtk.HBox):
 		self.pack_start(box, False, False, 0)
 
 	def import_profile(self, *args):
-		print get_profile_import_dialog(self.dlg, self.app, '~')
+		print get_profile_import_dialog(self.dlg, self.app, config.profile_import_dir)
 
 	def remove_profile(self, *args):
 		pass
