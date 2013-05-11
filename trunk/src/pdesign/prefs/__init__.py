@@ -61,7 +61,7 @@ class PrefsContainer(gtk.HPaned):
 		self.set_size_request(700, 400)
 		self.build_model()
 		self.viewer = PluginViewer(self)
-		self.add1(self.viewer)
+		self.pack1(self.viewer, False, False)
 		self.load_plugin(self.plugins[0])
 		self.show_all()
 
@@ -84,7 +84,7 @@ class PrefsContainer(gtk.HPaned):
 		if not self.current_plg is None: self.remove(self.current_plg)
 		if not plg.built:
 			plg.build()
-		self.add2(plg)
+		self.pack2(plg, True, False)
 		plg.show_all()
 		self.current_plg = plg
 
