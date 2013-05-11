@@ -120,7 +120,7 @@ class ProfilesTab(PrefsTab):
 		note = gtk.Label()
 		text = _('<span size="small"><b>Note:</b> The profiles are used for'
 				' newly created document and will be embedded into the '
-				'document.</span>')
+				'document (except built-in profiles).</span>')
 		note.set_markup(text)
 		note.set_line_wrap(True)
 		note.set_alignment(0, 1)
