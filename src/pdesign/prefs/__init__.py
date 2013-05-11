@@ -19,8 +19,8 @@ import gtk
 
 from uc2.formats.pdxf.pdxf_config import PDXF_Config
 from pdesign import _, config, appconst
-from pdesign.dialogs.prefs import test
-from pdesign.dialogs.prefs.cms_prefs import CmsPrefsPlugin
+from pdesign.prefs import test
+from pdesign.prefs.cms_prefs import CmsPrefsPlugin
 
 PLUGINS = [CmsPrefsPlugin, test.TestPlugin, test.Test1Plugin, test.Test2Plugin,
 		 test.Test3Plugin]

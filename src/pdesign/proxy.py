@@ -20,7 +20,7 @@ import math
 from uc2 import uc2const
 from pdesign import dialogs
 from pdesign import modes, config
-from pdesign.dialogs import prefs
+from pdesign import prefs
 
 class AppProxy:
 

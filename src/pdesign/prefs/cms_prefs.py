@@ -21,7 +21,7 @@ from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DIS
 
 from pdesign import _, appconst, config
 from pdesign.widgets import SimpleListCombo
-from pdesign.dialogs.prefs.generic import GenericPrefsPlugin
+from pdesign.prefs.generic import GenericPrefsPlugin
 
 COLORSPACES = [COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY]
 
