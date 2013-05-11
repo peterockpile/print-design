@@ -51,6 +51,7 @@ class GenericPrefsPlugin(gtk.VBox):
 		self.pack_start(gtk.HSeparator(), False, False, 5)
 		self.built = True
 		self.set_border_width(5)
+		self.set_size_request(400, -1)
 
 	def apply_changes(self):pass
 

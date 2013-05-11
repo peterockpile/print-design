@@ -57,6 +57,7 @@ class PrefsTab(gtk.VBox):
 		self.pdxf_config = pdxf_config
 		self.set_border_width(10)
 
+
 class CMSTab(PrefsTab):
 
 	name = _('Color Management')
@@ -115,11 +116,17 @@ class ProfilesTab(PrefsTab):
 			index += 1
 
 		note = gtk.Label()
-		text = _('<b>Note:</b> The profiles are used for newly created document and will be embedded into the document.\n')
+		text = _('<span size="small"><b>Note:</b> The profiles are used for'
+				' newly created document and will be embedded into the '
+				'document.</span>')
 		note.set_markup(text)
 		note.set_line_wrap(True)
 		note.set_alignment(0, 1)
-		tab.attach(note, 0, 3, 4, 5, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
+		note.set_sensitive(False)
+		note.set_justify(gtk.JUSTIFY_FILL)
+		hbox = gtk.HBox()
+		hbox.pack_start(note, True, True, 0)
+		tab.attach(hbox, 0, 3, 4, 5, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
 
 		title = gtk.Label()
 		text = _('Application related profile')
@@ -142,11 +149,14 @@ class ProfilesTab(PrefsTab):
 		tab.attach(button, 2, 3, 7, 8, gtk.SHRINK, gtk.SHRINK)
 
 		note = gtk.Label()
-		text = _('<b>Note:</b> Display profile affects on document screen representation only. Therefore it is not embedded.\n')
+		text = _('<span size="small"><b>Note:</b> Display profile affects on '
+				'document screen representation only. Therefore it is not '
+				'embedded.</span>')
 		note.set_markup(text)
 		note.set_line_wrap(True)
 		note.set_alignment(0, 1)
-		tab.attach(note, 0, 3, 8, 9, gtk.FILL, gtk.SHRINK)
+		note.set_sensitive(False)
+		tab.attach(note, 0, 3, 8, 9, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
 
 	def update_combo(self, colorspace, set_active=True):
 		combo = self.cs_widgets[colorspace]
