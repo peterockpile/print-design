@@ -17,13 +17,13 @@
 
 import gtk
 
-from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GREY, COLOR_DISPLAY
+from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
 
 from pdesign import _, appconst, config
 from pdesign.widgets import SimpleListCombo
 from pdesign.dialogs.prefs.generic import GenericPrefsPlugin
 
-COLORSPACES = [COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GREY, COLOR_DISPLAY]
+COLORSPACES = [COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY]
 
 class CmsPrefsPlugin(GenericPrefsPlugin):
 
@@ -85,17 +85,17 @@ class ProfilesTab(PrefsTab):
 		self.cs_config_profiles = {COLOR_RGB:config.rgb_profiles,
 					COLOR_CMYK:config.cmyk_profiles,
 					COLOR_LAB:config.lab_profiles,
-					COLOR_GREY:config.gray_profiles,
+					COLOR_GRAY:config.gray_profiles,
 					COLOR_DISPLAY:config.display_profiles}
 		self.cs_config = {COLOR_RGB:self.pdxf_config.default_rgb_profile,
 					COLOR_CMYK:self.pdxf_config.default_cmyk_profile,
 					COLOR_LAB:self.pdxf_config.default_lab_profile,
-					COLOR_GREY:self.pdxf_config.default_grey_profile,
+					COLOR_GRAY:self.pdxf_config.default_gray_profile,
 					COLOR_DISPLAY:config.display_profile}
 		self.cs_profiles = {COLOR_RGB:self.get_profile_names(COLOR_RGB),
 					COLOR_CMYK:self.get_profile_names(COLOR_CMYK),
 					COLOR_LAB:self.get_profile_names(COLOR_LAB),
-					COLOR_GREY:self.get_profile_names(COLOR_GREY),
+					COLOR_GRAY:self.get_profile_names(COLOR_GRAY),
 					COLOR_DISPLAY:self.get_profile_names(COLOR_DISPLAY)}
 
 		index = 0
