@@ -122,12 +122,20 @@ class ProfileManager(gtk.HBox):
 		self.remove_button.connect('clicked', self.remove_profile)
 		box.pack_start(self.remove_button, False, False, 5)
 		self.remove_button.set_sensitive(False)
+
+		self.info_button = ImageStockButton('Profile info', gtk.STOCK_INFO, False)
+		self.info_button.connect('clicked', self.inspect_profile)
+		box.pack_start(self.info_button, False, False, 5)
+
 		self.pack_start(box, False, False, 0)
 
 	def import_profile(self, *args):
 		print get_profile_import_dialog(self.dlg, self.app, config.profile_import_dir)
 
 	def remove_profile(self, *args):
+		pass
+
+	def inspect_profile(self, *args):
 		pass
 
 	def check_selection(self, index):
