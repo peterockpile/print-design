@@ -1,4 +1,4 @@
-#Tue Apr 23 17:56:15 EEST 2013
+#Sat May 11 11:41:05 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
@@ -13,10 +13,6 @@ encoding//src/pdesign/context/resize.py=utf-8
 encoding//src/pdesign/context/transform.py=utf-8
 encoding//src/pdesign/context/units.py=utf-8
 encoding//src/pdesign/dialogs/__init__.py=utf-8
-encoding//src/pdesign/dialogs/prefs/__init__.py=utf-8
-encoding//src/pdesign/dialogs/prefs/cms_prefs.py=utf-8
-encoding//src/pdesign/dialogs/prefs/generic.py=utf-8
-encoding//src/pdesign/dialogs/prefs/test.py=utf-8
 encoding//src/pdesign/eventloop.py=utf-8
 encoding//src/pdesign/events.py=utf-8
 encoding//src/pdesign/icons.py=utf-8
@@ -30,6 +26,10 @@ encoding//src/pdesign/plugins/dom_plg.py=utf-8
 encoding//src/pdesign/plugins/layers_plg.py=utf-8
 encoding//src/pdesign/plugins/pages_plg.py=utf-8
 encoding//src/pdesign/plugins/plg_caption.py=utf-8
+encoding//src/pdesign/prefs/__init__.py=utf-8
+encoding//src/pdesign/prefs/cms_prefs.py=utf-8
+encoding//src/pdesign/prefs/generic.py=utf-8
+encoding//src/pdesign/prefs/test.py=utf-8
 encoding//src/pdesign/presenter.py=utf-8
 encoding//src/pdesign/proxy.py=utf-8
 encoding//src/pdesign/statusbar.py=utf-8
