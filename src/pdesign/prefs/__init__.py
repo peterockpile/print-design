@@ -62,7 +62,6 @@ class PrefsContainer(gtk.HPaned):
 		self.build_model()
 		self.viewer = PluginViewer(self)
 		self.pack1(self.viewer, False, False)
-		self.load_plugin(self.plugins[0])
 		self.show_all()
 
 	def build_model(self):
@@ -143,6 +142,7 @@ class PluginViewer(gtk.VBox):
 		self.treeview.set_enable_tree_lines(True)
 
 		self.expand_all()
+		self.treeview.set_cursor((0, 0))
 
 		self.loaded = True
 
@@ -168,7 +168,8 @@ class PluginViewer(gtk.VBox):
 	def view_object(self, *args):
 		path = self.treeview.get_cursor()[0]
 		obj = self.listmodel.get_obj_by_path(path)
-		self.owner.load_plugin(obj)
+		if obj.leaf:
+			self.owner.load_plugin(obj)
 
 class ObjectTreeModel(gtk.TreeStore):
 
