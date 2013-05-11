@@ -116,7 +116,7 @@ class PluginPanel(gtk.VBox):
 			self.visible = False
 
 	def show_panel(self):
-		self.mw.inner_hpaned.pack2(self, 0, 0)
+		self.mw.inner_hpaned.pack2(self, False, False)
 		self.show_all()
 		if self.active_plg:
 			self.set_active_by_name(self.active_plg)
