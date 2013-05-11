@@ -18,7 +18,7 @@
 import gtk
 from pdesign import _, appconst
 
-from pdesign.dialogs.prefs.generic import GenericPrefsPlugin
+from pdesign.prefs.generic import GenericPrefsPlugin
 
 class TestPlugin(GenericPrefsPlugin):
 
