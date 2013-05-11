@@ -35,10 +35,11 @@ class GenericPrefsPlugin(gtk.VBox):
 	built = False
 	leaf = True
 
-	def __init__(self, app, pdxf_config):
+	def __init__(self, app, dlg, pdxf_config):
 		gtk.VBox.__init__(self)
 		self.pdxf_config = pdxf_config
 		self.app = app
+		self.dlg = dlg
 		if self.icon_file:
 			self.icon = self.load_icon(self.icon_file)
 		else:

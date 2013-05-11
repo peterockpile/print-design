@@ -36,7 +36,7 @@ def get_prefs_dialog(app):
 
 
 	vbox = gtk.VBox()
-	content = PrefsContainer(app)
+	content = PrefsContainer(app, dialog)
 	vbox.pack_start(content)
 	vbox.set_border_width(5)
 	vbox.show_all()
@@ -54,8 +54,9 @@ class PrefsContainer(gtk.HPaned):
 	plugins = []
 	current_plg = None
 
-	def __init__(self, app):
+	def __init__(self, app, dlg):
 		self.app = app
+		self.dlg = dlg
 		self.pdxf_config = PDXF_Config()
 		gtk.HPaned.__init__(self)
 		self.set_size_request(700, 400)
@@ -71,7 +72,7 @@ class PrefsContainer(gtk.HPaned):
 		self.doc_prefs = PrefsNode(_('New document'), gtk.STOCK_NEW)
 		self.model.childs.append(self.doc_prefs)
 		for item in PLUGINS:
-			plg = item(self.app, self.pdxf_config)
+			plg = item(self.app, self.dlg, self.pdxf_config)
 			if plg.cid == appconst.PREFS_APP_PLUGIN:
 				self.app_prefs.childs.append(plg)
 			else:
