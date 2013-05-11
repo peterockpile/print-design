@@ -36,6 +36,15 @@ class ImageButton(gtk.Button):
 		if text:
 			self.set_tooltip_text(text)
 
+class ImageStockButton(gtk.Button):
+	def __init__(self, text='', stock=gtk.STOCK_HELP, flat=True):
+		gtk.Button.__init__(self)
+		if flat: self.set_property('relief', gtk.RELIEF_NONE)
+		image = gtk.Image()
+		image.set_from_stock(stock, gtk.ICON_SIZE_MENU)
+		self.set_image(image)
+		if text: self.set_tooltip_text(text)
+
 class ImageToggleButton(gtk.ToggleButton):
 	def __init__(self, text, path):
 		gtk.ToggleButton.__init__(self)
