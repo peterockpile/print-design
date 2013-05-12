@@ -15,11 +15,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import os, shutil
 import gtk
 
 from uc2.utils.fs import expanduser_unicode
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
+from uc2.cms import get_profile_name
 from pdesign import _, config
 from pdesign.widgets import ImageStockButton
 
@@ -95,11 +96,18 @@ class ProfileManager(gtk.HBox):
 		self.build()
 
 	def set_profiles(self):
-		if self.colorspace == COLOR_RGB:self.profiles = config.rgb_profiles
-		elif self.colorspace == COLOR_CMYK:self.profiles = config.cmyk_profiles
-		elif self.colorspace == COLOR_LAB:self.profiles = config.lab_profiles
-		elif self.colorspace == COLOR_GRAY:self.profiles = config.gray_profiles
-		else:self.profiles = config.display_profiles
+		if self.colorspace == COLOR_RGB:self.profiles = config.rgb_profiles.copy()
+		elif self.colorspace == COLOR_CMYK:self.profiles = config.cmyk_profiles.copy()
+		elif self.colorspace == COLOR_LAB:self.profiles = config.lab_profiles.copy()
+		elif self.colorspace == COLOR_GRAY:self.profiles = config.gray_profiles.copy()
+		else:self.profiles = config.display_profiles.copy()
+
+	def save_profiles(self):
+		if self.colorspace == COLOR_RGB:config.rgb_profiles = self.profiles
+		elif self.colorspace == COLOR_CMYK:config.cmyk_profiles = self.profiles
+		elif self.colorspace == COLOR_LAB:config.lab_profiles = self.profiles
+		elif self.colorspace == COLOR_GRAY:config.gray_profiles = self.profiles
+		else: config.display_profiles = self.profiles
 
 	def update_list(self):
 		keys = self.profiles.keys()
@@ -130,10 +138,37 @@ class ProfileManager(gtk.HBox):
 		self.pack_start(box, False, False, 0)
 
 	def import_profile(self, *args):
-		print get_profile_import_dialog(self.dlg, self.app, config.profile_import_dir)
+		src = get_profile_import_dialog(self.dlg, self.app, config.profile_import_dir)
+		if not src: return
+		name = get_profile_name(src)
+		if name is None: return
+		if name in self.pf_list: return
+		filename = os.path.basename(src)
+		dst_dir = self.app.appdata.app_color_profile_dir
+		dst = os.path.join(dst_dir, filename)
+		if os.path.lexists(dst):return
+		try:
+			shutil.copy(src, dst)
+		except: return
+		config.profile_import_dir = os.path.dirname(src)
+		self.profiles[name] = filename
+		self.apply_changes()
 
 	def remove_profile(self, *args):
-		pass
+		index = self.viewer.get_selected_index()
+		name = self.pf_list[index]
+		filename = self.profiles[name]
+		dst_dir = self.app.appdata.app_color_profile_dir
+		dst = os.path.join(dst_dir, filename)
+		if os.path.isfile(dst):
+			os.remove(dst)
+		self.profiles.pop(name)
+		self.apply_changes()
+
+	def apply_changes(self):
+		self.save_profiles()
+		self.update_list()
+		self.viewer.update_view(self.pf_list)
 
 	def inspect_profile(self, *args):
 		pass
@@ -144,7 +179,6 @@ class ProfileManager(gtk.HBox):
 		else:
 			self.remove_button.set_sensitive(False)
 
-
 class ProfileList(gtk.VBox):
 
 	def __init__(self, owner, objs):
@@ -154,9 +188,7 @@ class ProfileList(gtk.VBox):
 		gtk.VBox.__init__(self)
 		self.set_size_request(300, 200)
 
-		self.listmodel = ProfileListModel(objs)
 		self.treeview = gtk.TreeView()
-
 		self.column = gtk.TreeViewColumn()
 		self.column.set_title(_('Profile names'))
 		render_pixbuf = gtk.CellRendererPixbuf()
@@ -175,16 +207,19 @@ class ProfileList(gtk.VBox):
 		self.scrolledwindow.set_shadow_type(gtk.SHADOW_ETCHED_IN)
 		self.scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 		self.pack_end(self.scrolledwindow, True)
-
-		self.treeview.set_model(self.listmodel)
 		self.treeview.set_rules_hint(True)
-		self.update_view()
+		self.update_view(objs)
 
-	def update_view(self):pass
+	def update_view(self, objs):
+		self.listmodel = ProfileListModel(objs)
+		self.treeview.set_model(self.listmodel)
 
 	def select_profile(self, *args):
 		index = self.treeview.get_cursor()[0][0]
 		self.owner.check_selection(index)
+
+	def get_selected_index(self):
+		return self.treeview.get_cursor()[0][0]
 
 	def inspect_file(self, treeview, path, column):
 		pass
