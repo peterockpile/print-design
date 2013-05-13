@@ -19,12 +19,12 @@ import os, shutil
 import gtk
 
 from uc2.utils.fs import expanduser_unicode
-from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
+from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY
 from uc2.cms import get_profile_name, get_profile_info
 from pdesign import _, config, dialogs
 from pdesign.widgets import ImageStockButton
 
-def get_profiles_dialog(app, parent, colorspace):
+def get_profiles_dialog(app, parent, owner, colorspace):
 	title = _('%s profiles') % (colorspace)
 
 	dialog = gtk.Dialog(title, parent,
@@ -33,7 +33,7 @@ def get_profiles_dialog(app, parent, colorspace):
 
 
 	vbox = gtk.VBox()
-	content = ProfileManager(app, dialog, colorspace)
+	content = ProfileManager(app, dialog, owner, colorspace)
 	vbox.pack_start(content)
 	vbox.set_border_width(5)
 	vbox.show_all()
@@ -141,9 +141,10 @@ class ProfileManager(gtk.HBox):
 	profiles = {}
 	pf_list = []
 
-	def __init__(self, app, dialog, colorspace):
+	def __init__(self, app, dialog, owner, colorspace):
 		self.app = app
 		self.dlg = dialog
+		self.owner = owner
 		self.colorspace = colorspace
 		gtk.HBox.__init__(self)
 		self.build()
@@ -242,6 +243,7 @@ class ProfileManager(gtk.HBox):
 		self.save_profiles()
 		self.update_list()
 		self.viewer.update_view(self.pf_list)
+		self.owner.update_combo(self.colorspace)
 
 	def inspect_profile(self, *args):
 		index = self.viewer.get_selected_index()
