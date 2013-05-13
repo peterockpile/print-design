@@ -51,6 +51,7 @@ class AppData:
 class AppConfig(UCConfig):
 
 	def __setattr__(self, attr, value):
+		if attr == 'filename': return
 		if not hasattr(self, attr) or getattr(self, attr) != value:
 			self.__dict__[attr] = value
 			events.emit(events.CONFIG_MODIFIED, attr, value)
