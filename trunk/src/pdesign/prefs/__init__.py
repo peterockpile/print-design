@@ -42,6 +42,9 @@ def get_prefs_dialog(app):
 	dialog.vbox.pack_start(vbox)
 
 	but = gtk.Button(_('Restore defaults'))
+	image = gtk.Image()
+	image.set_from_stock(gtk.STOCK_UNDO, gtk.ICON_SIZE_MENU)
+	but.set_image(image)
 	but.connect('clicked', content.restore_defaults)
 	area = dialog.action_area
 	dialog.vbox.remove(area)
@@ -107,7 +110,7 @@ class PrefsContainer(gtk.HPaned):
 			item.apply_changes()
 
 	def restore_defaults(self, *args):
-		print 'here'
+		self.current_plg.restore_defaults()
 
 
 class PrefsNode:
