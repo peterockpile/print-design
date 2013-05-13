@@ -15,6 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
@@ -85,21 +86,14 @@ class ProfilesTab(PrefsTab):
 		tab.set_col_spacings(10)
 		self.pack_start(tab, True, True, 0)
 		self.cs_widgets = {}
-		self.cs_config_profiles = {COLOR_RGB:config.rgb_profiles,
-					COLOR_CMYK:config.cmyk_profiles,
-					COLOR_LAB:config.lab_profiles,
-					COLOR_GRAY:config.gray_profiles,
-					COLOR_DISPLAY:config.display_profiles}
+		self.cs_profiles = {}
+		self.cs_config_profiles = {}
+
 		self.cs_config = {COLOR_RGB:self.pdxf_config.default_rgb_profile,
 					COLOR_CMYK:self.pdxf_config.default_cmyk_profile,
 					COLOR_LAB:self.pdxf_config.default_lab_profile,
 					COLOR_GRAY:self.pdxf_config.default_gray_profile,
 					COLOR_DISPLAY:config.display_profile}
-		self.cs_profiles = {COLOR_RGB:self.get_profile_names(COLOR_RGB),
-					COLOR_CMYK:self.get_profile_names(COLOR_CMYK),
-					COLOR_LAB:self.get_profile_names(COLOR_LAB),
-					COLOR_GRAY:self.get_profile_names(COLOR_GRAY),
-					COLOR_DISPLAY:self.get_profile_names(COLOR_DISPLAY)}
 
 		index = 0
 		for colorspace in COLORSPACES[:-1]:
@@ -162,17 +156,43 @@ class ProfilesTab(PrefsTab):
 		note.set_size_request(450, -1)
 		tab.attach(note, 0, 3, 8, 9, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
 
+	def update_config_data(self, colorspace):
+		if colorspace == COLOR_RGB:
+			self.cs_config_profiles[colorspace] = config.rgb_profiles.copy()
+		elif colorspace == COLOR_CMYK:
+			self.cs_config_profiles[colorspace] = config.cmyk_profiles.copy()
+		elif colorspace == COLOR_LAB:
+			self.cs_config_profiles[colorspace] = config.lab_profiles.copy()
+		elif colorspace == COLOR_GRAY:
+			self.cs_config_profiles[colorspace] = config.gray_profiles.copy()
+		else:
+			self.cs_config_profiles[colorspace] = config.display_profiles.copy()
+		self.cs_profiles[colorspace] = self.get_profile_names(colorspace)
+
+
 	def update_combo(self, colorspace, set_active=True):
+		self.update_config_data(colorspace)
 		combo = self.cs_widgets[colorspace]
 		combo.clear()
 		for name in self.cs_profiles[colorspace]: combo.append_text(name)
-		if set_active:
-			self.set_active_profile(combo, self.cs_config[colorspace], colorspace)
+		if not set_active: return
+		self.set_active_profile(combo, self.cs_config[colorspace], colorspace)
 
 	def set_active_profile(self, widget, name, colorspace):
 		profiles = self.get_profile_names(colorspace)
 		if not name or not name in profiles:
 			widget.set_active(0)
+			if colorspace == COLOR_RGB:
+				self.pdxf_config.default_rgb_profile = ''
+			elif colorspace == COLOR_CMYK:
+				self.pdxf_config.default_cmyk_profile = ''
+			elif colorspace == COLOR_LAB:
+				self.pdxf_config.default_lab_profile = ''
+			elif colorspace == COLOR_GRAY:
+				self.pdxf_config.default_gray_profile = ''
+			else:
+				config.display_profile = ''
+			self.pdxf_config.save()
 		else:
 			widget.set_active(profiles.index(name))
 
@@ -196,5 +216,6 @@ class ManageButton(ImageStockButton):
 		self.connect('clicked', self.action)
 
 	def action(self, *args):
-		get_profiles_dialog(self.owner.app, self.owner.dlg, self.colorspace)
+		get_profiles_dialog(self.owner.app, self.owner.dlg,
+						self.owner, self.colorspace)
 
