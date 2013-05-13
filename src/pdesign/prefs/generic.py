@@ -55,6 +55,7 @@ class GenericPrefsPlugin(gtk.VBox):
 		self.set_size_request(400, -1)
 
 	def apply_changes(self):pass
+	def restore_defaults(self):pass
 
 	def load_icon(self, path):
 		loader = gtk.gdk.pixbuf_new_from_file
