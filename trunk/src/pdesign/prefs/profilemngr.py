@@ -20,8 +20,8 @@ import gtk
 
 from uc2.utils.fs import expanduser_unicode
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
-from uc2.cms import get_profile_name
-from pdesign import _, config
+from uc2.cms import get_profile_name, get_profile_info
+from pdesign import _, config, dialogs
 from pdesign.widgets import ImageStockButton
 
 def get_profiles_dialog(app, parent, colorspace):
@@ -83,6 +83,59 @@ def get_profile_import_dialog(parent, app, start_dir):
 	if result is None: result = ''
 	return result
 
+def get_profile_info_dialog(parent, name, filename, info):
+	title = _('Profile info')
+	dialog = gtk.Dialog(title, parent,
+	                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+	                   (gtk.STOCK_CLOSE, gtk.RESPONSE_ACCEPT))
+	vbox = dialog.vbox
+
+	tab = gtk.Table(3, 2, False)
+	tab.set_row_spacings(5)
+	tab.set_col_spacings(10)
+	tab.set_border_width(10)
+	vbox.pack_start(tab, True, True, 0)
+
+	label = gtk.Label(_('Name:'))
+	label.set_alignment(1, 1)
+	tab.attach(label, 0, 1, 0, 1, gtk.FILL, gtk.SHRINK)
+	label = gtk.Label()
+	label.set_markup('<b>%s</b>' % name)
+	label.set_alignment(0, 1)
+	tab.attach(label, 1, 2, 0, 1, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
+
+	label = gtk.Label(_('File:'))
+	label.set_alignment(1, 1)
+	tab.attach(label, 0, 1, 1, 2, gtk.FILL, gtk.SHRINK)
+
+	label = gtk.Label()
+	label.set_markup('<b>%s</b>' % filename)
+	label.set_alignment(0, 1)
+	tab.attach(label, 1, 2, 1, 2, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
+
+	label = gtk.Label(_('Description:'))
+	label.set_alignment(1, 0)
+	tab.attach(label, 0, 1, 2, 3, gtk.FILL, gtk.FILL | gtk.EXPAND)
+
+
+	text_buffer = gtk.TextBuffer()
+	text_buffer.set_text(info)
+	editor = gtk.TextView(text_buffer);
+	editor.set_wrap_mode(gtk.WRAP_WORD)
+	editor.set_editable(False)
+
+	sw = gtk.ScrolledWindow()
+	sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+	sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+	sw.add(editor)
+
+	tab.attach(sw, 1, 2, 2, 3, gtk.FILL , gtk.FILL | gtk.EXPAND)
+	vbox.show_all()
+	vbox.set_size_request(400, 250)
+
+	dialog.run()
+	dialog.destroy()
+
 class ProfileManager(gtk.HBox):
 
 	profiles = {}
@@ -141,15 +194,35 @@ class ProfileManager(gtk.HBox):
 		src = get_profile_import_dialog(self.dlg, self.app, config.profile_import_dir)
 		if not src: return
 		name = get_profile_name(src)
-		if name is None: return
-		if name in self.pf_list: return
+		if name is None:
+			msg = _('Cannot open profile')
+			msg = "%s '%s'" % (msg, src)
+			sec = _('The profile may be corrupted or not supported format')
+			dialogs.msg_dialog(self.dlg, self.app.appdata.app_name, msg, sec)
+			return
+		if name in self.pf_list:
+			msg = _('Selected profile cannot be added to profile list:')
+			msg = "%s '%s'" % (msg, name)
+			sec = _('It seems you have imported this profile')
+			dialogs.msg_dialog(self.dlg, self.app.appdata.app_name, msg, sec)
+			return
 		filename = os.path.basename(src)
 		dst_dir = self.app.appdata.app_color_profile_dir
 		dst = os.path.join(dst_dir, filename)
-		if os.path.lexists(dst):return
+		if os.path.lexists(dst):
+			msg = _('Selected file has been added to profile pool')
+			msg = "%s '%s'" % (msg, src)
+			sec = _('If you sure to import the file try renaming it')
+			dialogs.msg_dialog(self.dlg, self.app.appdata.app_name, msg, sec)
+			return
 		try:
 			shutil.copy(src, dst)
-		except: return
+		except:
+			msg = _('Cannot copy file')
+			msg = "%s '%s'" % (msg, src)
+			sec = _('Please check writing permissions for config directory:\n%s' % dst_dir)
+			dialogs.msg_dialog(self.dlg, self.app.appdata.app_name, msg, sec)
+			return
 		config.profile_import_dir = os.path.dirname(src)
 		self.profiles[name] = filename
 		self.apply_changes()
@@ -171,7 +244,20 @@ class ProfileManager(gtk.HBox):
 		self.viewer.update_view(self.pf_list)
 
 	def inspect_profile(self, *args):
-		pass
+		index = self.viewer.get_selected_index()
+		if index:
+			name = self.pf_list[index]
+			filename = self.profiles[name]
+			dst_dir = self.app.appdata.app_color_profile_dir
+			dst = os.path.join(dst_dir, filename)
+			info = get_profile_info(dst)
+			get_profile_info_dialog(self.dlg, name, filename, info)
+		else:
+			name = _('Built-in %s profile') % (self.colorspace)
+			filename = '--'
+			info = _('The profile is built-in. Cannot be removed or embedded. '
+				'Serves as a fallback and default profile.')
+			get_profile_info_dialog(self.dlg, name, filename, info)
 
 	def check_selection(self, index):
 		if index:
@@ -221,8 +307,8 @@ class ProfileList(gtk.VBox):
 	def get_selected_index(self):
 		return self.treeview.get_cursor()[0][0]
 
-	def inspect_file(self, treeview, path, column):
-		pass
+	def inspect_file(self, *args):
+		self.owner.inspect_profile()
 
 class ProfileListModel(gtk.ListStore):
 
