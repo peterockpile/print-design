@@ -34,13 +34,27 @@ def get_prefs_dialog(app):
 	                   (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
 	                    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-
+	dialog.set_has_separator(False)
 	vbox = gtk.VBox()
 	content = PrefsContainer(app, dialog)
-	vbox.pack_start(content)
+	vbox.pack_start(content, True, True, 0)
 	vbox.set_border_width(5)
-	vbox.show_all()
 	dialog.vbox.pack_start(vbox)
+
+	but = gtk.Button(_('Restore defaults'))
+	but.connect('clicked', content.restore_defaults)
+	area = dialog.action_area
+	dialog.vbox.remove(area)
+	sep = gtk.HSeparator()
+	dialog.vbox.pack_start(sep, False, True, 0)
+	hbox = gtk.HBox()
+	dialog.vbox.pack_end(hbox, False, True, 0)
+	bbox = gtk.HButtonBox()
+	bbox.pack_start(but, False, False, 0)
+	hbox.pack_start(bbox, False, False, 10)
+	hbox.pack_end(area, False, False, 5)
+
+	dialog.show_all()
 
 	ret = dialog.run()
 	if ret == gtk.RESPONSE_ACCEPT:
@@ -91,6 +105,9 @@ class PrefsContainer(gtk.HPaned):
 	def apply_changes(self):
 		for item in self.plugins:
 			item.apply_changes()
+
+	def restore_defaults(self, *args):
+		print 'here'
 
 
 class PrefsNode:
