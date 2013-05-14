@@ -21,6 +21,7 @@ from uc2.uc_conf import UCConfig
 from uc2 import uc2const
 from uc2.utils import system
 from uc2.utils.fs import expanduser_unicode
+from uc2.formats.pdxf.const import DOC_STRUCTURE
 
 from pdesign import events, appconst
 
@@ -34,17 +35,26 @@ class AppData:
 	doc_icon = None
 	version = "1.0"
 
-#	Check config root directory
+	#Check config root directory
 	app_config_dir = expanduser_unicode(os.path.join('~', '.config', 'pdesign'))
 	if not os.path.lexists(app_config_dir):
 		os.makedirs(app_config_dir)
 
-#	Check color profiles directory	
+	#Check color profiles directory	
 	app_color_profile_dir = os.path.join(app_config_dir, 'profiles')
 	if not os.path.lexists(app_color_profile_dir):
 		os.makedirs(app_color_profile_dir)
 
-#	Config file path 
+	#Check clipboard directory
+	app_clipboard_dir = os.path.join(app_config_dir, 'clipboard')
+	if not os.path.lexists(app_clipboard_dir):
+		os.makedirs(app_clipboard_dir)
+	for item in DOC_STRUCTURE:
+		path = os.path.join(app_clipboard_dir, item)
+		if not os.path.lexists(path):
+			os.makedirs(path)
+
+	#Config file path 
 	app_config = os.path.join(app_config_dir, 'preferences.cfg')
 
 
