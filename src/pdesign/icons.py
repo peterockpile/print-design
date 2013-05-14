@@ -21,6 +21,7 @@ import gtk
 from pdesign import _, config
 
 
+STOCK_PDXF_DOC = 'document-icon'
 STOCK_DONT_SAVE = 'action-dont-save'
 STOCK_ROTATE_LEFT = 'object-rotate-left'
 STOCK_ROTATE_RIGHT = 'object-rotate-right'
@@ -50,7 +51,7 @@ def load_icons():
 			STOCK_PLUGIN_DOM_VIEWER, STOCK_PLUGIN_PAGES, STOCK_SNAP_TO_GRID,
 			STOCK_SNAP_TO_GUIDES, STOCK_SNAP_TO_OBJECTS, STOCK_SNAP_TO_PAGE,
 			STOCK_PAGE_FRAME, STOCK_PAGE_GUIDE_FRAME, STOCK_GUIDES_AT_CENTER,
-			STOCK_REMOVE_ALL_GUIDES]
+			STOCK_REMOVE_ALL_GUIDES, STOCK_PDXF_DOC]
 
 	path = '' + os.path.join(config.resource_dir, 'icons')
 

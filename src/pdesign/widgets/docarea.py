@@ -20,6 +20,7 @@ import gtk
 from uc2.utils import system
 from uc2 import uc2const
 
+from pdesign import icons
 from pdesign.view.canvas import AppCanvas
 from pdesign.widgets.ruler import RulerCorner, Ruler
 from pdesign.widgets.pager_widget import PagerWidget
@@ -95,7 +96,7 @@ class TabCaption(gtk.HBox):
 
 		self.label = gtk.Label('')
 		self.tab_icon = gtk.Image()
-		self.tab_icon.set_from_stock(gtk.STOCK_FILE, gtk.ICON_SIZE_MENU)
+		self.tab_icon.set_from_stock(icons.STOCK_PDXF_DOC, gtk.ICON_SIZE_MENU)
 		self.but_icon = gtk.Image()
 		self.but_icon.set_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
 
