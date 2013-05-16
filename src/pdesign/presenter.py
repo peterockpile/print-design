@@ -91,7 +91,6 @@ class PD_Presenter:
 									uc2const.FORMAT_EXTENSION[uc2const.PDXF][0])
 		else:
 			self.doc_presenter = PDXF_Presenter(app.appdata)
-			self.doc_presenter.new()
 			self.doc_name = self.app.get_new_docname()
 
 		self.methods = self.doc_presenter.methods
