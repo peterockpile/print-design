@@ -167,19 +167,6 @@ class AppConfig(UCConfig):
 	control_line_stroke_width = 0.7
 	control_line_stroke_dash = [5, 5]
 
-
-	#============== COLOR PROFILES ================
-	cms_display_profiles = {}
-	cms_rgb_profiles = {}
-	cms_cmyk_profiles = {}
-	cms_lab_profiles = {}
-	cms_gray_profiles = {}
-
-	cms_display_profile = ''
-	cms_intent = uc2const.INTENT_PERCEPTUAL
-	cms_flags = uc2const.cmsFLAGS_NOTPRECALC
-	cms_proofing = False
-
 	#============== I/O SECTION ===================
 	open_dir = '~'
 	save_dir = '~'
