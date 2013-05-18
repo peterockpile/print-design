@@ -27,6 +27,7 @@ from pdesign import _, config, events, icons
 from pdesign import dialogs
 from pdesign import modes
 from pdesign.app_conf import AppData
+from pdesign.app_cms import AppColorManager
 from pdesign.proxy import AppProxy
 from pdesign.inspector import DocumentInspector
 from pdesign.mainwindow import MainWindow
@@ -59,7 +60,7 @@ class Application(UCApplication):
 		config.load(self.appdata.app_config)
 		config.resource_dir = os.path.join(self.path, 'share')
 
-		self.default_cms = cms.ColorManager([], True)
+		self.default_cms = AppColorManager(self)
 
 		icons.load_icons()
 
