@@ -148,13 +148,19 @@ class ProfilesTab(PrefsTab):
 		note = gtk.Label()
 		text = _('<span size="small"><b>Note:</b> Display profile affects on '
 				'document screen representation only. Therefore it is not '
-				'embedded into document.</span>')
+				'embedded into document. The profile for your hardware '
+				'you can get either from monitor manufacture or '
+				'calibrating monitor (prefered option) or download '
+				'from ICC Profile Taxi service http://icc.opensuse.org/</span>')
 		note.set_markup(text)
 		note.set_line_wrap(True)
 		note.set_alignment(0, 1)
 		note.set_sensitive(False)
-		note.set_size_request(450, -1)
-		tab.attach(note, 0, 3, 8, 9, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
+		note.set_size_request(430, -1)
+		tab.attach(note, 0, 2, 8, 9, gtk.FILL | gtk.EXPAND, gtk.SHRINK)
+
+		button = TaxiButton(self.app)
+		tab.attach(button, 2, 3, 8, 9, gtk.SHRINK, gtk.SHRINK)
 
 	def update_config_data(self, colorspace):
 		if colorspace == COLOR_RGB:
@@ -218,4 +224,18 @@ class ManageButton(ImageStockButton):
 	def action(self, *args):
 		get_profiles_dialog(self.owner.app, self.owner.dlg,
 						self.owner, self.colorspace)
+
+class TaxiButton(ImageStockButton):
+
+	colorspace = ''
+	owner = None
+
+	def __init__(self, app):
+		self.app = app
+		text = _('Download profile from ICC Profile Taxi')
+		ImageStockButton.__init__(self, text, gtk.STOCK_GOTO_BOTTOM, False)
+		self.connect('clicked', self.action)
+
+	def action(self, *args):
+		self.app.open_url('http://icc.opensuse.org/')
 
