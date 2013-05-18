@@ -70,7 +70,10 @@ class AppColorManager(ColorManager):
 				if item == COLOR_DISPLAY:
 					self.use_display_profile = False
 				else:
-					self.handles[item] = libcms.cms_create_default_profile(item)
+					profile_dir = self.app.appdata.app_color_profile_dir
+					filename = 'built-in_%s.icm' % item
+					path = os.path.join(profile_dir, filename)
+					self.handles[item] = libcms.cms_open_profile_from_file(path)
 			index += 1
 		self.intent = config.cms_intent
 		self.flags = config.cms_flags
