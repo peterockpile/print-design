@@ -99,6 +99,7 @@ class PD_Presenter:
 
 
 		self.cms = self.doc_presenter.cms
+		self.app.default_cms.registry_cm(self.cms)
 
 		self.api = PresenterAPI(self)
 		self.docarea = DocArea(self.app, self)
@@ -125,6 +126,7 @@ class PD_Presenter:
 	def close(self):
 		if not self.docarea is None:
 			self.app.mw.remove_tab(self.docarea)
+		self.app.default_cms.unregistry_cm(self.cms)
 		self.doc_presenter.close()
 		for obj in self.traced_objects:
 			fields = obj.__dict__
