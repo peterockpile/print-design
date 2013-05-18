@@ -20,7 +20,7 @@ import gtk
 
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
 
-from pdesign import _, appconst, config
+from pdesign import _, config
 from pdesign.widgets import SimpleListCombo, ImageStockButton
 from pdesign.prefs.generic import GenericPrefsPlugin
 from pdesign.prefs.profilemngr import get_profiles_dialog
@@ -93,7 +93,7 @@ class ProfilesTab(PrefsTab):
 					COLOR_CMYK:self.pdxf_config.default_cmyk_profile,
 					COLOR_LAB:self.pdxf_config.default_lab_profile,
 					COLOR_GRAY:self.pdxf_config.default_gray_profile,
-					COLOR_DISPLAY:config.display_profile}
+					COLOR_DISPLAY:config.cms_display_profile}
 
 		index = 0
 		for colorspace in COLORSPACES[:-1]:
@@ -158,15 +158,15 @@ class ProfilesTab(PrefsTab):
 
 	def update_config_data(self, colorspace):
 		if colorspace == COLOR_RGB:
-			self.cs_config_profiles[colorspace] = config.rgb_profiles.copy()
+			self.cs_config_profiles[colorspace] = config.cms_rgb_profiles.copy()
 		elif colorspace == COLOR_CMYK:
-			self.cs_config_profiles[colorspace] = config.cmyk_profiles.copy()
+			self.cs_config_profiles[colorspace] = config.cms_cmyk_profiles.copy()
 		elif colorspace == COLOR_LAB:
-			self.cs_config_profiles[colorspace] = config.lab_profiles.copy()
+			self.cs_config_profiles[colorspace] = config.cms_lab_profiles.copy()
 		elif colorspace == COLOR_GRAY:
-			self.cs_config_profiles[colorspace] = config.gray_profiles.copy()
+			self.cs_config_profiles[colorspace] = config.cms_gray_profiles.copy()
 		else:
-			self.cs_config_profiles[colorspace] = config.display_profiles.copy()
+			self.cs_config_profiles[colorspace] = config.cms_display_profiles.copy()
 		self.cs_profiles[colorspace] = self.get_profile_names(colorspace)
 
 
