@@ -178,6 +178,7 @@ class AppConfig(UCConfig):
 	cms_display_profile = ''
 	cms_intent = uc2const.INTENT_PERCEPTUAL
 	cms_flags = uc2const.cmsFLAGS_NOTPRECALC
+	cms_proofing = False
 
 	#============== I/O SECTION ===================
 	open_dir = '~'
