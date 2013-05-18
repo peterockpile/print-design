@@ -1,8 +1,9 @@
-#Sat May 11 13:31:11 EEST 2013
+#Sat May 18 15:30:10 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
 encoding//src/pdesign/api.py=utf-8
+encoding//src/pdesign/app_cms.py=utf-8
 encoding//src/pdesign/app_conf.py=utf-8
 encoding//src/pdesign/appconst.py=utf-8
 encoding//src/pdesign/application.py=utf-8
