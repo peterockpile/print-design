@@ -169,17 +169,15 @@ class AppConfig(UCConfig):
 
 
 	#============== COLOR PROFILES ================
-	display_profiles = {}
-	rgb_profiles = {}
-	cmyk_profiles = {}
-	lab_profiles = {}
-	gray_profiles = {}
+	cms_display_profiles = {}
+	cms_rgb_profiles = {}
+	cms_cmyk_profiles = {}
+	cms_lab_profiles = {}
+	cms_gray_profiles = {}
 
-	rgb_profile = ''
-	cmyk_profile = ''
-	lab_profile = ''
-	gray_profile = ''
-	display_profile = ''
+	cms_display_profile = ''
+	cms_intent = uc2const.INTENT_PERCEPTUAL
+	cms_flags = uc2const.cmsFLAGS_NOTPRECALC
 
 	#============== I/O SECTION ===================
 	open_dir = '~'
