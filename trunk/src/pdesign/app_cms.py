@@ -18,6 +18,7 @@
 import os
 
 from uc2 import uc2const
+from uc2.uc2const import COLOR_DISPLAY
 
 from uc2.cms import ColorManager, CS, libcms
 from uc2.formats.pdxf.pdxf_config import PDXF_Config
@@ -25,15 +26,7 @@ from pdesign import config
 
 class AppColorManager(ColorManager):
 
-	handles = {}
-	transforms = {}
 	color_mngrs = []
-
-	use_display_profile = False
-	proofing = False
-
-	intent = uc2const.INTENT_PERCEPTUAL
-	flags = uc2const.cmsFLAGS_NOTPRECALC
 
 	def __init__(self, app):
 		self.app = app
@@ -62,22 +55,25 @@ class AppColorManager(ColorManager):
 						config.cms_display_profiles]
 		index = 0
 		profile_dir = self.app.appdata.app_color_profile_dir
-		for item in CS + [uc2const.COLOR_DISPLAY, ]:
+		for item in CS + [COLOR_DISPLAY, ]:
 			path = None
 			profile = profiles[index]
 			if profile and profile_dicts[index].has_key(profile):
 				profile_filename = profile_dicts[index][profile]
 				path = os.path.join(profile_dir, profile_filename)
 			if path:
-				if item == uc2const.COLOR_DISPLAY:
+				if item == COLOR_DISPLAY:
 					self.use_display_profile = True
 				self.handles[item] = libcms.cms_open_profile_from_file(path)
 			else:
-				if item == uc2const.COLOR_DISPLAY:
+				if item == COLOR_DISPLAY:
 					self.use_display_profile = False
 				else:
 					self.handles[item] = libcms.cms_create_default_profile(item)
 			index += 1
+		self.intent = config.cms_intent
+		self.flags = config.cms_flags
+		self.proofing = config.cms_proofing
 
 	def registry_cm(self, cm):
 		self.color_mngrs.append(cm)
@@ -87,7 +83,15 @@ class AppColorManager(ColorManager):
 		self.color_mngrs.remove(cm)
 
 	def apply_cm_settings(self, cm):
-		pass
+		if self.use_display_profile:
+			cm.use_display_profile = True
+			cm.handles[COLOR_DISPLAY] = self.handles[COLOR_DISPLAY]
+		else:
+			cm.use_display_profile = False
+		cm.intent = self.intent
+		cm.flags = self.flags
+		cm.proofing = self.proofing
+		cm.clear_transforms()
 
 	def update_mngrs(self):
 		for item in self.color_mngrs:
