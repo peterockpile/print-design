@@ -43,6 +43,7 @@ class AppColorManager(ColorManager):
 				pdxf_config.default_lab_profile,
 				pdxf_config.default_gray_profile]
 		profiles.append(config.cms_display_profile)
+		return profiles
 
 	def update(self):
 		self.handles = {}
