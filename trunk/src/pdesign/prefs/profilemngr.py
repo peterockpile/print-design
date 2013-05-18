@@ -150,18 +150,18 @@ class ProfileManager(gtk.HBox):
 		self.build()
 
 	def set_profiles(self):
-		if self.colorspace == COLOR_RGB:self.profiles = config.rgb_profiles.copy()
-		elif self.colorspace == COLOR_CMYK:self.profiles = config.cmyk_profiles.copy()
-		elif self.colorspace == COLOR_LAB:self.profiles = config.lab_profiles.copy()
-		elif self.colorspace == COLOR_GRAY:self.profiles = config.gray_profiles.copy()
-		else:self.profiles = config.display_profiles.copy()
+		if self.colorspace == COLOR_RGB:self.profiles = config.cms_rgb_profiles.copy()
+		elif self.colorspace == COLOR_CMYK:self.profiles = config.cms_cmyk_profiles.copy()
+		elif self.colorspace == COLOR_LAB:self.profiles = config.cms_lab_profiles.copy()
+		elif self.colorspace == COLOR_GRAY:self.profiles = config.cms_gray_profiles.copy()
+		else:self.profiles = config.cms_display_profiles.copy()
 
 	def save_profiles(self):
-		if self.colorspace == COLOR_RGB:config.rgb_profiles = self.profiles
-		elif self.colorspace == COLOR_CMYK:config.cmyk_profiles = self.profiles
-		elif self.colorspace == COLOR_LAB:config.lab_profiles = self.profiles
-		elif self.colorspace == COLOR_GRAY:config.gray_profiles = self.profiles
-		else: config.display_profiles = self.profiles
+		if self.colorspace == COLOR_RGB:config.cms_rgb_profiles = self.profiles
+		elif self.colorspace == COLOR_CMYK:config.cms_cmyk_profiles = self.profiles
+		elif self.colorspace == COLOR_LAB:config.cms_lab_profiles = self.profiles
+		elif self.colorspace == COLOR_GRAY:config.cms_gray_profiles = self.profiles
+		else: config.cms_display_profiles = self.profiles
 
 	def update_list(self):
 		keys = self.profiles.keys()
