@@ -186,15 +186,21 @@ class ActionToggleButton(gtk.ToggleButton):
 
 class SimpleListCombo(gtk.ComboBox):
 
-	def __init__(self):
+	def __init__(self, list=[]):
 		self.liststore = gtk.ListStore(gobject.TYPE_STRING)
 		gtk.ComboBox.__init__(self, self.liststore)
 		cell = gtk.CellRendererText()
 		self.pack_start(cell, True)
 		self.add_attribute(cell, 'text', 0)
+		self.set_list(list)
 
 	def clear(self):
 		self.liststore.clear()
+
+	def set_list(self, list=[]):
+		if list:
+			for item in list:
+				self.append_text(item)
 
 class KeepRatioLabel(gtk.EventBox):
 
