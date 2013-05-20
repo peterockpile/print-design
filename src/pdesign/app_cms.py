@@ -75,7 +75,8 @@ class AppColorManager(ColorManager):
 					path = os.path.join(profile_dir, filename)
 					self.handles[item] = libcms.cms_open_profile_from_file(path)
 			index += 1
-		self.intent = config.cms_intent
+		self.rgb_intent = config.cms_rgb_intent
+		self.cmyk_intent = config.cms_cmyk_intent
 		self.flags = config.cms_flags
 		self.proofing = config.cms_proofing
 
@@ -92,7 +93,8 @@ class AppColorManager(ColorManager):
 			cm.handles[COLOR_DISPLAY] = self.handles[COLOR_DISPLAY]
 		else:
 			cm.use_display_profile = False
-		cm.intent = self.intent
+		cm.rgb_intent = self.rgb_intent
+		cm.cmyk_intent = self.cmyk_intent
 		cm.flags = self.flags
 		cm.proofing = self.proofing
 		cm.clear_transforms()
