@@ -15,15 +15,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import copy
 import gtk
 
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
+from uc2.cms import rgb_to_hexcolor, gdk_hexcolor_to_rgb
 
 from pdesign import _, config
 from pdesign.widgets import SimpleListCombo, ImageStockButton
 from pdesign.prefs.generic import GenericPrefsPlugin
 from pdesign.prefs.profilemngr import get_profiles_dialog
+from uc2 import uc2const
 
 COLORSPACES = [COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY]
 
@@ -46,6 +48,14 @@ class CmsPrefsPlugin(GenericPrefsPlugin):
 			self.nb.append_page(tab, tab.label)
 		self.pack_end(self.nb, True, True, 0)
 
+	def apply_changes(self):
+		for tab in self.tabs:
+			tab.apply_changes()
+
+	def restore_defaults(self):
+		index = self.nb.get_current_page()
+		self.tabs[index].restore_defaults()
+
 
 class PrefsTab(gtk.VBox):
 
@@ -60,13 +70,162 @@ class PrefsTab(gtk.VBox):
 		self.pdxf_config = pdxf_config
 		self.set_border_width(10)
 
+	def apply_changes(self):pass
+	def restore_defaults(self):pass
+
 
 class CMSTab(PrefsTab):
 
 	name = _('Color Management')
+	build = True
+
+	rgb_intent = uc2const.INTENT_RELATIVE_COLORIMETRIC
+	cmyk_intent = uc2const.INTENT_PERCEPTUAL
+	proof_flag = False
+	gamutcheck_flag = False
+	alarmcodes = []
+	spot_flag = False
+	bpc_flag = False
+	bpt_flag = False
 
 	def __init__(self, app, dlg, pdxf_config):
 		PrefsTab.__init__(self, app, dlg, pdxf_config)
+
+		self.get_config_vals()
+
+		#Rendering intents frame
+		self.intents = uc2const.INTENTS.keys()
+		self.intents.sort()
+		self.intents_names = []
+		for item in self.intents:
+			self.intents_names.append(uc2const.INTENTS[item])
+
+		intent_frame = gtk.Frame(' ' + _('Rendering intents') + ' ')
+		tab = gtk.Table(2, 2, False)
+		tab.set_row_spacings(5)
+		tab.set_col_spacings(10)
+		tab.set_border_width(5)
+
+		label = gtk.Label(_('Display/RGB intent:'))
+		tab.attach(label, 0, 1, 0, 1, gtk.SHRINK, gtk.SHRINK)
+		self.rgb_intent_combo = SimpleListCombo(self.intents_names)
+		self.rgb_intent_combo.set_active(config.cms_rgb_intent)
+		self.rgb_intent_combo.connect('changed', self.update_vals)
+		tab.attach(self.rgb_intent_combo, 1, 2, 0, 1, gtk.SHRINK, gtk.SHRINK)
+
+		label = gtk.Label(_('Printer/CMYK intent:'))
+		tab.attach(label, 0, 1, 1, 2, gtk.SHRINK, gtk.SHRINK)
+		self.cmyk_intent_combo = SimpleListCombo(self.intents_names)
+		self.cmyk_intent_combo.set_active(config.cms_cmyk_intent)
+		self.cmyk_intent_combo.connect('changed', self.update_vals)
+		tab.attach(self.cmyk_intent_combo, 1, 2, 1, 2, gtk.SHRINK, gtk.SHRINK)
+
+		intent_frame.add(tab)
+		self.pack_start(intent_frame, False, True, 0)
+
+		#Printer simulation
+		printer_frame = gtk.Frame()
+		self.printer_check = gtk.CheckButton(_('Simulate Printer on the Screen'))
+		self.printer_check.set_active(True)
+		self.printer_check.connect('toggled', self.update_vals)
+		printer_frame.set_label_widget(self.printer_check)
+
+		vbox = gtk.VBox()
+		vbox.set_border_width(10)
+		printer_frame.add(vbox)
+		txt = _('Show colors that are out of the printer gamut')
+		self.gamut_check = gtk.CheckButton(txt)
+		self.gamut_check.connect('toggled', self.update_vals)
+		vbox.pack_start(self.gamut_check, True, True, 0)
+
+		hbox = gtk.HBox()
+		self.alarm_label = gtk.Label('Alarm color:')
+		hbox.pack_start(self.alarm_label, False, False, 5)
+
+		self.cb = gtk.ColorButton()
+		self.cb.connect('color-set', self.update_vals)
+		self.cb.set_size_request(100, -1)
+		self.cb.set_title(_('Select alarm color'))
+		self.cb.set_color(gtk.gdk.Color(rgb_to_hexcolor(config.cms_alarmcodes)))
+		hbox.pack_start(self.cb, False, False, 5)
+
+		vbox.pack_start(hbox, True, True, 0)
+
+		txt = _('Separation for SPOT colors')
+		self.spot_check = gtk.CheckButton(txt)
+		self.spot_check.connect('toggled', self.update_vals)
+		vbox.pack_start(self.spot_check, False, True, 5)
+
+		self.pack_start(printer_frame, False, True, 0)
+
+		#Flags
+		txt = _('Use Blackpoint Compensation')
+		self.bpc_check = gtk.CheckButton(txt)
+		self.bpc_check.connect('toggled', self.update_vals)
+		self.pack_start(self.bpc_check, False, True, 5)
+
+		txt = _('Use Black preserving transforms')
+		self.bpt_check = gtk.CheckButton(txt)
+		self.bpt_check.connect('toggled', self.update_vals)
+		self.pack_start(self.bpt_check, False, True, 0)
+
+		self.update_widgets()
+
+	def get_config_vals(self):
+		self.rgb_intent = config.cms_rgb_intent
+		self.cmyk_intent = config.cms_cmyk_intent
+		self.proof_flag = config.cms_proofing
+		self.gamutcheck_flag = config.cms_gamutcheck
+		self.alarmcodes = copy.copy(config.cms_alarmcodes)
+		self.spot_flag = config.cms_proof_for_spot
+		self.bpc_flag = config.cms_bpc_flag
+		self.bpt_flag = config.cms_bpt_flag
+
+	def update_widgets(self):
+		self.build = True
+		self.rgb_intent_combo.set_active(self.rgb_intent)
+		self.cmyk_intent_combo.set_active(self.cmyk_intent)
+		self.printer_check.set_active(self.proof_flag)
+		#---
+		self.gamut_check.set_sensitive(self.proof_flag)
+		self.alarm_label.set_sensitive(self.proof_flag)
+		self.cb.set_sensitive(self.proof_flag)
+		self.spot_check.set_sensitive(self.proof_flag)
+		#---
+		self.gamut_check.set_active(self.gamutcheck_flag)
+		if self.proof_flag:
+			self.alarm_label.set_sensitive(self.gamutcheck_flag)
+			self.cb.set_sensitive(self.gamutcheck_flag)
+		self.cb.set_color(gtk.gdk.Color(rgb_to_hexcolor(self.alarmcodes)))
+		self.spot_check.set_active(self.spot_flag)
+		self.bpc_check.set_active(self.bpc_flag)
+		self.bpt_check.set_active(self.bpt_flag)
+		self.build = False
+
+	def update_vals(self, *args):
+		if not self.build:
+			self.rgb_intent = self.rgb_intent_combo.get_active()
+			self.cmyk_intent = self.cmyk_intent_combo.get_active()
+			self.proof_flag = self.printer_check.get_active()
+			self.gamutcheck_flag = self.gamut_check.get_active()
+			color = gdk_hexcolor_to_rgb(self.cb.get_color().to_string())
+			self.alarmcodes = color
+			self.spot_flag = self.spot_check.get_active()
+			self.bpc_flag = self.bpc_check.get_active()
+			self.bpt_flag = self.bpt_check.get_active()
+			self.update_widgets()
+
+	def restore_defaults(self):
+		defaults = config.get_defaults()
+		self.rgb_intent = defaults['cms_rgb_intent']
+		self.cmyk_intent = defaults['cms_cmyk_intent']
+		self.proof_flag = defaults['cms_proofing']
+		self.gamutcheck_flag = defaults['cms_gamutcheck']
+		self.alarmcodes = copy.copy(defaults['cms_alarmcodes'])
+		self.spot_flag = defaults['cms_proof_for_spot']
+		self.bpc_flag = defaults['cms_bpc_flag']
+		self.bpt_flag = defaults['cms_bpt_flag']
+		self.update_widgets()
 
 class ProfilesTab(PrefsTab):
 
@@ -180,7 +339,7 @@ class ProfilesTab(PrefsTab):
 		self.update_config_data(colorspace)
 		combo = self.cs_widgets[colorspace]
 		combo.clear()
-		for name in self.cs_profiles[colorspace]: combo.append_text(name)
+		combo.set_list(self.cs_profiles[colorspace])
 		if not set_active: return
 		self.set_active_profile(combo, self.cs_config[colorspace], colorspace)
 
