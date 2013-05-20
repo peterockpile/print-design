@@ -75,6 +75,12 @@ class AppConfig(UCConfig):
 			self.__dict__[attr] = value
 			events.emit(events.CONFIG_MODIFIED, attr, value)
 
+
+	def get_defaults(self):
+		defaults = AppConfig.__dict__
+		defaults.update(UCConfig.__dict__)
+		return defaults
+
 	#============== GENERIC SECTION ===================
 	system_encoding = 'utf-8'	# default encoding (GUI uses utf-8 only)
 	new_doc_on_start = True
