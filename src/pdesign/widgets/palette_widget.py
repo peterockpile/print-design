@@ -53,6 +53,10 @@ class PaletteWidget(gtk.DrawingArea):
 		self.tooltip = None
 		self.cmyk_icon = self.load_icon('cmyk_color.png')
 		self.rgb_icon = self.load_icon('rgb_color.png')
+		events.connect(events.CMS_CHANGED, self.cms_changed)
+
+	def cms_changed(self, *args):
+		self.queue_draw()
 
 	def load_icon(self, file_name):
 		image_dir = os.path.join(config.resource_dir, 'icons', 'palette')
@@ -134,6 +138,10 @@ class PaletteWidget(gtk.DrawingArea):
 		y1 = HEIGHT + 1
 
 		i = self.position
+		if self.app.current_doc:
+			cms = self.app.current_doc.cms
+		else:
+			cms = self.app.default_cms
 		for color in self.pal:
 			x0 = i * config.palette_cell_horizontal
 			ctx.rectangle(x0, y0, offset, y1)
