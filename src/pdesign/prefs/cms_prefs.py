@@ -60,6 +60,7 @@ class CmsPrefsPlugin(GenericPrefsPlugin):
 				self.nb.append_page(tab, tab.label)
 		else:
 			self.nb.append_page(self.tabs[0], self.tabs[0].label)
+		self.nb.show_all()
 
 	def apply_changes(self):
 		for tab in self.tabs:
