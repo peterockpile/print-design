@@ -22,6 +22,7 @@ for internal events processing.
 Signal arguments:
 CONFIG_MODIFIED   arg[0] - [attr, value]
 APP_STATUS		  arg[0] - statusbar message
+CMS_CHANGED		  no args 
 NO_DOCS		      no args
 DOC_MODIFIED	  arg[0] - presenter instance
 DOC_CHANGED	      arg[0] - actual presenter instance
@@ -38,6 +39,7 @@ PAGE_CHANGED      arg[0] - presenter instance
 CONFIG_MODIFIED = ['CONFIG_MODIFIED']
 
 APP_STATUS = ['APP_STATUS']
+CMS_CHANGED = ['CMS_CHANGED']
 
 NO_DOCS = ['NO_DOCS']
 DOC_MODIFIED = ['DOC_MODIFIED']
