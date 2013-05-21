@@ -17,7 +17,6 @@
 
 import os
 
-from uc2 import uc2const
 from uc2.uc2const import COLOR_DISPLAY
 
 from uc2.cms import ColorManager, CS, libcms
@@ -38,6 +37,7 @@ class AppColorManager(ColorManager):
 		field = args[0][0]
 		if field[0:4] == 'cms_':
 			self.update()
+			self.update_mngrs()
 			events.emit(events.CMS_CHANGED)
 
 	def get_profiles(self):
@@ -82,6 +82,7 @@ class AppColorManager(ColorManager):
 					path = os.path.join(profile_dir, filename)
 					self.handles[item] = libcms.cms_open_profile_from_file(path)
 			index += 1
+		self.use_cms = config.cms_use
 		self.rgb_intent = config.cms_rgb_intent
 		self.cmyk_intent = config.cms_cmyk_intent
 		self.flags = config.cms_flags
@@ -100,6 +101,7 @@ class AppColorManager(ColorManager):
 			cm.handles[COLOR_DISPLAY] = self.handles[COLOR_DISPLAY]
 		else:
 			cm.use_display_profile = False
+		cm.use_cms = self.use_cms
 		cm.rgb_intent = self.rgb_intent
 		cm.cmyk_intent = self.cmyk_intent
 		cm.flags = self.flags
