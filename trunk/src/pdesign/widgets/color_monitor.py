@@ -57,6 +57,7 @@ class ColorMonitorWidget(gtk.HBox):
 		events.connect(events.DOC_CHANGED, self.update)
 		events.connect(events.SELECTION_CHANGED, self.update)
 		events.connect(events.DOC_MODIFIED, self.update)
+		events.connect(events.CMS_CHANGED, self.update)
 
 	def update(self, *args):
 		if not self.insp.is_doc():
