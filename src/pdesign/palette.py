@@ -47,10 +47,6 @@ class Palette(gtk.HBox):
 		self.dforward = PalButton('double-arrow-right.png')
 		self.pack_start(self.dforward, False, False, 0)
 		self.dforward.connect('clicked', self.action_dforward)
-		events.connect(events.CMS_CHANGED, self.cms_changed)
-
-	def cms_changed(self, *args):
-		self.palwidget.queue_draw()
 
 	def action_dforward(self, *args):
 		self.palwidget.position -= 20
