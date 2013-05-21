@@ -219,7 +219,7 @@ def about_dialog(parent):
 
 	about.set_program_name(parent.app.appdata.app_name)
 	about.set_version(parent.app.appdata.version)
-	about.set_copyright("Copyright (C) 2011 by Igor E. Novikov\n")
+	about.set_copyright("Copyright (C) 2011-2013 by Igor E. Novikov\n")
 	about.set_comments(_("Vector graphics editor based on sK1 0.9.x") + "\n" + \
 						  _("and Skencil 0.6.x experience."))
 	about.set_website('http://www.sk1project.org')
