@@ -17,6 +17,7 @@
 
 import os
 
+from uc2 import uc2const
 from uc2.uc2const import COLOR_DISPLAY
 
 from uc2.cms import ColorManager, CS, libcms
@@ -87,6 +88,17 @@ class AppColorManager(ColorManager):
 		self.cmyk_intent = config.cms_cmyk_intent
 		self.flags = config.cms_flags
 		self.proofing = config.cms_proofing
+		self.alarm_codes = config.cms_alarmcodes
+		self.gamutcheck = config.cms_gamutcheck
+		self.proof_for_spot = config.cms_proof_for_spot
+		if self.proofing:
+			self.flags = self.flags | uc2const.cmsFLAGS_SOFTPROOFING
+		if self.gamutcheck:
+			self.flags = self.flags | uc2const.cmsFLAGS_GAMUTCHECK
+		if config.cms_bpc_flag:
+			self.flags = self.flags | uc2const.cmsFLAGS_BLACKPOINTCOMPENSATION
+		if config.cms_bpt_flag:
+			self.flags = self.flags | uc2const.cmsFLAGS_PRESERVEBLACK
 
 	def registry_cm(self, cm):
 		self.color_mngrs.append(cm)
@@ -105,7 +117,10 @@ class AppColorManager(ColorManager):
 		cm.rgb_intent = self.rgb_intent
 		cm.cmyk_intent = self.cmyk_intent
 		cm.flags = self.flags
+		cm.alarm_codes = self.alarm_codes
+		cm.gamutcheck = self.gamutcheck
 		cm.proofing = self.proofing
+		cm.proof_for_spot = self.proof_for_spot
 		cm.clear_transforms()
 
 	def update_mngrs(self):
