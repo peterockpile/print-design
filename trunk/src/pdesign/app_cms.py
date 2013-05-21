@@ -22,7 +22,7 @@ from uc2.uc2const import COLOR_DISPLAY
 
 from uc2.cms import ColorManager, CS, libcms
 from uc2.formats.pdxf.pdxf_config import PDXF_Config
-from pdesign import config
+from pdesign import config, events
 
 class AppColorManager(ColorManager):
 
@@ -32,6 +32,13 @@ class AppColorManager(ColorManager):
 		self.app = app
 		self.color_mngrs = []
 		ColorManager.__init__(self)
+		events.connect(events.CONFIG_MODIFIED, self.config_changed)
+
+	def config_changed(self, *args):
+		field = args[0][0]
+		if field[0:4] == 'cms_':
+			self.update()
+			events.emit(events.CMS_CHANGED)
 
 	def get_profiles(self):
 		pdxf_config = PDXF_Config()
