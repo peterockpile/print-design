@@ -15,6 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 
 from uc2.formats.pdxf.pdxf_config import PDXF_Config
@@ -75,6 +76,8 @@ class PrefsContainer(gtk.HPaned):
 		self.app = app
 		self.dlg = dlg
 		self.pdxf_config = PDXF_Config()
+		config_file = os.path.join(self.app.appdata.app_config_dir, 'pdxf_config.xml')
+		self.pdxf_config.load(config_file)
 		gtk.HPaned.__init__(self)
 		self.set_size_request(700, 400)
 		self.build_model()
