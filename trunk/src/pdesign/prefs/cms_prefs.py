@@ -42,11 +42,24 @@ class CmsPrefsPlugin(GenericPrefsPlugin):
 	def build(self):
 		GenericPrefsPlugin.build(self)
 		self.nb = gtk.Notebook()
-		self.tabs = [ProfilesTab(self.app, self.dlg, self.pdxf_config),
-					CMSTab(self.app, self.dlg, self.pdxf_config)]
-		for tab in self.tabs:
-			self.nb.append_page(tab, tab.label)
+		self.tabs = [CMSTab(self, self.app, self.dlg, self.pdxf_config),
+					ProfilesTab(self.app, self.dlg, self.pdxf_config),
+					SettingsTab(self.app, self.dlg, self.pdxf_config)]
+		self.set_tabs(config.cms_use)
 		self.pack_end(self.nb, True, True, 0)
+
+	def set_tabs(self, cms_state):
+		num = self.nb.get_n_pages()
+		pages = range(0, num)
+		pages.reverse()
+		if num:
+			for item in pages:
+				self.nb.remove_page(item)
+		if cms_state:
+			for tab in self.tabs:
+				self.nb.append_page(tab, tab.label)
+		else:
+			self.nb.append_page(self.tabs[0], self.tabs[0].label)
 
 	def apply_changes(self):
 		for tab in self.tabs:
@@ -73,10 +86,34 @@ class PrefsTab(gtk.VBox):
 	def apply_changes(self):pass
 	def restore_defaults(self):pass
 
-
 class CMSTab(PrefsTab):
 
 	name = _('Color Management')
+
+	def __init__(self, owner, app, dlg, pdxf_config):
+		self.owner = owner
+		PrefsTab.__init__(self, app, dlg, pdxf_config)
+
+		self.use_cms = config.cms_use
+		txt = _('Activate Color Management')
+		self.cms_check = gtk.CheckButton(txt)
+		self.cms_check.set_active(self.use_cms)
+		self.cms_check.connect('toggled', self.changes)
+		self.pack_start(self.cms_check, False, True, 0)
+
+	def changes(self, *args):
+		self.use_cms = self.cms_check.get_active()
+		self.owner.set_tabs(self.use_cms)
+
+	def apply_changes(self):
+		config.cms_use = self.use_cms
+
+	def restore_defaults(self):
+		self.cms_check.set_active(True)
+
+class SettingsTab(PrefsTab):
+
+	name = _('Settings')
 	build = True
 
 	rgb_intent = uc2const.INTENT_RELATIVE_COLORIMETRIC
@@ -227,6 +264,16 @@ class CMSTab(PrefsTab):
 		self.bpt_flag = defaults['cms_bpt_flag']
 		self.update_widgets()
 
+	def apply_changes(self):
+		config.cms_rgb_intent = self.rgb_intent
+		config.cms_cmyk_intent = self.cmyk_intent
+		config.cms_proofing = self.proof_flag
+		config.cms_gamutcheck = self.gamutcheck_flag
+		config.cms_alarmcodes = copy.copy(self.alarmcodes)
+		config.cms_proof_for_spot = self.spot_flag
+		config.cms_bpc_flag = self.bpc_flag
+		config.cms_bpt_flag = self.bpt_flag
+
 class ProfilesTab(PrefsTab):
 
 	name = _('Color profiles')
@@ -356,7 +403,7 @@ class ProfilesTab(PrefsTab):
 			elif colorspace == COLOR_GRAY:
 				self.pdxf_config.default_gray_profile = ''
 			else:
-				config.display_profile = ''
+				config.cms_display_profile = ''
 			self.pdxf_config.save()
 		else:
 			widget.set_active(profiles.index(name))
@@ -367,6 +414,30 @@ class ProfilesTab(PrefsTab):
 		names.append(default)
 		names += self.cs_config_profiles[colorspace].keys()
 		return names
+
+	def restore_defaults(self):
+		for item in COLORSPACES:
+			self.cs_config[item] = ''
+			self.update_combo(item, True)
+
+	def apply_changes(self):
+		for colorspace in COLORSPACES:
+			profiles = self.get_profile_names(colorspace)
+			combo = self.cs_widgets[colorspace]
+			index = combo.get_active()
+			profile_name = ''
+			if index: profile_name = profiles[index]
+			if colorspace == COLOR_RGB:
+				self.pdxf_config.default_rgb_profile = profile_name
+			elif colorspace == COLOR_CMYK:
+				self.pdxf_config.default_cmyk_profile = profile_name
+			elif colorspace == COLOR_LAB:
+				self.pdxf_config.default_lab_profile = profile_name
+			elif colorspace == COLOR_GRAY:
+				self.pdxf_config.default_gray_profile = profile_name
+			else:
+				config.cms_display_profile = profile_name
+			self.pdxf_config.save()
 
 class ManageButton(ImageStockButton):
 
