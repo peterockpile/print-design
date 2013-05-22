@@ -22,7 +22,7 @@ from uc2 import uc2const
 from uc2.utils import system
 from uc2.utils.fs import expanduser_unicode
 from uc2.formats.pdxf.const import DOC_STRUCTURE
-from uc2.cms import CS, libcms
+from uc2.cms import libcms
 
 from pdesign import events, appconst
 
@@ -46,7 +46,7 @@ class AppData:
 	if not os.path.lexists(app_color_profile_dir):
 		os.makedirs(app_color_profile_dir)
 
-	for item in CS:
+	for item in uc2const.COLORSPACES + [uc2const.COLOR_DISPLAY, ]:
 		filename = 'built-in_%s.icm' % item
 		path = os.path.join(app_color_profile_dir, filename)
 		if not os.path.lexists(path):
