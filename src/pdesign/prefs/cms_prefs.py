@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import copy
+import copy, os
 import gtk
 
 from uc2.uc2const import COLOR_RGB, COLOR_CMYK, COLOR_LAB, COLOR_GRAY, COLOR_DISPLAY
@@ -94,23 +94,100 @@ class CMSTab(PrefsTab):
 	def __init__(self, owner, app, dlg, pdxf_config):
 		self.owner = owner
 		PrefsTab.__init__(self, app, dlg, pdxf_config)
-
+		self.set_border_width(0)
 		self.use_cms = config.cms_use
+
+		hbox = gtk.HBox()
 		txt = _('Activate Color Management')
 		self.cms_check = gtk.CheckButton(txt)
 		self.cms_check.set_active(self.use_cms)
 		self.cms_check.connect('toggled', self.changes)
-		self.pack_start(self.cms_check, False, True, 0)
+		hbox.pack_start(self.cms_check, False, True, 10)
+		self.pack_start(hbox, False, True, 10)
+
+		self.container = gtk.VBox()
+		self.splash = CMSSplash()
+		if self.use_cms:
+			self.container.pack_start(self.splash, True, True, 0)
+		self.pack_start(self.container, True, True, 0)
+
+		hbox = gtk.HBox()
+		txt = _('<span size="small"><b>Note:</b> If Color Management is not '
+			'activated all colors will be processed using simple calculation '
+			'procedures. Therefore resulted color values will be not accurate.'
+			'</span>')
+		note = gtk.Label()
+		note.set_markup(txt)
+		note.set_line_wrap(True)
+		note.set_alignment(0, 1)
+		note.set_sensitive(False)
+		note.set_size_request(450, -1)
+		hbox.pack_start(note, False, True, 10)
+		self.pack_start(hbox, False, True, 10)
+
 
 	def changes(self, *args):
 		self.use_cms = self.cms_check.get_active()
 		self.owner.set_tabs(self.use_cms)
+		if not self.use_cms:
+			self.container.remove(self.splash)
+		else:
+			self.container.pack_start(self.splash, True, True, 0)
+			self.container.show_all()
 
 	def apply_changes(self):
 		config.cms_use = self.use_cms
 
 	def restore_defaults(self):
 		self.cms_check.set_active(True)
+
+class CMSSplash(gtk.DrawingArea):
+
+	def __init__(self):
+		gtk.DrawingArea.__init__(self)
+		self.bg = self.get_style().fg[gtk.STATE_INSENSITIVE]
+		self.modify_bg(gtk.STATE_NORMAL, self.bg)
+
+		r = self.bg.red / 0xff
+		g = self.bg.green / 0xff
+		b = self.bg.blue / 0xff
+		self.pixel = r * 256 * 256 * 256 + g * 65536 + b * 256 + 255
+
+		banner_file = os.path.join(config.resource_dir, 'cms-banner.png')
+		self.cms_banner = gtk.gdk.pixbuf_new_from_file(banner_file)
+		self.connect('expose_event', self.repaint)
+
+	def repaint(self, *args):
+		if config.show_splash:
+			_x, _y, w, h = self.allocation
+#			self.composite(self.cairo_banner, 5,
+#						h - self.cairo_banner.get_height() - 5)
+			self.composite(self.cms_banner,
+						w / 2 - self.cms_banner.get_width() / 2,
+						(h - self.cms_banner.get_height()) / 2)
+
+	def composite(self, banner, x, y):
+		frame = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,
+							False, 8,
+            banner.get_width(),
+            banner.get_height())
+
+		frame.fill(self.pixel)
+		banner.composite(
+			frame,
+			0, 0,
+            banner.get_width(),
+            banner.get_height(),
+            0, 0, 1, 1, gtk.gdk.INTERP_NEAREST, 255)
+
+		self.window.draw_rgb_image(
+            self.style.black_gc,
+            x, y,
+            frame.get_width(),
+            frame.get_height(),
+            gtk.gdk.RGB_DITHER_NORMAL,
+            frame.get_pixels(),
+            frame.get_rowstride())
 
 class SettingsTab(PrefsTab):
 
