@@ -27,6 +27,7 @@ from pdesign import config, events
 class AppColorManager(ColorManager):
 
 	color_mngrs = []
+	use_display_profile = True
 
 	def __init__(self, app):
 		self.app = app
@@ -71,17 +72,12 @@ class AppColorManager(ColorManager):
 				profile_filename = profile_dicts[index][profile]
 				path = os.path.join(profile_dir, profile_filename)
 			if path:
-				if item == COLOR_DISPLAY:
-					self.use_display_profile = True
 				self.handles[item] = libcms.cms_open_profile_from_file(path)
 			else:
-				if item == COLOR_DISPLAY:
-					self.use_display_profile = False
-				else:
-					profile_dir = self.app.appdata.app_color_profile_dir
-					filename = 'built-in_%s.icm' % item
-					path = os.path.join(profile_dir, filename)
-					self.handles[item] = libcms.cms_open_profile_from_file(path)
+				profile_dir = self.app.appdata.app_color_profile_dir
+				filename = 'built-in_%s.icm' % item
+				path = os.path.join(profile_dir, filename)
+				self.handles[item] = libcms.cms_open_profile_from_file(path)
 			index += 1
 		self.use_cms = config.cms_use
 		self.rgb_intent = config.cms_rgb_intent
