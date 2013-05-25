@@ -145,14 +145,16 @@ libutils.compile_sources()
 if DEB_PACKAGE:
 	bld = DEB_Builder(name=NAME,
 					version=VERSION,
+					arch='all',
 					maintainer='%s <%s>' % (AUTHOR, AUTHOR_EMAIL),
 					depends=deb_depends,
 					homepage=URL,
 					description=DESCRIPTION,
 					long_description=LONG_DEB_DESCRIPTION,
 					pkg_dirs=libutils.get_package_dirs().keys(),
+					package_data=package_data,
 					scripts=scripts,
 					data_files=data_files)
 	bld.build()
 
-libutils.clear_build()
+#libutils.clear_build()
