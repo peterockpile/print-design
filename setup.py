@@ -97,3 +97,41 @@ scripts = ['src/printdesign', ]
 data_files = []
 deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
 deb_depends += 'gnome-desktop-data, python-uniconvertor (>=2.0)'
+
+############################################################
+#
+# Main build procedure
+#
+############################################################
+
+if len(sys.argv) == 1:
+	print 'Please specify build options!'
+	print __doc__
+	sys.exit(0)
+
+if len(sys.argv) > 1 and sys.argv[1] == 'build_update':
+	UPDATE_MODULES = True
+	sys.argv[1] = 'build'
+
+if len(sys.argv) > 1 and sys.argv[1] == 'bdist_deb':
+	DEB_PACKAGE = True
+	sys.argv[1] = 'build'
+
+from distutils.core import setup, Extension
+
+setup(name=NAME,
+	version=VERSION,
+	description=DESCRIPTION,
+	author=AUTHOR,
+	author_email=AUTHOR_EMAIL,
+	maintainer=MAINTAINER,
+	maintainer_email=MAINTAINER_EMAIL,
+	license=LICENSE,
+	url=URL,
+	download_url=DOWNLOAD_URL,
+	long_description=LONG_DESCRIPTION,
+	classifiers=CLASSIFIERS,
+	packages=libutils.get_source_structure(),
+	package_dir=libutils.get_package_dirs(),
+	data_files=data_files,
+	scripts=scripts)
