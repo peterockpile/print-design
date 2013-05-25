@@ -140,6 +140,14 @@ def generate_locales():
 #
 ############################################################
 
+def get_resources():
+	dirs = get_dirs_tree('src/pdesign/share')
+	res_dirs = []
+	for item in dirs:
+		res_dirs.append(os.path.join(item[4:], '*.*'))
+	res_dirs.append('pdesign/share/*.*')
+	return res_dirs
+
 def clear_build():
 	"""
 	Clears build result.
