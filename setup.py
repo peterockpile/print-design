@@ -50,7 +50,7 @@ DEB_PACKAGE = False
 ############################################################
 NAME = 'printdesign'
 VERSION = '1.0'
-DESCRIPTION = 'Universal vector graphics translator'
+DESCRIPTION = 'Vector graphics editor'
 AUTHOR = 'Igor E. Novikov'
 AUTHOR_EMAIL = 'igor.e.novikov@gmail.com'
 MAINTAINER = AUTHOR
@@ -160,4 +160,4 @@ if DEB_PACKAGE:
 					data_files=data_files)
 	bld.build()
 
-#libutils.clear_build()
+libutils.clear_build()
