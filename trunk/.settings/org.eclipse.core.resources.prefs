@@ -1,4 +1,4 @@
-#Tue May 21 21:29:48 EEST 2013
+#Sat May 25 16:41:07 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
@@ -51,3 +51,4 @@ encoding//src/pdesign/widgets/docarea.py=utf-8
 encoding//src/pdesign/widgets/pager_widget.py=utf-8
 encoding//src/pdesign/widgets/palette_widget.py=utf-8
 encoding//src/pdesign/widgets/ruler.py=utf-8
+encoding/libutils.py=utf-8
