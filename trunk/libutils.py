@@ -458,7 +458,9 @@ class DEB_Builder:
 		if files and not os.path.isdir(path): self._make_dir(path)
 		if not files:return
 		for item in files:
-			self.info('%s -> %s' % (item, path), CP_CODE)
+			msg = '%s -> %s' % (item, path)
+			if len(msg) > 80:msg = '%s -> \n%s%s' % (item, ' '*10, path)
+			self.info(msg, CP_CODE)
 			if os.system('cp %s %s' % (item, path)):
 				raise IOError('Cannot copying %s -> %s' % (item, path))
 
