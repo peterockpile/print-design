@@ -135,3 +135,9 @@ setup(name=NAME,
 	package_dir=libutils.get_package_dirs(),
 	data_files=data_files,
 	scripts=scripts)
+
+#################################################
+# .py source compiling
+#################################################
+libutils.compile_sources()
+
