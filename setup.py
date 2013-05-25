@@ -96,7 +96,7 @@ src_path = 'src'
 scripts = ['src/printdesign', ]
 data_files = []
 deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
-deb_depends += 'gnome-desktop-data, python-uniconvertor (>=2.0)'
+deb_depends += 'python-uniconvertor (>=2.0)'
 
 ############################################################
 #
