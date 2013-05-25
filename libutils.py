@@ -488,7 +488,7 @@ class DEB_Builder:
 					if os.path.isfile(path):
 						dir = os.path.join(self.dst, os.path.dirname(item))
 						files.append([dir, [path, ]])
-		print files
+
 		for item in files:
 			path, files = item
 			self.copy_files(path, files)
