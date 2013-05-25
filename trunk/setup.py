@@ -97,6 +97,7 @@ scripts = ['src/printdesign', ]
 data_files = []
 deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
 deb_depends += 'python-uniconvertor (>=2.0)'
+package_data = {'pdesign':libutils.get_resources()}
 
 ############################################################
 #
@@ -129,6 +130,7 @@ setup(name=NAME,
 	classifiers=CLASSIFIERS,
 	packages=libutils.get_source_structure(),
 	package_dir=libutils.get_package_dirs(),
+	package_data=package_data,
 	data_files=data_files,
 	scripts=scripts)
 
