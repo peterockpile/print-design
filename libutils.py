@@ -298,6 +298,7 @@ class DEB_Builder:
 
 	name = None
 	pkg_dirs = []
+	package_data = {}
 	scripts = []
 	data_files = []
 	deb_scripts = []
@@ -336,6 +337,7 @@ class DEB_Builder:
 				description='',
 				long_description='',
 				pkg_dirs=[],
+				package_data={},
 				scripts=[],
 				data_files=[],
 				deb_scripts=[]):
@@ -352,6 +354,7 @@ class DEB_Builder:
 		self.long_description = long_description
 
 		self.pkg_dirs = pkg_dirs
+		self.package_data = package_data
 		self.scripts = scripts
 		self.data_files = data_files
 		self.deb_scripts = deb_scripts
@@ -464,6 +467,33 @@ class DEB_Builder:
 			path, files = item
 			self.copy_files(self.build_dir + path, files)
 
+	def copy_package_data_files(self):
+		files = []
+		pkgs = self.package_data.keys()
+		for pkg in pkgs:
+			items = self.package_data[pkg]
+			for item in items:
+				path = 'src/' + item
+				if os.path.basename(path) == '*.*':
+					flist = []
+					dir = os.path.join(self.dst, os.path.dirname(item))
+					fldir = os.path.dirname(path)
+					fls = os.listdir(fldir)
+					for fl in fls:
+						flpath = os.path.join(fldir, fl)
+						if os.path.isfile(flpath):
+							flist.append(flpath)
+					files.append([dir, flist])
+				else:
+					if os.path.isfile(path):
+						dir = os.path.join(self.dst, os.path.dirname(item))
+						files.append([dir, [path, ]])
+		print files
+		for item in files:
+			path, files = item
+			self.copy_files(path, files)
+
+
 	def make_package(self):
 		self.info('%s package.' % self.package_name, MK_CODE)
 		if os.system('dpkg --build %s/ dist/%s' % (self.build_dir, self.package_name)):
@@ -482,6 +512,7 @@ class DEB_Builder:
 			self.copy_scripts(self.bin_dir, self.scripts)
 			self.copy_scripts(self.deb_dir, self.deb_scripts)
 			self.copy_data_files()
+			self.copy_package_data_files()
 			self.installed_size = str(int(get_size(self.build_dir) / 1024))
 			self.write_control()
 			self.make_package()
