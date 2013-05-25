@@ -94,7 +94,10 @@ LONG_DEB_DESCRIPTION = ''' .
 ############################################################
 src_path = 'src'
 scripts = ['src/printdesign', ]
-data_files = []
+data_files = [
+('/usr/share/applications', ['src/printdesign.desktop', ]),
+('/usr/share/pixmaps/', ['src/printdesign.png', 'src/printdesign.xpm' ]),
+]
 deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
 deb_depends += 'python-uniconvertor (>=2.0)'
 package_data = {'pdesign':libutils.get_resources()}
