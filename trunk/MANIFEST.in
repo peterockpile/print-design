@@ -2,6 +2,9 @@ include LICENSE
 include libutils.py
 include MANIFEST.in
 include GPLv3.txt
+include src/printdesign.desktop
+include src/printdesign.png
+include src/printdesign.xpm
 
 recursive-include src/pdesign/share *.*
 recursive-include src/pdesign/share/cursors *.*
