@@ -141,3 +141,20 @@ setup(name=NAME,
 #################################################
 libutils.compile_sources()
 
+#################################################
+# Implementation of bdist_deb command
+#################################################
+if DEB_PACKAGE:
+	bld = DEB_Builder(name=NAME,
+					version=VERSION,
+					maintainer='%s <%s>' % (AUTHOR, AUTHOR_EMAIL),
+					depends=deb_depends,
+					homepage=URL,
+					description=DESCRIPTION,
+					long_description=LONG_DEB_DESCRIPTION,
+					pkg_dirs=libutils.get_package_dirs().keys(),
+					scripts=scripts,
+					data_files=data_files)
+	bld.build()
+
+libutils.clear_build()
