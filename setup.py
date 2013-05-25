@@ -109,10 +109,6 @@ if len(sys.argv) == 1:
 	print __doc__
 	sys.exit(0)
 
-if len(sys.argv) > 1 and sys.argv[1] == 'build_update':
-	UPDATE_MODULES = True
-	sys.argv[1] = 'build'
-
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_deb':
 	DEB_PACKAGE = True
 	sys.argv[1] = 'build'
