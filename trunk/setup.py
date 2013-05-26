@@ -118,6 +118,9 @@ if len(sys.argv) == 1:
 	print __doc__
 	sys.exit(0)
 
+if len(sys.argv) > 1 and sys.argv[1] == 'build':
+	CLEAR_BUILD = False
+
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_deb':
 	DEB_PACKAGE = True
 	sys.argv[1] = 'build'
@@ -166,4 +169,4 @@ if DEB_PACKAGE:
 					data_files=data_files)
 	bld.build()
 
-libutils.clear_build()
+if CLEAR_BUILD: libutils.clear_build()
