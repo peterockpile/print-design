@@ -100,13 +100,18 @@ data_files = [
 ]
 deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
 deb_depends += 'python-uniconvertor (>=2.0)'
-package_data = {'pdesign':libutils.get_resources()}
+package_data = {
+'pdesign':libutils.get_resources('src/pdesign', 'src/pdesign/share'),
+}
 
 ############################################################
 #
 # Main build procedure
 #
 ############################################################
+#print libutils.get_package_dirs()
+#print package_data
+#sys.exit(0)
 
 if len(sys.argv) == 1:
 	print 'Please specify build options!'
@@ -116,6 +121,7 @@ if len(sys.argv) == 1:
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_deb':
 	DEB_PACKAGE = True
 	sys.argv[1] = 'build'
+
 
 from distutils.core import setup, Extension
 
@@ -154,7 +160,7 @@ if DEB_PACKAGE:
 					homepage=URL,
 					description=DESCRIPTION,
 					long_description=LONG_DEB_DESCRIPTION,
-					pkg_dirs=libutils.get_package_dirs().keys(),
+					package_dirs=libutils.get_package_dirs(),
 					package_data=package_data,
 					scripts=scripts,
 					data_files=data_files)
