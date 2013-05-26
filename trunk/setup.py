@@ -42,6 +42,7 @@ from libutils import make_source_list, DEB_Builder
 
 #Flags
 DEB_PACKAGE = False
+CLEAR_BUILD = False
 
 ############################################################
 #
@@ -118,11 +119,15 @@ if len(sys.argv) == 1:
 	print __doc__
 	sys.exit(0)
 
-if len(sys.argv) > 1 and sys.argv[1] == 'build':
-	CLEAR_BUILD = False
+if len(sys.argv) > 1 and sys.argv[1] == 'build_update':
+	sys.exit(0)
+
+if len(sys.argv) > 1 and sys.argv[1] == 'bdist_rpm':
+	CLEAR_BUILD = True
 
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_deb':
 	DEB_PACKAGE = True
+	CLEAR_BUILD = True
 	sys.argv[1] = 'build'
 
 
