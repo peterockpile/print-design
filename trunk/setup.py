@@ -109,9 +109,6 @@ package_data = {
 # Main build procedure
 #
 ############################################################
-#print libutils.get_package_dirs()
-#print package_data
-#sys.exit(0)
 
 if len(sys.argv) == 1:
 	print 'Please specify build options!'
