@@ -20,6 +20,7 @@ import gtk
 from uc2.uc2const import unit_names, unit_full_names
 
 from pdesign import _, config, events
+from pdesign.widgets import SimpleListCombo
 
 class UnitsPlugin(gtk.HBox):
 
@@ -38,11 +39,12 @@ class UnitsPlugin(gtk.HBox):
 		label = gtk.Label(_('Units:'))
 		self.pack_start(label, False, False, 3)
 
-		self.combo = gtk.combo_box_new_text()
-		self.pack_start(self.combo, False, False, 0)
-
+		names = []
 		for item in unit_names:
-			self.combo.append_text(unit_full_names[item])
+			names.append(unit_full_names[item])
+
+		self.combo = SimpleListCombo(names)
+		self.pack_start(self.combo.vbox, False, False, 2)
 
 		self.combo.set_active(unit_names.index(config.default_unit))
 		self.combo.connect('changed', self.combo_changed)
