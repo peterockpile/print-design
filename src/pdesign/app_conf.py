@@ -17,7 +17,7 @@
 
 import os
 
-from uc2.uc_conf import UCConfig
+from uc2.uc_conf import UCConfig, UCData
 from uc2 import uc2const
 from uc2.utils import system
 from uc2.utils.fs import expanduser_unicode
@@ -26,7 +26,7 @@ from uc2.cms import libcms
 
 from pdesign import events, appconst
 
-class AppData:
+class AppData(UCData):
 
 	app_name = 'PrintDesign'
 	app_proc = 'print-design'
@@ -35,23 +35,11 @@ class AppData:
 	app_icon = None
 	doc_icon = None
 	version = "1.0"
+	app_config_dir = expanduser_unicode(os.path.join('~', '.config', 'pdesign'))
 
 	def __init__(self):
-		#Check config root directory
-		self.app_config_dir = expanduser_unicode(os.path.join('~', '.config', 'pdesign'))
-		if not os.path.lexists(self.app_config_dir):
-			os.makedirs(self.app_config_dir)
 
-		#Check color profiles directory	
-		self.app_color_profile_dir = os.path.join(self.app_config_dir, 'profiles')
-		if not os.path.lexists(self.app_color_profile_dir):
-			os.makedirs(self.app_color_profile_dir)
-
-		for item in uc2const.COLORSPACES + [uc2const.COLOR_DISPLAY, ]:
-			filename = 'built-in_%s.icm' % item
-			path = os.path.join(self.app_color_profile_dir, filename)
-			if not os.path.lexists(path):
-				libcms.cms_save_default_profile(path, item)
+		UCData.__init__(self)
 
 		#Check clipboard directory
 		self.app_clipboard_dir = os.path.join(self.app_config_dir, 'clipboard')
@@ -62,8 +50,6 @@ class AppData:
 			if not os.path.lexists(path):
 				os.makedirs(path)
 
-		#Config file path 
-		self.app_config = os.path.join(self.app_config_dir, 'preferences.cfg')
 
 
 class AppConfig(UCConfig):
