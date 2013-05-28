@@ -43,6 +43,10 @@ STOCK_PAGE_GUIDE_FRAME = 'page-guide-frame'
 STOCK_GUIDES_AT_CENTER = 'guides-at-center'
 STOCK_REMOVE_ALL_GUIDES = 'remove-all-guides'
 
+FIXED16 = gtk.icon_size_register('FIXED16', 16, 16)
+FIXED22 = gtk.icon_size_register('FIXED22', 22, 22)
+FIXED24 = gtk.icon_size_register('FIXED24', 24, 24)
+FIXED32 = gtk.icon_size_register('FIXED32', 32, 32)
 
 def load_icons():
 
