@@ -34,3 +34,21 @@ class HidableHBox(gtk.HBox):
 		elif not visible and self.visibility:
 			self.remove(self.box)
 			self.visibility = False
+
+class HidableVBox(gtk.VBox):
+
+	visibility = False
+
+	def __init__(self):
+		gtk.VBox.__init__(self)
+
+		self.box = gtk.VBox()
+
+	def set_visible(self, visible):
+		if visible and not self.visibility:
+			self.pack_start(self.box, False, False, 0)
+			self.visibility = True
+			self.show_all()
+		elif not visible and self.visibility:
+			self.remove(self.box)
+			self.visibility = False
