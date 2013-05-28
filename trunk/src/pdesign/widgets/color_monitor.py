@@ -21,11 +21,12 @@ from uc2 import uc2const
 from uc2.uc2const import point_dict
 from uc2.formats.pdxf.const import FILL_SOLID
 from pdesign import _, events, config
+from pdesign.widgets.hidable import HidableHBox
 
 FILL_SWATCH = 0
 OUTLINE_SWATCH = 1
 
-class ColorMonitorWidget(gtk.HBox):
+class ColorMonitorWidget(HidableHBox):
 
 	start = None
 	left = None
@@ -35,23 +36,23 @@ class ColorMonitorWidget(gtk.HBox):
 
 	def __init__(self, app):
 
-		gtk.HBox.__init__(self)
+		HidableHBox.__init__(self)
 		self.app = app
 		self.insp = app.inspector
 
 		self.set_border_width(2)
 
 		self.fill_label = FillLabel(self.app)
-		self.pack_start(self.fill_label, False, False, 5)
+		self.box.pack_start(self.fill_label, False, False, 5)
 
 		self.fill_swatch = ColorSwatch(self.app, FILL_SWATCH)
-		self.pack_start(self.fill_swatch, False, False, 0)
+		self.box.pack_start(self.fill_swatch, False, False, 0)
 
 		self.outline_label = OutlineLabel(self.app)
-		self.pack_start(self.outline_label, False, False, 5)
+		self.box.pack_start(self.outline_label, False, False, 5)
 
 		self.outline_swatch = ColorSwatch(self.app, OUTLINE_SWATCH)
-		self.pack_start(self.outline_swatch, False, False, 0)
+		self.box.pack_start(self.outline_swatch, False, False, 0)
 
 		events.connect(events.NO_DOCS, self.update)
 		events.connect(events.DOC_CHANGED, self.update)
