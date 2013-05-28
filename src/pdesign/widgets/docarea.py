@@ -55,17 +55,30 @@ class DocArea(gtk.Table):
 		self.vruler = Ruler(self, uc2const.VERTICAL)
 		da_box.attach(self.vruler, 0, 1, 1, 3, gtk.SHRINK, gtk.EXPAND | gtk.FILL)
 
+		hbox = gtk.HBox()
+		line = gtk.VSeparator()
+		hbox.pack_start(line, False, False, 0)
 		self.v_adj = gtk.Adjustment()
 		self.vscroll = gtk.VScrollbar(self.v_adj)
-		da_box.attach(self.vscroll, 2, 3, 1, 2, gtk.SHRINK, gtk.EXPAND | gtk.FILL)
+		hbox.pack_start(self.vscroll, True, True, 0)
+		da_box.attach(hbox, 2, 3, 1, 2, gtk.SHRINK, gtk.EXPAND | gtk.FILL)
+
+		vbox = gtk.VBox()
+		line = gtk.HSeparator()
+		vbox.pack_start(line, False, False, 0)
 
 		hbox = gtk.HBox()
 		self.pager = PagerWidget(self.presenter)
 		hbox.pack_start(self.pager, False, False, 0)
+
+		sbox = gtk.VBox()
 		self.h_adj = gtk.Adjustment()
 		self.hscroll = gtk.HScrollbar(self.h_adj)
-		hbox.pack_end(self.hscroll, True, True, 0)
-		da_box.attach(hbox, 1, 2, 2, 3, gtk.EXPAND | gtk.FILL, gtk.SHRINK)
+		sbox.pack_start(self.hscroll, False, True, 0)
+		hbox.pack_end(sbox, True, True, 0)
+
+		vbox.pack_start(hbox, True, True, 0)
+		da_box.attach(vbox, 1, 2, 2, 3, gtk.EXPAND | gtk.FILL, gtk.SHRINK)
 
 		self.canvas = AppCanvas(self)
 		da_box.attach(self.canvas, 1, 2, 1, 2, gtk.FILL | gtk.EXPAND,
