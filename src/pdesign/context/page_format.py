@@ -20,7 +20,7 @@ import gtk
 from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
 from pdesign import _, config, events
-from pdesign.widgets import UnitSpin, ImageToggleButton
+from pdesign.widgets import UnitSpin, ImageToggleButton, SimpleListCombo
 
 class PageFormatPlugin(gtk.HBox):
 
@@ -43,22 +43,19 @@ class PageFormatPlugin(gtk.HBox):
 		label = gtk.Label(_('Page:'))
 		self.pack_start(label, False, False, 0)
 
-		self.combo = gtk.combo_box_new_text()
-		self.pack_start(self.combo, False, False, 3)
-
 		self.formats = PAGE_FORMAT_NAMES + [_('Custom'), ]
 
-		for item in self.formats:
-			self.combo.append_text(item)
+		self.combo = SimpleListCombo(self.formats)
+		self.pack_start(self.combo.vbox, False, False, 2)
 
 		self.width_spin = UnitSpin(self.width_spin_changed)
-		self.pack_start(self.width_spin, False, False, 0)
+		self.pack_start(self.width_spin, False, False, 2)
 
 		label = gtk.Label('x')
 		self.pack_start(label, False, False, 0)
 
 		self.height_spin = UnitSpin(self.height_spin_changed)
-		self.pack_start(self.height_spin, False, False, 0)
+		self.pack_start(self.height_spin, False, False, 2)
 
 		self.portrait = ImageToggleButton(_('Portrait'),
 										['icons', 'page-portrait.png'])
