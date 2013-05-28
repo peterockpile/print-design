@@ -187,12 +187,14 @@ class ActionToggleButton(gtk.ToggleButton):
 class SimpleListCombo(gtk.ComboBox):
 
 	def __init__(self, list=[]):
+		self.vbox = gtk.VBox(homogeneous=True)
 		self.liststore = gtk.ListStore(gobject.TYPE_STRING)
 		gtk.ComboBox.__init__(self, self.liststore)
 		cell = gtk.CellRendererText()
 		self.pack_start(cell, True)
 		self.add_attribute(cell, 'text', 0)
 		self.set_list(list)
+		self.vbox.pack_start(self, False, False, 0)
 
 	def clear(self):
 		self.liststore.clear()
