@@ -22,7 +22,7 @@ import gtk, gobject
 from uc2.uc2const import unit_dict, point_dict
 from uc2 import uc2const
 
-from pdesign import _, config, events
+from pdesign import _, config, events, icons
 
 class ImageButton(gtk.Button):
 	def __init__(self, text, path):
@@ -168,7 +168,7 @@ class ActionButton(gtk.Button):
 	def __init__(self, action):
 		gtk.Button.__init__(self)
 		if action.icon:
-			icon = gtk.image_new_from_stock(action.icon, gtk.ICON_SIZE_MENU)
+			icon = gtk.image_new_from_stock(action.icon, icons.FIXED16)
 			self.add(icon)
 		self.set_property('relief', gtk.RELIEF_NONE)
 		self.set_tooltip_text(action.tooltip)
@@ -178,7 +178,7 @@ class ActionToggleButton(gtk.ToggleButton):
 	def __init__(self, action):
 		gtk.ToggleButton.__init__(self)
 		if action.icon:
-			icon = gtk.image_new_from_stock(action.icon, gtk.ICON_SIZE_MENU)
+			icon = gtk.image_new_from_stock(action.icon, icons.FIXED16)
 			self.add(icon)
 		self.set_property('relief', gtk.RELIEF_NONE)
 		self.set_tooltip_text(action.tooltip)
