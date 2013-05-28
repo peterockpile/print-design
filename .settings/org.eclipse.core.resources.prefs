@@ -1,4 +1,4 @@
-#Sat May 25 16:41:07 EEST 2013
+#Tue May 28 18:55:32 EEST 2013
 eclipse.preferences.version=1
 encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/actions.py=utf-8
@@ -48,6 +48,7 @@ encoding//src/pdesign/view/snapping.py=utf-8
 encoding//src/pdesign/widgets/__init__.py=utf-8
 encoding//src/pdesign/widgets/color_monitor.py=utf-8
 encoding//src/pdesign/widgets/docarea.py=utf-8
+encoding//src/pdesign/widgets/hidable.py=utf-8
 encoding//src/pdesign/widgets/pager_widget.py=utf-8
 encoding//src/pdesign/widgets/palette_widget.py=utf-8
 encoding//src/pdesign/widgets/ruler.py=utf-8
