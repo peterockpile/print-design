@@ -32,9 +32,6 @@ class PagerWidget(gtk.VBox):
 		gtk.VBox.__init__(self)
 		self.presenter = presenter
 
-		line = gtk.HSeparator()
-		self.pack_start(line, False, False, 0)
-
 		self.hbox = gtk.HBox()
 		self.pack_start(self.hbox, False, False, 0)
 
