@@ -275,5 +275,5 @@ class Application(UCApplication):
 			config.mw_height = h
 
 	def open_url(self, url):
-		import gnomevfs
-		gnomevfs.url_show(url)
+		import webbrowser
+		webbrowser.open_new(url)
