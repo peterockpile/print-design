@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#	Copyright (C) 2011-2012 by Igor E. Novikov 
-#	
+#	Copyright (C) 2011-2012 by Igor E. Novikov
+#
 #	This program is free software: you can redistribute it and/or modify
 #	it under the terms of the GNU General Public License as published by
 #	the Free Software Foundation, either version 3 of the License, or
 #	(at your option) any later version.
-#	
+#
 #	This program is distributed in the hope that it will be useful,
 #	but WITHOUT ANY WARRANTY; without even the implied warranty of
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
-#	
+#
 #	You should have received a copy of the GNU General Public License
-#	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+#	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import operator
 from math import floor
@@ -127,12 +127,13 @@ class RulerCorner(gtk.DrawingArea):
 		b0 = bgcolor.blue / 65535.0
 
 		painter = self.window.cairo_create()
+		painter.set_matrix(cairo.Matrix())
 		painter.set_antialias(cairo.ANTIALIAS_NONE)
 		painter.set_source_rgb(r0, g0, b0)
 		painter.paint()
 		painter.set_source_rgb(r, g, b)
 		painter.set_line_width(1.0)
-		painter.rectangle(-1, -1, SIZE, SIZE)
+		painter.rectangle(0, 0, SIZE, SIZE)
 		painter.stroke()
 
 		coord = self.origin
@@ -422,6 +423,7 @@ class Ruler(gtk.DrawingArea):
 
 		win_ctx = self.window.cairo_create()
 		buffer = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+		buffer.set_device_offset(0, 0)
 		painter = cairo.Context(buffer)
 
 		painter.set_antialias(cairo.ANTIALIAS_NONE)
@@ -432,11 +434,11 @@ class Ruler(gtk.DrawingArea):
 		if self.orient:
 			if config.ruler_style:
 				painter.set_source(self.grad)
-				painter.rectangle(-1, -1, SIZE, h)
+				painter.rectangle(0, 0, SIZE, h)
 				painter.fill ()
 
 			painter.set_source_rgb(r, g, b)
-			painter.rectangle(-1, -1, SIZE, h)
+			painter.rectangle(0, 0, SIZE, h)
 			painter.stroke()
 
 			painter.set_source_rgb(0, 0, 0)
@@ -444,11 +446,11 @@ class Ruler(gtk.DrawingArea):
 		else:
 			if config.ruler_style:
 				painter.set_source(self.grad)
-				painter.rectangle(-1, -1, w , SIZE)
+				painter.rectangle(0, 0, w , SIZE)
 				painter.fill ()
 
 			painter.set_source_rgb(r, g, b)
-			painter.rectangle(-1, -1, w , SIZE)
+			painter.rectangle(0, 0, w , SIZE)
 			painter.stroke()
 
 			painter.set_source_rgb(0, 0, 0)
