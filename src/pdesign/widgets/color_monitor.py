@@ -287,7 +287,7 @@ class ColorSwatch(gtk.DrawingArea):
 		self.ctx.set_source_rgb(*BLACK)
 		self.ctx.set_line_width(1)
 		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
-		self.ctx.rectangle(0, 0, self.width - 1, self.height - 1)
+		self.ctx.rectangle(1, 1, self.width - 1, self.height - 1)
 		self.ctx.stroke()
 		self.ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
 
