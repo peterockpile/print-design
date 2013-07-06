@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
 #	Copyright (C) 2011-2012 by Igor E. Novikov
-#	
+#
 #	This program is free software: you can redistribute it and/or modify
 #	it under the terms of the GNU General Public License as published by
 #	the Free Software Foundation, either version 3 of the License, or
 #	(at your option) any later version.
-#	
+#
 #	This program is distributed in the hope that it will be useful,
 #	but WITHOUT ANY WARRANTY; without even the implied warranty of
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
-#	
+#
 #	You should have received a copy of the GNU General Public License
-#	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+#	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 
@@ -67,7 +67,7 @@ class AppConfig(UCConfig):
 		return defaults
 
 	#============== GENERIC SECTION ===================
-	system_encoding = 'utf-8'	# default encoding (GUI uses utf-8 only)
+	system_encoding = 'utf-8'# default encoding (GUI uses utf-8 only)
 	new_doc_on_start = True
 	#============== UI SECTION ===================
 	palette_cell_vertical = 18
@@ -90,7 +90,7 @@ class AppConfig(UCConfig):
 	ruler_min_tick_step = 3
 	ruler_min_text_step = 50
 	ruler_max_text_step = 100
-
+	#============== CANVAS SECTION ===================
 	default_unit = uc2const.UNIT_MM
 
 	obj_jump = 1.0 * uc2const.mm_to_pt
@@ -113,12 +113,12 @@ class AppConfig(UCConfig):
 	sel_marker_stroke = (0.0, 0.3, 1.0)
 	sel_object_marker_color = (0.0, 0.0, 0.0)
 
-	rotation_step = 5.0 #in degrees
-	stroke_sensitive_size = 5.0 #in pixels
+	rotation_step = 5.0#in degrees
+	stroke_sensitive_size = 5.0#in pixels
 
 	#============== SNAPPING OPTIONS ================
 
-	snap_distance = 10.0 #in pixels
+	snap_distance = 10.0#in pixels
 	snap_order = [appconst.SNAP_TO_GUIDES,
 				appconst.SNAP_TO_GRID,
 				appconst.SNAP_TO_OBJECTS,
