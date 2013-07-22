@@ -1,0 +1,16 @@
+include LICENSE
+include libutils.py
+include MANIFEST.in
+include GPLv3.txt
+include src/printdesign.desktop
+include src/printdesign.png
+include src/printdesign.xpm
+
+recursive-include src/pdesign/share *.*
+recursive-include src/pdesign/share/cursors *.*
+recursive-include src/pdesign/share/icons *.*
+recursive-include src/pdesign/share/icons/obj_browser *.*
+recursive-include src/pdesign/share/icons/pager *.*
+recursive-include src/pdesign/share/icons/palette *.*
+recursive-include src/pdesign/share/icons/preferences *.*
+recursive-include src/pdesign/share/icons/tools *.*
