@@ -15,10 +15,21 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
+import wx, cairo
+
+from uc2.uc2const import mm_to_pt
+from uc2.libcairo import normalize_bbox
 
 from pdesign import events, modes
 from pdesign.document.renderer import PDRenderer
+
+PAGEFIT = 0.9
+ZOOM_IN = 1.25
+ZOOM_OUT = 0.8
+
+
+WORKSPACE_HEIGHT = 2000 * mm_to_pt
+WORKSPACE_WIDTH = 4000 * mm_to_pt
 
 class AppCanvas(wx.Panel):
 
@@ -32,15 +43,29 @@ class AppCanvas(wx.Panel):
 	ctrls = {}
 	current_cursor = None
 
+	matrix = None
+	trafo = []
+	zoom = 1.0
+	width = 0
+	height = 0
+	orig_cursor = None
+	current_cursor = None
+	resize_marker = 0
+	stroke_view = False
+	draft_view = False
+	draw_page_border = True
+
 	def __init__(self, presenter, parent):
 		self.presenter = presenter
 		self.eventloop = self.presenter.eventloop
 		self.app = presenter.app
 		self.doc = self.presenter.model
 		self.renderer = PDRenderer(self)
-		wx.Panel.__init__(self, parent)
+		wx.Panel.__init__(self, parent, style=wx.FULL_REPAINT_ON_RESIZE)
 		self.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.ctrls = self.init_controllers()
+
+		self.Bind(wx.EVT_PAINT, self.on_paint, self)
 
 	def init_controllers(self):
 		dummy = DummyController(self, self.presenter)
@@ -77,7 +102,174 @@ class AppCanvas(wx.Panel):
 		self.current_cursor = self.app.cursors[mode]
 		self.SetCursor(self.current_cursor)
 
-	def on_paint(self, event):pass
+	def update_scrolls(self):pass
+
+	def _keep_center(self):
+		w, h = self.GetSize()
+		w = float(w)
+		h = float(h)
+		if not w == self.width or not h == self.height:
+			_dx = (w - self.width) / 2.0
+			_dy = (h - self.height) / 2.0
+			m11, m12, m21, m22, dx, dy = self.trafo
+			dx += _dx
+			dy += _dy
+			self.trafo = [m11, m12, m21, m22, dx, dy]
+			self.matrix = cairo.Matrix(m11, m12, m21, m22, dx, dy)
+			self.width = w
+			self.height = h
+			self.update_scrolls()
+
+	def _set_center(self, center):
+		x, y = center
+		_dx = self.width / 2.0 - x
+		_dy = self.height / 2.0 - y
+		m11, m12, m21, m22, dx, dy = self.trafo
+		dx += _dx
+		dy += _dy
+		self.trafo = [m11, m12, m21, m22, dx, dy]
+		self.matrix = cairo.Matrix(m11, m12, m21, m22, dx, dy)
+		self.update_scrolls()
+
+	def doc_to_win(self, point=[0.0, 0.0]):
+		x, y = point
+		m11, m12, m21, m22, dx, dy = self.trafo
+		x_new = m11 * x + dx
+		y_new = m22 * y + dy
+		return [x_new, y_new]
+
+	def point_doc_to_win(self, point=[0.0, 0.0]):
+		if not point:return []
+		if len(point) == 2:
+			return self.doc_to_win(point)
+		else:
+			return [self.doc_to_win(point[0]),
+				self.doc_to_win(point[1]),
+				self.doc_to_win(point[2]), point[3]]
+
+	def win_to_doc(self, point=[0, 0]):
+		x, y = point
+		x = float(x)
+		y = float(y)
+		m11, m12, m21, m22, dx, dy = self.trafo
+		x_new = (x - dx) / m11
+		y_new = (y - dy) / m22
+		return [x_new, y_new]
+
+	def point_win_to_doc(self, point=[0.0, 0.0]):
+		if not point:return []
+		if len(point) == 2:
+			return self.win_to_doc(point)
+		else:
+			return [self.win_to_doc(point[0]),
+				self.win_to_doc(point[1]),
+				self.win_to_doc(point[2]), point[3]]
+
+	def paths_doc_to_win(self, paths):
+		result = []
+		for path in paths:
+			new_path = []
+			new_points = []
+			new_path.append(self.doc_to_win(path[0]))
+			for point in path[1]:
+				new_points.append(self.point_doc_to_win(point))
+			new_path.append(new_points)
+			new_path.append(path[2])
+			result.append(new_path)
+		return result
+
+	def _fit_to_page(self):
+		width, height = self.presenter.get_page_size()
+		w, h = self.GetSize()
+		w = float(w)
+		h = float(h)
+		self.width = w
+		self.height = h
+		zoom = min(w / width, h / height) * PAGEFIT
+		dx = w / 2.0
+		dy = h / 2.0
+		self.trafo = [zoom, 0, 0, -zoom, dx, dy]
+		self.matrix = cairo.Matrix(zoom, 0, 0, -zoom, dx, dy)
+		self.zoom = zoom
+		self.update_scrolls()
+
+	def zoom_fit_to_page(self):
+		self._fit_to_page()
+		self.force_redraw()
+
+	def _zoom(self, dzoom=1.0):
+		m11, m12, m21, m22, dx, dy = self.trafo
+		m11 *= dzoom
+		_dx = (self.width * dzoom - self.width) / 2.0
+		_dy = (self.height * dzoom - self.height) / 2.0
+		dx = dx * dzoom - _dx
+		dy = dy * dzoom - _dy
+		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.matrix = cairo.Matrix(m11, m12, m21, -m11, dx, dy)
+		self.zoom = m11
+		self.update_scrolls()
+		self.force_redraw()
+
+	def zoom_in(self):
+		self._zoom(ZOOM_IN)
+
+	def zoom_out(self):
+		self._zoom(ZOOM_OUT)
+
+	def zoom_100(self):
+		self._zoom(1.0 / self.zoom)
+
+	def zoom_at_point(self, point, zoom):
+		self._set_center(point)
+		self._zoom(zoom)
+
+	def zoom_to_rectangle(self, start, end):
+		w, h = self.GetSize()
+		w = float(w)
+		h = float(h)
+		self.width = w
+		self.height = h
+		width = abs(end[0] - start[0])
+		height = abs(end[1] - start[1])
+		zoom = min(w / width, h / height) * 0.95
+		center = [start[0] + (end[0] - start[0]) / 2,
+				start[1] + (end[1] - start[1]) / 2]
+		self._set_center(center)
+		self._zoom(zoom)
+
+	def zoom_selected(self):
+		x0, y0, x1, y1 = self.presenter.selection.frame
+		start = self.doc_to_win([x0, y0])
+		end = self.doc_to_win([x1, y1])
+		self.zoom_to_rectangle(start, end)
+
+	def select_at_point(self, point, flag=False):
+		point = self.win_to_doc(point)
+		self.presenter.selection.select_at_point(point, flag)
+
+	def pick_at_point(self, point):
+		point = self.win_to_doc(point)
+		return self.presenter.selection.pick_at_point(point)
+
+	def select_by_rect(self, start, end, flag=False):
+		start = self.win_to_doc(start)
+		end = self.win_to_doc(end)
+		rect = start + end
+		rect = normalize_bbox(rect)
+		self.presenter.selection.select_by_rect(rect, flag)
+
+	#----- RENDERING -----
+
+	def force_redraw(self, *args):
+		w, h = self.GetSize()
+		self.Refresh(rect=wx.Rect(0, 0, w, h))
+
+	def on_paint(self, event):
+		if self.matrix is None:
+			self.zoom_fit_to_page()
+			self.set_mode(modes.SELECT_MODE)
+		self._keep_center()
+		self.renderer.paint_document()
 
 	def destroy(self):
 		self.presenter = None

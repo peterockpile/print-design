@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/pdesign/document/canvas.py=utf-8
+encoding//src/pdesign/document/presenter.py=utf-8
+encoding//src/pdesign/document/renderer.py=utf-8
 encoding//src/pdesign/document/ruler.py=utf-8
+encoding//src/pdesign/widgets/gctrls.py=utf-8
+encoding//src/pdesign/widgets/generic.py=utf-8
+encoding//src/pdesign/widgets/renderer.py=utf-8

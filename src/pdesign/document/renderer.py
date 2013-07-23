@@ -17,7 +17,7 @@
 
 from copy import deepcopy
 
-import cairo, math
+import cairo, math, wx
 
 from uc2 import uc2const
 from uc2.formats.pdxf import model, const
@@ -25,6 +25,7 @@ from uc2.formats.pdxf.crenderer import CairoRenderer
 from uc2 import libcairo
 
 from pdesign import config
+from pdesign.widgets import copy_surface_to_bitmap
 
 CAIRO_BLACK = [0.0, 0.0, 0.0]
 CAIRO_GRAY = [0.5, 0.5, 0.5]
@@ -58,14 +59,13 @@ class PDRenderer(CairoRenderer):
 		if self.canvas.draw_page_border:
 			self.paint_page_border()
 		self.render_doc()
-		self.render_grid()
-		self.render_guides()
-#		self.finalize()
-		self.paint_selection()
+#		self.render_grid()
+#		self.render_guides()
+		self.finalize()
+#		self.paint_selection()
 
 	def start(self):
-		width = int(self.canvas.width)
-		height = int(self.canvas.height)
+		width, height = self.canvas.GetSize()
 		if self.surface is None:
 			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, width, height)
 			self.width = width
@@ -79,14 +79,15 @@ class PDRenderer(CairoRenderer):
 		self.ctx.paint()
 		self.ctx.set_matrix(self.canvas.matrix)
 
-	def finalize(self):pass
-#		self.win_ctx.set_source_surface(self.surface)
-#		self.win_ctx.paint()
+	def finalize(self):
+		pdc = wx.PaintDC(self.canvas)
+		dc = wx.GCDC(pdc)
+		dc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0, True)
 
 	def paint_page_border(self):
 		self.ctx.set_line_width(1.0 / self.canvas.zoom)
 		offset = 5.0 / self.canvas.zoom
-		w, h = self.canvas.presenter.get_page_size()
+		w, h = self.presenter.get_page_size()
 		self.ctx.rectangle(-w / 2.0 + offset, -h / 2.0 - offset, w, h)
 		self.ctx.set_source_rgb(*CAIRO_GRAY)
 		self.ctx.fill()
