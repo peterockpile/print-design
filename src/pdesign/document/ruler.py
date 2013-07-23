@@ -63,7 +63,7 @@ class RulerCorner(HPanel):
 		rect = wx.Rect(w - 1, 0, 1, h * 2)
 		dc.GradientFillLinear(rect, grad_start, grad_end, nDirection=wx.NORTH)
 		bmp = self.bitmaps[self.origin]
-		dc.DrawBitmap(bmp, 1, 1, False)
+		dc.DrawBitmap(bmp, 1, 1, True)
 
 class Ruler(HPanel):
 
