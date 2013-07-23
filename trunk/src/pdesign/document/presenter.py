@@ -101,5 +101,37 @@ class PD_Presenter:
 		self.doc_presenter.close()
 		self.docarea.destroy()
 
-	def set_active_page(self):pass
+	def set_active_page(self, page_num=0):
+		self.active_page = self.doc_presenter.methods.get_page(page_num)
+		self.set_active_layer(self.active_page)
 
+	def set_active_layer(self, page, layer_num=-1):
+		self.active_layer = self.doc_presenter.methods.get_layer(page, layer_num)
+
+	def get_editable_layers(self, page=None):
+		if page is None: page = self.active_page
+		layers = []
+		for layer in self.methods.get_desktop_layers():
+			if layer.properties[1]:layers.append(layer)
+		for layer in page.childs:
+			if layer.properties[1]:layers.append(layer)
+		for layer in self.methods.get_master_layers():
+			if layer.properties[1]:layers.append(layer)
+		return layers
+
+	def get_visible_layers(self, page=None):
+		if page is None: page = self.active_page
+		layers = []
+		for layer in self.methods.get_desktop_layers():
+			if layer.properties[0]:layers.append(layer)
+		for layer in page.childs:
+			if layer.properties[0]:layers.append(layer)
+		for layer in self.methods.get_master_layers():
+			if layer.properties[0]:layers.append(layer)
+		return layers
+
+	def get_page_size(self, page=None):
+		if page is None:
+			page = self.active_page
+		w, h = page.page_format[1]
+		return w, h
