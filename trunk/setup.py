@@ -98,7 +98,7 @@ data_files = [
 ('/usr/share/applications', ['src/printdesign.desktop', ]),
 ('/usr/share/pixmaps/', ['src/printdesign.png', 'src/printdesign.xpm' ]),
 ]
-deb_depends = 'python (>=2.4), python (<<3.0), python-gtk2, python-gnome2, '
+deb_depends = 'python (>=2.4), python (<<3.0), python-wxgtk2.8, '
 deb_depends += 'python-uniconvertor (>=2.0)'
 package_data = {
 'pdesign':libutils.get_resources('src/pdesign', 'src/pdesign/share'),
