@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/pdesign/app_actions.py=utf-8
+encoding//src/pdesign/app_insp.py=utf-8
+encoding//src/pdesign/app_proxy.py=utf-8
 encoding//src/pdesign/document/canvas.py=utf-8
 encoding//src/pdesign/document/docarea.py=utf-8
 encoding//src/pdesign/document/presenter.py=utf-8

@@ -43,3 +43,22 @@ class AppProxy:
 
 	def open_url(self, url):
 		self.app.open_url(url)
+
+	def zoom_in(self, *args):
+		self.app.current_doc.canvas.zoom_in()
+
+	def zoom_out(self, *args):
+		self.app.current_doc.canvas.zoom_out()
+
+	def fit_zoom_to_page(self, *args):
+		self.app.current_doc.canvas.zoom_fit_to_page()
+
+	def zoom_100(self, *args):
+		self.app.current_doc.canvas.zoom_100()
+
+	def zoom_selected(self, *args):
+		self.app.current_doc.canvas.zoom_selected()
+
+	def force_redraw(self, *args):
+		if self.app.current_doc:
+			self.app.current_doc.canvas.force_redraw()
