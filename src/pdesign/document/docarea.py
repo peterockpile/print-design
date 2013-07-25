@@ -69,6 +69,8 @@ class DocArea(VPanel):
 		row_hbox.Add(vbox, 1, EXPAND)
 		self.box.Add(row_hbox, 1, EXPAND)
 
+		self.canvas._set_scrolls(self.hscroll, self.vscroll)
+
 	def destroy(self):
 		objs = [self.doc_tab, self.hruler, self.vruler, self.corner,
 			self.canvas]
