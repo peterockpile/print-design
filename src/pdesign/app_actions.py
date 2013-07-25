@@ -33,6 +33,7 @@ def create_actions(app):
 	doc_chnls = [NO_DOCS, DOC_CHANGED]
 	tool_chnls = [NO_DOCS, DOC_CHANGED, MODE_CHANGED]
 	doc_save_chnls = [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_SAVED]
+	sel_chnls = [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED]
 	insp = app.insp
 	proxy = app.proxy
 	actions = {}
@@ -80,11 +81,11 @@ def create_actions(app):
 #------ View menu -------
 (pdids.ID_STROKE_VIEW, proxy.stub),
 (pdids.ID_DRAFT_VIEW, proxy.stub),
-(wx.ID_ZOOM_100, proxy.stub),
-(wx.ID_ZOOM_IN, proxy.stub),
-(wx.ID_ZOOM_OUT, proxy.stub),
-(pdids.ID_ZOOM_PAGE, proxy.stub),
-(wx.ID_ZOOM_FIT, proxy.stub),
+(wx.ID_ZOOM_100, proxy.zoom_100, doc_chnls, insp.is_doc),
+(wx.ID_ZOOM_IN, proxy.zoom_in, doc_chnls, insp.is_doc),
+(wx.ID_ZOOM_OUT, proxy.zoom_out, doc_chnls, insp.is_doc),
+(pdids.ID_ZOOM_PAGE, proxy.fit_zoom_to_page, doc_chnls, insp.is_doc),
+(wx.ID_ZOOM_FIT, proxy.zoom_selected, sel_chnls, insp.is_selection),
 	(pdids.ID_SHOW_GRID, proxy.stub),
 	(pdids.ID_SHOW_GUIDES, proxy.stub),
 	(pdids.ID_SHOW_SNAP, proxy.stub),

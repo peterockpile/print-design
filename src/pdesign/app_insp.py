@@ -47,3 +47,13 @@ class AppInspector:
 		if self.is_not_doc(): return False
 		if mode == self.app.current_doc.canvas.mode: return True
 		return False
+
+	def is_selection(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif doc.selection is None:
+			return False
+		elif doc.selection.objs:
+			return True
+		else:
+			return False
