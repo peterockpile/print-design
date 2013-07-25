@@ -36,7 +36,11 @@ class AppProxy:
 	def close(self, *args):
 		self.app.close()
 
-	def exit(self, *args):pass
+	def close_all(self, *args):
+		self.app.close_all()
+
+	def exit(self, *args):
+		self.app.exit()
 
 	def set_mode(self, mode):
 		self.app.current_doc.canvas.set_mode(mode)
