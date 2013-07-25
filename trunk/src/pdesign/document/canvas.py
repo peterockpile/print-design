@@ -37,12 +37,15 @@ class AppCanvas(wx.Panel):
 	app = None
 	eventloop = None
 	renderer = None
+	hscroll = None
+	vscroll = None
 
 	mode = None
 	controller = None
 	ctrls = {}
 	current_cursor = None
 
+	workspace = (WORKSPACE_WIDTH, WORKSPACE_HEIGHT)
 	matrix = None
 	trafo = []
 	zoom = 1.0
@@ -55,6 +58,8 @@ class AppCanvas(wx.Panel):
 	draft_view = False
 	draw_page_border = True
 
+	my_changes = False
+
 	def __init__(self, presenter, parent):
 		self.presenter = presenter
 		self.eventloop = self.presenter.eventloop
@@ -66,6 +71,39 @@ class AppCanvas(wx.Panel):
 		self.ctrls = self.init_controllers()
 
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
+
+	#----- SCROLLING
+
+	def _set_scrolls(self, hscroll, vscroll):
+		self.hscroll = hscroll
+		self.vscroll = vscroll
+		self.hscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
+		self.vscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
+		self.hscroll.Bind(wx.EVT_SCROLL_CHANGED, self._scrolling, self.hscroll)
+		self.vscroll.Bind(wx.EVT_SCROLL_CHANGED, self._scrolling, self.vscroll)
+
+	def _scrolling(self, *args):
+		if self.my_changes:return
+		xpos = self.hscroll.GetThumbPosition() / 100.0
+		ypos = (100 - self.vscroll.GetThumbPosition()) / 100.0
+		x = (xpos - 0.5) * self.workspace[0]
+		y = (ypos - 0.5) * self.workspace[1]
+		center = self.doc_to_win((x, y))
+		self._set_center(center)
+		self.force_redraw()
+
+	def update_scrolls(self):
+		self.my_changes = True
+		center = self._get_center()
+		x = (center[0] + self.workspace[0] / 2.0) / self.workspace[0]
+		y = (center[1] + self.workspace[1] / 2.0) / self.workspace[1]
+		hscroll = int(100 * x)
+		vscroll = int(100 - 100 * y)
+		self.hscroll.SetScrollbar(hscroll, 10, 110, 10, refresh=True)
+		self.vscroll.SetScrollbar(vscroll, 10, 110, 10, refresh=True)
+		self.my_changes = False
+
+	#----- CONTROLLERS
 
 	def init_controllers(self):
 		dummy = DummyController(self, self.presenter)
@@ -102,7 +140,7 @@ class AppCanvas(wx.Panel):
 		self.current_cursor = self.app.cursors[mode]
 		self.SetCursor(self.current_cursor)
 
-	def update_scrolls(self):pass
+	#----- CANVAS MATH
 
 	def _keep_center(self):
 		w, h = self.GetSize()
@@ -130,6 +168,11 @@ class AppCanvas(wx.Panel):
 		self.trafo = [m11, m12, m21, m22, dx, dy]
 		self.matrix = cairo.Matrix(m11, m12, m21, m22, dx, dy)
 		self.update_scrolls()
+
+	def _get_center(self):
+		x = self.width / 2.0
+		y = self.height / 2.0
+		return self.win_to_doc((x, y))
 
 	def doc_to_win(self, point=[0.0, 0.0]):
 		x, y = point
@@ -177,6 +220,8 @@ class AppCanvas(wx.Panel):
 			new_path.append(path[2])
 			result.append(new_path)
 		return result
+
+	#----- ZOOMING
 
 	def _fit_to_page(self):
 		width, height = self.presenter.get_page_size()
@@ -242,6 +287,8 @@ class AppCanvas(wx.Panel):
 		start = self.doc_to_win([x0, y0])
 		end = self.doc_to_win([x1, y1])
 		self.zoom_to_rectangle(start, end)
+
+	#----- SELECTION STUFF
 
 	def select_at_point(self, point, flag=False):
 		point = self.win_to_doc(point)
