@@ -102,6 +102,15 @@ class pdApplication(Application, UCApplication):
 				msg = _('To start create new or open existing document')
 				events.emit(events.APP_STATUS, msg)
 
+	def close_all(self):
+		result = True
+		if self.docs:
+			while self.docs:
+				result = self.close(self.docs[0])
+				if not result:
+					break
+		return result
+
 	def open(self, doc_file='', silent=True):
 		if not doc_file:
 			doc_file = dialogs.get_open_file_name(self.mw, self, config.open_dir)
@@ -120,6 +129,20 @@ class pdApplication(Application, UCApplication):
 			config.open_dir = os.path.dirname(doc_file)
 			events.emit(events.APP_STATUS, _('Document opened'))
 
+	def exit(self):
+		if self.close_all():
+			self.update_config()
+			config.save(self.appdata.app_config)
+			self.mw.Destroy()
+			self.Exit()
+			return True
+		return False
+
+	def update_config(self):
+		config.resource_dir = ''
+		w, h = self.mw.GetSize()
+		config.mw_width = w
+		config.mw_height = h
 
 	def open_url(self, url):
 		import webbrowser

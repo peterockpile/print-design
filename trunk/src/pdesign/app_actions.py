@@ -65,7 +65,7 @@ def create_actions(app):
 (wx.ID_CLOSE_ALL, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PRINT_SETUP, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PRINT, proxy.stub, doc_chnls, insp.is_doc),
-(wx.ID_EXIT, proxy.stub),
+(wx.ID_EXIT, proxy.exit),
 #------ Edit menu -------
 (wx.ID_UNDO, proxy.stub),
 (wx.ID_REDO, proxy.stub),
