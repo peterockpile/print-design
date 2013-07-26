@@ -69,7 +69,9 @@ class pdApplication(Application, UCApplication):
 		self.insp.update()
 
 	def call_after(self, *args):
-		if not self.docs: events.emit(events.NO_DOCS)
+		if self.docs: return
+		if config.new_doc_on_start: self.new();return
+		events.emit(events.NO_DOCS)
 		txt = _('To start create new document or open existing')
 		events.emit(events.APP_STATUS, txt)
 
