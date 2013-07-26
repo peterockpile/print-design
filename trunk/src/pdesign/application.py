@@ -18,6 +18,7 @@
 
 import os, sys
 
+from uc2 import uc2const
 from uc2.application import UCApplication
 
 from pdesign import _, config, events, app_actions, modes, dialogs
@@ -118,16 +119,44 @@ class pdApplication(Application, UCApplication):
 			try:
 				doc = PD_Presenter(self, doc_file, silent)
 			except:
-				details = sys.exc_info()[1].__str__() + sys.exc_info()[2].__str__()
 				msg = _('Cannot open file')
-				msg = "%s '%s'" % (msg, doc_file)
-				sec = _('The file may be corrupted or not supported format')
-				dialogs.msg_dialog(self.mw, self.appdata.app_name, msg, sec, details)
+				msg = "%s '%s'" % (msg, doc_file) + '\n'
+				msg += _('The file may be corrupted or not supported format')
+				dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+				if config.print_stacktrace:
+					print sys.exc_info()[1].__str__()
+					print sys.exc_info()[2].__str__()
 				return
 			self.docs.append(doc)
 			self.set_current_doc(doc)
 			config.open_dir = os.path.dirname(doc_file)
 			events.emit(events.APP_STATUS, _('Document opened'))
+
+	def save(self, doc=''):
+		if not doc:
+			doc = self.current_doc
+		if not doc.doc_file:
+			return self.save_as()
+		ext = os.path.splitext(self.current_doc.doc_file)[1]
+		if not ext == "." + uc2const.FORMAT_EXTENSION[uc2const.PDXF][0]:
+			return self.save_as()
+		if not os.path.lexists(os.path.dirname(self.current_doc.doc_file)):
+			return self.save_as()
+
+		try:
+			doc.save()
+			events.emit(events.DOC_SAVED, doc)
+		except:
+			msg = _('Cannot save file')
+			msg = "%s '%s'" % (msg, self.current_doc.doc_file) + '\n'
+			msg += _('Please check file write permissions')
+			dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+			if config.print_stacktrace:
+				print sys.exc_info()[1].__str__()
+				print sys.exc_info()[2].__str__()
+			return False
+		events.emit(events.APP_STATUS, _('Document saved'))
+		return True
 
 	def exit(self):
 		if self.close_all():

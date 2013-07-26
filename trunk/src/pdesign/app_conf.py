@@ -69,6 +69,7 @@ class AppConfig(UCConfig):
 	os = system.LINUX
 	system_encoding = 'utf-8'# default encoding (GUI uses utf-8 only)
 	new_doc_on_start = True
+	print_stacktrace = True
 
 	#============== I/O SECTION ===================
 	open_dir = '~'
