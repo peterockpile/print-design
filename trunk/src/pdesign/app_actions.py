@@ -76,7 +76,7 @@ def create_actions(app):
 (wx.ID_DELETE, proxy.stub),
 (wx.ID_SELECTALL, proxy.stub),
 (pdids.ID_DESELECT, proxy.stub),
-(wx.ID_PROPERTIES, proxy.stub),
+(wx.ID_PROPERTIES, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PREFERENCES, proxy.stub),
 #------ View menu -------
 (pdids.ID_STROKE_VIEW, proxy.stub),
@@ -94,7 +94,7 @@ def create_actions(app):
 	(pdids.ID_SNAP_TO_GUIDE, proxy.stub),
 	(pdids.ID_SNAP_TO_OBJ, proxy.stub),
 	(pdids.ID_SNAP_TO_PAGE, proxy.stub),
-(wx.ID_REFRESH, proxy.stub),
+(wx.ID_REFRESH, proxy.force_redraw, doc_chnls, insp.is_doc),
 #------ Layout menu -------
 (pdids.ID_INSERT_PAGE, proxy.stub),
 (pdids.ID_DELETE_PAGE, proxy.stub),
