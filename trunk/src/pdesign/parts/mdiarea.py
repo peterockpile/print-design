@@ -92,6 +92,10 @@ class MDIArea(VPanel):
 			if docarea == self.current_docarea:
 				self.set_active(self.docareas[-1].presenter)
 
+	def set_tab_title(self, docarea, title):
+		docarea.doc_tab.set_title(title)
+		self.doc_tabs.Layout()
+
 	def set_active(self, doc):
 		doc_area = doc.docarea
 		if self.current_docarea: self.current_docarea.Hide()

@@ -58,9 +58,9 @@ def create_actions(app):
 #------ File menu -------
 (wx.ID_NEW, proxy.new),
 (wx.ID_OPEN, proxy.open),
-(wx.ID_SAVE, proxy.stub, doc_save_chnls, insp.is_doc_not_saved),
-(wx.ID_SAVEAS, proxy.stub, doc_chnls, insp.is_doc),
-(pdids.ID_SAVEALL, proxy.stub, doc_save_chnls, insp.is_any_doc_not_saved),
+(wx.ID_SAVE, proxy.save, doc_save_chnls, insp.is_doc_not_saved),
+(wx.ID_SAVEAS, proxy.save_as, doc_chnls, insp.is_doc),
+(pdids.ID_SAVEALL, proxy.save_all, doc_save_chnls, insp.is_any_doc_not_saved),
 (wx.ID_CLOSE, proxy.close, doc_chnls, insp.is_doc),
 (wx.ID_CLOSE_ALL, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PRINT_SETUP, proxy.stub, doc_chnls, insp.is_doc),

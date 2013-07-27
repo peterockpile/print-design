@@ -100,7 +100,7 @@ class DocTab(HPanel):
 	def __init__(self, parent, doc, active=True):
 		self.doc = doc
 		self.active = active
-		self.text = doc.doc_name
+		self.text = self.doc.doc_name
 		self.icon = wx.ArtProvider.GetBitmap(icons.DOCUMENT_ICON)
 		self.close_but = wx.ArtProvider.GetBitmap(icons.PD_CLOSE_BUTTON_ACTIVE)
 		self.inactive_close_but = wx.ArtProvider.GetBitmap(icons.PD_CLOSE_BUTTON)
@@ -111,6 +111,9 @@ class DocTab(HPanel):
 		self.Bind(wx.EVT_LEFT_DOWN, self._on_left_down, self)
 		self.Bind(wx.EVT_LEFT_UP, self._on_left_up, self)
 		self.Bind(wx.EVT_LEAVE_WINDOW, self._on_win_leave, self)
+
+	def set_title(self, title):
+		self.text = title
 
 	def destroy(self):
 		self.doc = None
