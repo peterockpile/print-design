@@ -114,6 +114,9 @@ class DocTab(HPanel):
 
 	def set_title(self, title):
 		self.text = title
+		self.remove(0)
+		self.add((self.get_best_width(), TAB_HEIGHT))
+		self.refresh()
 
 	def destroy(self):
 		self.doc = None
