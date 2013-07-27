@@ -33,6 +33,15 @@ class AppProxy:
 	def open(self, *args):
 		self.app.open()
 
+	def save(self, *args):
+		self.app.save()
+
+	def save_as(self, *args):
+		self.app.save_as()
+
+	def save_all(self, *args):
+		self.app.save_all()
+
 	def close(self, *args):
 		self.app.close()
 

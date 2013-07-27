@@ -41,7 +41,9 @@ class pdApplication(Application, UCApplication):
 	doc_counter = 0
 
 	proxy = None
-	inspector = None
+	insp = None
+	mw = None
+	default_cms = None
 	cursors = None
 
 	def __init__(self, path):
@@ -114,7 +116,7 @@ class pdApplication(Application, UCApplication):
 					break
 		return result
 
-	def open(self, doc_file='', silent=True):
+	def open(self, doc_file='', silent=False):
 		if not doc_file:
 			doc_file = dialogs.get_open_file_name(self.mw, self, config.open_dir)
 		if os.path.lexists(doc_file) and os.path.isfile(doc_file):
@@ -159,6 +161,45 @@ class pdApplication(Application, UCApplication):
 			return False
 		events.emit(events.APP_STATUS, _('Document saved'))
 		return True
+
+	def save_as(self):
+		doc_file = '' + self.current_doc.doc_file
+		if not doc_file:
+			doc_file = '' + self.current_doc.doc_name
+		if not os.path.splitext(doc_file)[1] == "." + \
+					uc2const.FORMAT_EXTENSION[uc2const.PDXF][0]:
+			doc_file = os.path.splitext(doc_file)[0] + "." + \
+					uc2const.FORMAT_EXTENSION[uc2const.PDXF][0]
+		if not os.path.lexists(os.path.dirname(doc_file)):
+			doc_file = os.path.join(config.save_dir,
+								os.path.basename(doc_file))
+		doc_file = dialogs.get_save_file_name(self.mw, self, doc_file)
+		if doc_file:
+			old_file = self.current_doc.doc_file
+			old_name = self.current_doc.doc_name
+			self.current_doc.set_doc_file(doc_file)
+			try:
+				self.current_doc.save()
+			except IOError:
+				self.current_doc.set_doc_file(old_file, old_name)
+				first = _('Cannot save document')
+				msg = ("%s '%s'.") % (first, self.current_doc.doc_name) + '\n'
+				msg += _('Please check file name and write permissions')
+				dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+				if config.print_stacktrace:
+					print sys.exc_info()[1].__str__()
+					print sys.exc_info()[2].__str__()
+				return False
+			config.save_dir = os.path.dirname(doc_file)
+			events.emit(events.APP_STATUS, _('Document saved'))
+			return True
+		else:
+			return False
+
+	def save_all(self):
+		for doc in self.docs:
+			if self.insp.is_doc_not_saved(doc):
+				self.save(doc)
 
 	def exit(self):
 		if self.close_all():

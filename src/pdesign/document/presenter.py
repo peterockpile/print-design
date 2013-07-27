@@ -15,16 +15,17 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import os, sys
 
 from uc2.formats import get_loader, get_saver
 from uc2.formats.pdxf.presenter import PDXF_Presenter
 from uc2 import uc2const
 from uc2.utils.fs import change_file_extension
 
-from pdesign import _
+from pdesign import _, config, events
 from pdesign.document.eventloop import EventLoop
 from pdesign.document.selection import Selection
+from pdesign.dialogs import ProgressDialog
 
 class PD_Presenter:
 
@@ -48,7 +49,7 @@ class PD_Presenter:
 	traced_objects = None
 	snap = None
 
-	def __init__(self, app, doc_file='', silent=True):
+	def __init__(self, app, doc_file='', silent=False):
 		self.app = app
 
 		self.eventloop = EventLoop(self)
@@ -61,19 +62,19 @@ class PD_Presenter:
 
 			if silent:
 				self.doc_presenter = loader(app.appdata, doc_file)
-#			else:
-#				pd = ProgressDialog(_('Opening file...'), self.app.mw)
-#				ret = pd.run(loader, [app.appdata, doc_file])
-#				if ret == gtk.RESPONSE_OK:
-#					if pd.result is None:
-#						pd.destroy()
-#						raise IOError(*pd.error_info)
-#
-#					self.doc_presenter = pd.result
-#					pd.destroy()
-#				else:
-#					pd.destroy()
-#					raise IOError(_('Error while opening'), doc_file)
+			else:
+				pd = ProgressDialog(_('Opening file...'), self.app.mw)
+				ret = pd.run(loader, [app.appdata, doc_file])
+				if ret:
+					if pd.result is None:
+						pd.destroy()
+						raise IOError(*pd.error_info)
+
+					self.doc_presenter = pd.result
+					pd.destroy()
+				else:
+					pd.destroy()
+					raise IOError(_('Error while opening'), doc_file)
 
 			self.doc_file = self.doc_presenter.doc_file
 			self.doc_name = os.path.basename(self.doc_file)
@@ -95,11 +96,64 @@ class PD_Presenter:
 		self.canvas = self.docarea.canvas
 		self.canvas.set_mode()
 
+	def set_title(self):
+		if self.saved:
+			title = self.doc_name
+		else:
+			title = self.doc_name + '*'
+		self.app.mdi.set_tab_title(self.docarea, title)
+
+	def set_doc_file(self, doc_file, doc_name=''):
+		self.doc_file = doc_file
+		if doc_name:
+			self.doc_name = doc_name
+		else:
+			self.doc_name = os.path.basename(self.doc_file)
+		self.set_title()
+
+	def save(self):
+		try:
+			if config.make_backup:
+				if os.path.lexists(self.doc_file):
+					if os.path.lexists(self.doc_file + '~'):
+						os.remove(self.doc_file + '~')
+					os.rename(self.doc_file, self.doc_file + '~')
+			saver = get_saver(self.doc_file)
+			if saver is None:
+				raise IOError(_('Unknown file format is requested for saving!'),
+							 self.doc_file)
+
+			pd = ProgressDialog(_('Saving file...'), self.app.mw)
+			ret = pd.run(saver, [self.doc_presenter, self.doc_file], False)
+			if ret:
+				if not pd.error_info is None:
+					pd.destroy()
+					raise IOError(*pd.error_info)
+				pd.destroy()
+			else:
+				pd.destroy()
+				raise IOError(_('Error while saving'), self.doc_file)
+
+		except IOError:
+			raise IOError(*sys.exc_info())
+		self.reflect_saving()
+
 	def close(self):
 		self.app.mdi.remove_doc(self)
 		self.app.default_cms.unregistry_cm(self.cms)
 		self.doc_presenter.close()
 		self.docarea.destroy()
+
+	def modified(self, *args):
+		self.saved = False
+		self.set_title()
+		events.emit(events.DOC_MODIFIED, self)
+
+	def reflect_saving(self):
+		self.saved = True
+		self.set_title()
+#		self.api.save_mark()
+		events.emit(events.DOC_SAVED, self)
 
 	def set_active_page(self, page_num=0):
 		self.active_page = self.doc_presenter.methods.get_page(page_num)
