@@ -103,7 +103,7 @@ def get_save_file_name(parent, app, path):
 		defaultDir=doc_folder,
 		defaultFile=path,
 		wildcard=_get_save_fiters(),
-		style=wx.SAVE | wx.CHANGE_DIR
+		style=wx.SAVE | wx.CHANGE_DIR | wx.FD_OVERWRITE_PROMPT
 	)
 	dlg.CenterOnParent()
 	if dlg.ShowModal() == wx.ID_OK:
