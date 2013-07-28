@@ -46,6 +46,7 @@ class AppMainWindow(MainWindow):
 		self.set_minsize(config.mw_min_width, config.mw_min_height)
 		self.icons = self.create_icon_bundle()
 		self.SetIcons(self.icons)
+		self.Bind(wx.EVT_CLOSE, self.app.exit, self)
 
 	def build(self):
 		#----- Menubar
