@@ -18,8 +18,6 @@
 
 import os, sys
 
-import wx
-
 from uc2 import uc2const
 from uc2.application import UCApplication
 
@@ -107,10 +105,9 @@ class pdApplication(Application, UCApplication):
 			msg += _('Do you want to save your changes?')
 			ret = dialogs.ync_dialog(self.mw, self.appdata.app_name, msg)
 
-			if ret == wx.ID_YES:
+			if ret is None: return False
+			if ret:
 				if not self.save(): return False
-			elif ret == wx.ID_NO: pass
-			else: return False
 
 		if doc in self.docs:
 			self.docs.remove(doc)
