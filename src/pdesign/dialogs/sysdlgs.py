@@ -17,15 +17,27 @@
 
 import wx
 
-def msg_dialog(parent, title, text, seconary_text='', details='', dlg_type=None):
-	dlg = wx.MessageDialog(parent, text,
-					   title,
-					   wx.OK | wx.ICON_INFORMATION
-					   #wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION
-					   )
+def _dialog(parent, title, text, icon):
+	dlg = wx.MessageDialog(parent, text, title, wx.OK | icon)
 	dlg.ShowModal()
 	dlg.Destroy()
 
+#def msg_dialog(parent, title, text):
+#	dlg = wx.MessageDialog(parent, text,
+#					   title,
+#					   wx.OK | wx.ICON_INFORMATION
+#					   #wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION
+#					   )
+#	dlg.ShowModal()
+#	dlg.Destroy()
 
+def msg_dialog(parent, title, text):
+	_dialog(parent, title, text, wx.ICON_INFORMATION)
+
+def error_dialog(parent, title, text):
+	_dialog(parent, title, text, wx.ICON_ERROR)
+
+def stop_dialog(parent, title, text):
+	_dialog(parent, title, text, wx.ICON_STOP)
 
 
