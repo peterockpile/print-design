@@ -17,19 +17,20 @@
 
 import wx
 
-def _dialog(parent, title, text, icon):
-	dlg = wx.MessageDialog(parent, text, title, wx.OK | icon)
-	dlg.ShowModal()
-	dlg.Destroy()
-
-#def msg_dialog(parent, title, text):
-#	dlg = wx.MessageDialog(parent, text,
-#					   title,
-#					   wx.OK | wx.ICON_INFORMATION
-#					   #wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION
-#					   )
-#	dlg.ShowModal()
-#	dlg.Destroy()
+def _dialog(parent, title, text, icon, yesno=False, cancel=False):
+	ret = None
+	if not yesno and not cancel:
+		dlg = wx.MessageDialog(parent, text, title, wx.OK | icon)
+		dlg.ShowModal()
+		dlg.Destroy()
+	else:
+		buttons = 0
+		if yesno:buttons |= wx.YES_NO
+		if cancel:buttons |= wx.CANCEL
+		dlg = wx.MessageDialog(parent, text, title, wx.OK | icon | buttons)
+		ret = dlg.ShowModal()
+		dlg.Destroy()
+	return ret
 
 def msg_dialog(parent, title, text):
 	_dialog(parent, title, text, wx.ICON_INFORMATION)
@@ -39,5 +40,8 @@ def error_dialog(parent, title, text):
 
 def stop_dialog(parent, title, text):
 	_dialog(parent, title, text, wx.ICON_STOP)
+
+def ync_dialog(parent, title, text):
+	return _dialog(parent, title, text, wx.ICON_WARNING, True, True)
 
 
