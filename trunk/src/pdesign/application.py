@@ -94,18 +94,38 @@ class pdApplication(Application, UCApplication):
 		events.emit(events.APP_STATUS, _('New document created'))
 
 	def close(self, doc=None):
-		if not doc: doc = self.current_doc
-		if not doc: return
-		doc.close()
-		self.docs.remove(doc)
-		if doc == self.current_doc:
-			if self.docs:
-				self.set_current_doc(self.docs[-1])
-			else:
+		if not self.docs:
+			return
+		if doc is None:
+			doc = self.current_doc
+
+		if not self.mw.nb.page_num(doc.docarea) == self.mw.nb.get_current_page():
+			self.mw.set_active_tab(doc.docarea)
+
+		if self.inspector.is_doc_not_saved(doc):
+			first = _("Document '%s' has been modified.") % (doc.doc_name)
+			second = _('Do you want to save your changes?')
+			ret = dialogs.warning_dialog(self.mw, self.appdata.app_name,
+					first, second,
+					[(icons.STOCK_DONT_SAVE , gtk.RESPONSE_NO,),
+					(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL),
+					(gtk.STOCK_SAVE, gtk.RESPONSE_OK)])
+
+			if ret == gtk.RESPONSE_OK:
+				if not self.save(): return False
+			elif ret == gtk.RESPONSE_NO: pass
+			else: return False
+
+		if doc in self.docs:
+			self.docs.remove(doc)
+			doc.close()
+			events.emit(events.DOC_CLOSED)
+			if not len(self.docs):
 				self.current_doc = None
 				events.emit(events.NO_DOCS)
 				msg = _('To start create new or open existing document')
 				events.emit(events.APP_STATUS, msg)
+		return True
 
 	def close_all(self):
 		result = True
@@ -126,7 +146,7 @@ class pdApplication(Application, UCApplication):
 				msg = _('Cannot open file')
 				msg = "%s '%s'" % (msg, doc_file) + '\n'
 				msg += _('The file may be corrupted or not supported format')
-				dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+				dialogs.error_dialog(self.mw, self.appdata.app_name, msg)
 				if config.print_stacktrace:
 					print sys.exc_info()[1].__str__()
 					print sys.exc_info()[2].__str__()
@@ -154,7 +174,7 @@ class pdApplication(Application, UCApplication):
 			msg = _('Cannot save file')
 			msg = "%s '%s'" % (msg, self.current_doc.doc_file) + '\n'
 			msg += _('Please check file write permissions')
-			dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+			dialogs.error_dialog(self.mw, self.appdata.app_name, msg)
 			if config.print_stacktrace:
 				print sys.exc_info()[1].__str__()
 				print sys.exc_info()[2].__str__()
@@ -185,7 +205,7 @@ class pdApplication(Application, UCApplication):
 				first = _('Cannot save document')
 				msg = ("%s '%s'.") % (first, self.current_doc.doc_name) + '\n'
 				msg += _('Please check file name and write permissions')
-				dialogs.msg_dialog(self.mw, self.appdata.app_name, msg)
+				dialogs.error_dialog(self.mw, self.appdata.app_name, msg)
 				if config.print_stacktrace:
 					print sys.exc_info()[1].__str__()
 					print sys.exc_info()[2].__str__()
