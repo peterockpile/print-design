@@ -88,6 +88,8 @@ class pdApplication(Application, UCApplication):
 	def set_current_doc(self, doc):
 		self.current_doc = doc
 		events.emit(events.DOC_CHANGED, doc)
+		msg = _('Document is changed')
+		events.emit(events.APP_STATUS, msg)
 
 	def new(self):
 		doc = PD_Presenter(self)
@@ -96,11 +98,8 @@ class pdApplication(Application, UCApplication):
 		events.emit(events.APP_STATUS, _('New document created'))
 
 	def close(self, doc=None):
-		if not self.docs:
-			return
-		if doc is None:
-			doc = self.current_doc
-
+		if not self.docs: return
+		if doc is None: doc = self.current_doc
 		if not doc == self.current_doc: self.set_current_doc(doc)
 
 		if self.insp.is_doc_not_saved(doc):
@@ -122,6 +121,8 @@ class pdApplication(Application, UCApplication):
 				events.emit(events.NO_DOCS)
 				msg = _('To start create new or open existing document')
 				events.emit(events.APP_STATUS, msg)
+			else:
+				self.set_current_doc(self.docs[-1])
 		return True
 
 	def close_all(self):
@@ -129,8 +130,7 @@ class pdApplication(Application, UCApplication):
 		if self.docs:
 			while self.docs:
 				result = self.close(self.docs[0])
-				if not result:
-					break
+				if not result: break
 		return result
 
 	def open(self, doc_file='', silent=False):
@@ -218,7 +218,7 @@ class pdApplication(Application, UCApplication):
 			if self.insp.is_doc_not_saved(doc):
 				self.save(doc)
 
-	def exit(self):
+	def exit(self, *args):
 		if self.close_all():
 			self.update_config()
 			config.save(self.appdata.app_config)
