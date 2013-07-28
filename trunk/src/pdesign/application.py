@@ -18,6 +18,8 @@
 
 import os, sys
 
+import wx
+
 from uc2 import uc2const
 from uc2.application import UCApplication
 
@@ -99,21 +101,16 @@ class pdApplication(Application, UCApplication):
 		if doc is None:
 			doc = self.current_doc
 
-		if not self.mw.nb.page_num(doc.docarea) == self.mw.nb.get_current_page():
-			self.mw.set_active_tab(doc.docarea)
+		if not doc == self.current_doc: self.set_current_doc(doc)
 
-		if self.inspector.is_doc_not_saved(doc):
-			first = _("Document '%s' has been modified.") % (doc.doc_name)
-			second = _('Do you want to save your changes?')
-			ret = dialogs.warning_dialog(self.mw, self.appdata.app_name,
-					first, second,
-					[(icons.STOCK_DONT_SAVE , gtk.RESPONSE_NO,),
-					(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL),
-					(gtk.STOCK_SAVE, gtk.RESPONSE_OK)])
+		if self.insp.is_doc_not_saved(doc):
+			msg = _("Document '%s' has been modified.") % (doc.doc_name) + '\n'
+			msg += _('Do you want to save your changes?')
+			ret = dialogs.ync_dialog(self.mw, self.appdata.app_name, msg)
 
-			if ret == gtk.RESPONSE_OK:
+			if ret == wx.ID_YES:
 				if not self.save(): return False
-			elif ret == gtk.RESPONSE_NO: pass
+			elif ret == wx.ID_NO: pass
 			else: return False
 
 		if doc in self.docs:
