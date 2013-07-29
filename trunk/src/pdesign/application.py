@@ -95,41 +95,6 @@ class pdApplication(Application, UCApplication):
 		self.set_current_doc(doc)
 		events.emit(events.APP_STATUS, _('New document created'))
 
-	def close(self, doc=None):
-		if not self.docs: return
-		if doc is None: doc = self.current_doc
-		if not doc == self.current_doc: self.set_current_doc(doc)
-
-		if self.insp.is_doc_not_saved(doc):
-			msg = _("Document '%s' has been modified.") % (doc.doc_name) + '\n'
-			msg += _('Do you want to save your changes?')
-			ret = dialogs.ync_dialog(self.mw, self.appdata.app_name, msg)
-
-			if ret is None: return False
-			if ret:
-				if not self.save(): return False
-
-		if doc in self.docs:
-			self.docs.remove(doc)
-			doc.close()
-			events.emit(events.DOC_CLOSED)
-			if not len(self.docs):
-				self.current_doc = None
-				events.emit(events.NO_DOCS)
-				msg = _('To start create new or open existing document')
-				events.emit(events.APP_STATUS, msg)
-			else:
-				self.set_current_doc(self.docs[-1])
-		return True
-
-	def close_all(self):
-		result = True
-		if self.docs:
-			while self.docs:
-				result = self.close(self.docs[0])
-				if not result: break
-		return result
-
 	def open(self, doc_file='', silent=False):
 		if not doc_file:
 			doc_file = dialogs.get_open_file_name(self.mw, self, config.open_dir)
@@ -147,7 +112,7 @@ class pdApplication(Application, UCApplication):
 				return
 			self.docs.append(doc)
 			self.set_current_doc(doc)
-			config.open_dir = os.path.dirname(doc_file)
+			config.open_dir = str(os.path.dirname(doc_file))
 			events.emit(events.APP_STATUS, _('Document opened'))
 
 	def save(self, doc=''):
@@ -204,7 +169,7 @@ class pdApplication(Application, UCApplication):
 					print sys.exc_info()[1].__str__()
 					print sys.exc_info()[2].__str__()
 				return False
-			config.save_dir = os.path.dirname(doc_file)
+			config.save_dir = str(os.path.dirname(doc_file))
 			events.emit(events.APP_STATUS, _('Document saved'))
 			return True
 		else:
@@ -215,10 +180,44 @@ class pdApplication(Application, UCApplication):
 			if self.insp.is_doc_not_saved(doc):
 				self.save(doc)
 
+	def close(self, doc=None):
+		if not self.docs: return
+		if doc is None: doc = self.current_doc
+		if not doc == self.current_doc: self.set_current_doc(doc)
+
+		if self.insp.is_doc_not_saved(doc):
+			msg = _("Document '%s' has been modified.") % (doc.doc_name) + '\n'
+			msg += _('Do you want to save your changes?')
+			ret = dialogs.ync_dialog(self.mw, self.appdata.app_name, msg)
+
+			if ret is None: return False
+			if ret:
+				if not self.save(): return False
+
+		if doc in self.docs:
+			self.docs.remove(doc)
+			doc.close()
+			events.emit(events.DOC_CLOSED)
+			if not len(self.docs):
+				self.current_doc = None
+				events.emit(events.NO_DOCS)
+				msg = _('To start create new or open existing document')
+				events.emit(events.APP_STATUS, msg)
+			else:
+				self.set_current_doc(self.docs[-1])
+		return True
+
+	def close_all(self):
+		result = True
+		if self.docs:
+			while self.docs:
+				result = self.close(self.docs[0])
+				if not result: break
+		return result
+
 	def exit(self, *args):
 		if self.close_all():
 			self.update_config()
-			config.save(self.appdata.app_config)
 			self.mw.Destroy()
 			self.Exit()
 			return True
@@ -229,6 +228,7 @@ class pdApplication(Application, UCApplication):
 		w, h = self.mw.GetSize()
 		config.mw_width = w
 		config.mw_height = h
+		config.save(self.appdata.app_config)
 
 	def open_url(self, url):
 		import webbrowser
