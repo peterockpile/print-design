@@ -44,7 +44,8 @@ def _get_open_filters():
 		for extension in ext[item]:
 			wildcard += '*.' + extension + ';'
 			wildcard += '*.' + extension.upper() + ';'
-		wildcard += '|'
+		if not item==items[-1]:
+			wildcard += '|'
 
 	return wildcard
 
@@ -77,7 +78,8 @@ def _get_save_fiters():
 		for extension in ext[item]:
 			wildcard += '*.' + extension + ';'
 			wildcard += '*.' + extension.upper() + ';'
-		wildcard += '|'
+		if not item==items[-1]:
+			wildcard += '|'
 	return wildcard
 
 def get_save_file_name(parent, app, path):
