@@ -56,6 +56,7 @@ class MDIArea(VPanel):
 
 		self.splitter = wx.SplitterWindow(hpanel, -1, style=wx.SP_LIVE_UPDATE)
 		self.doc_keeper = VPanel(self.splitter)
+		self.doc_keeper.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.plg_area = PlgArea(self.splitter)
 
 		self.splitter.SetMinimumPaneSize(200)
