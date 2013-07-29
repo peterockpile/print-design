@@ -79,8 +79,8 @@ class AppCanvas(wx.Panel):
 		self.vscroll = vscroll
 		self.hscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
 		self.vscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
-		self.hscroll.Bind(wx.EVT_SCROLL_CHANGED, self._scrolling, self.hscroll)
-		self.vscroll.Bind(wx.EVT_SCROLL_CHANGED, self._scrolling, self.vscroll)
+		self.hscroll.Bind(wx.EVT_SCROLL, self._scrolling, self.hscroll)
+		self.vscroll.Bind(wx.EVT_SCROLL, self._scrolling, self.vscroll)
 
 	def _scrolling(self, *args):
 		if self.my_changes:return
