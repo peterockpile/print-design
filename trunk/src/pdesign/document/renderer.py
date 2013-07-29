@@ -80,8 +80,7 @@ class PDRenderer(CairoRenderer):
 		self.ctx.set_matrix(self.canvas.matrix)
 
 	def finalize(self):
-		pdc = wx.PaintDC(self.canvas)
-		dc = wx.GCDC(pdc)
+		dc = wx.BufferedPaintDC(self.canvas)
 		dc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0, True)
 
 	def paint_page_border(self):

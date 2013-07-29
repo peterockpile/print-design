@@ -70,7 +70,7 @@ class pdApplication(Application, UCApplication):
 		self.proxy.update()
 		self.insp.update()
 
-	def call_after(self, *args):
+	def call_after(self, *args):		
 		if self.docs: return
 		if config.new_doc_on_start: self.new();return
 		events.emit(events.NO_DOCS)

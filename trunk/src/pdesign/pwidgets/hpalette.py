@@ -66,6 +66,7 @@ class HPalette(HPanel):
 			self.Bind(wx.EVT_LEFT_UP, self._on_left_click, self)
 		self.timer = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self._on_timer)
+		self.SetDoubleBuffered(True)
 
 	def refresh(self, x=0, y=0, w=0, h=0):
 		if not w: w, h = self.GetSize()
