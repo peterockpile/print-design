@@ -45,7 +45,6 @@ class AppTools(VPanel):
 				self.add(but, 0, LEFT | RIGHT, border)
 
 
-
 class ActionTool(ImageToggleButton):
 
 	def __init__(self, parent, action):
