@@ -133,7 +133,7 @@ class Ruler(HPanel):
 				if dx > 10:small_ticks.append(pos + dx * .5)
 				i += 1
 
-			coef = round(30.0 / dx)
+			coef = round(50.0 / dx)
 			if not coef:coef = 1.0
 			dxt = dx * coef
 			sxt = (x0 / dxt - math.floor(x0 / dxt)) * dxt
@@ -154,7 +154,7 @@ class Ruler(HPanel):
 				if dy > 10:small_ticks.append(pos + dy * .5)
 				i += 1
 
-			coef = round(30.0 / dy)
+			coef = round(50.0 / dy)
 			if not coef:coef = 1.0
 			dyt = dy * coef
 			syt = (y0 / dyt - math.floor(y0 / dyt)) * dyt
