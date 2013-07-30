@@ -61,14 +61,14 @@ class EventLoop:
 		"""
 		Sends signal to all receivers in channel.
 		"""
-		print 'signal', channel, args
+#		print 'signal', channel, args
 		try:
 			for receiver in channel:
 				try:
 					if callable(receiver):
 						receiver(args)
 				except:
-					print 'error', receiver
+#					print 'error', receiver
 					pass
 		except:
 			print "Cannot send signal to channel:", channel
