@@ -73,6 +73,11 @@ class AppMainWindow(MainWindow):
 
 		self.Layout()
 
+	def set_title(self, title=''):
+		appname = self.app.appdata.app_name
+		if title: self.SetTitle('[%s] - %s' % (title, appname))
+		else: self.SetTitle(appname)
+
 	def create_icon_bundle(self):
 		iconset_path = os.path.join(config.resource_dir, 'icons', 'generic')
 		ret = wx.IconBundle()

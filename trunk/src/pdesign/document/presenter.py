@@ -98,6 +98,7 @@ class PD_Presenter:
 		self.docarea = self.app.mdi.create_docarea(self)
 		self.canvas = self.docarea.canvas
 		self.canvas.set_mode()
+		self.set_title()
 
 	def set_title(self):
 		if self.saved:
@@ -105,6 +106,8 @@ class PD_Presenter:
 		else:
 			title = self.doc_name + '*'
 		self.app.mdi.set_tab_title(self.docarea, title)
+		if self == self.app.current_doc:
+			self.app.mw.set_title(title)
 
 	def set_doc_file(self, doc_file, doc_name=''):
 		self.doc_file = doc_file
@@ -155,7 +158,7 @@ class PD_Presenter:
 	def reflect_saving(self):
 		self.saved = True
 		self.set_title()
-#		self.api.save_mark()
+		self.api.save_mark()
 		events.emit(events.DOC_SAVED, self)
 
 	def set_active_page(self, page_num=0):

@@ -70,7 +70,7 @@ class pdApplication(Application, UCApplication):
 		self.proxy.update()
 		self.insp.update()
 
-	def call_after(self, *args):		
+	def call_after(self, *args):
 		if self.docs: return
 		if config.new_doc_on_start: self.new();return
 		events.emit(events.NO_DOCS)
@@ -85,6 +85,7 @@ class pdApplication(Application, UCApplication):
 
 	def set_current_doc(self, doc):
 		self.current_doc = doc
+		self.current_doc.set_title()
 		events.emit(events.DOC_CHANGED, doc)
 		msg = _('Document is changed')
 		events.emit(events.APP_STATUS, msg)
@@ -203,6 +204,7 @@ class pdApplication(Application, UCApplication):
 				events.emit(events.NO_DOCS)
 				msg = _('To start create new or open existing document')
 				events.emit(events.APP_STATUS, msg)
+				self.mw.set_title()
 			else:
 				self.set_current_doc(self.docs[-1])
 		return True
