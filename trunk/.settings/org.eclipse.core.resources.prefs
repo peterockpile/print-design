@@ -9,6 +9,7 @@ encoding//src/pdesign/dialogs/__init__.py=utf-8
 encoding//src/pdesign/dialogs/filedlgs.py=utf-8
 encoding//src/pdesign/dialogs/msgdlgs.py=utf-8
 encoding//src/pdesign/dialogs/progressdlg.py=utf-8
+encoding//src/pdesign/document/api.py=utf-8
 encoding//src/pdesign/document/canvas.py=utf-8
 encoding//src/pdesign/document/docarea.py=utf-8
 encoding//src/pdesign/document/presenter.py=utf-8
