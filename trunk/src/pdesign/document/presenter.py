@@ -98,6 +98,7 @@ class PD_Presenter:
 		self.docarea = self.app.mdi.create_docarea(self)
 		self.canvas = self.docarea.canvas
 		self.canvas.set_mode()
+		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.modified)
 		self.set_title()
 
 	def set_title(self):
