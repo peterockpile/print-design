@@ -24,63 +24,33 @@ class AppProxy:
 		self.insp = self.app.insp
 		self.mw = self.app.mw
 
-	def stub(self, *args):
-		print 'event'
+	def stub(self, *args): print 'event'
 
-	def new(self, *args):
-		self.app.new()
+	def new(self, *args): self.app.new()
+	def open(self, *args): self.app.open()
+	def save(self, *args): self.app.save()
+	def save_as(self, *args): self.app.save_as()
+	def save_all(self, *args): self.app.save_all()
+	def close(self, *args): self.app.close()
+	def close_all(self, *args): self.app.close_all()
+	def exit(self, *args): self.app.exit()
 
-	def open(self, *args):
-		self.app.open()
+	def set_mode(self, mode): self.app.current_doc.canvas.set_mode(mode)
+	def open_url(self, url): self.app.open_url(url)
 
-	def save(self, *args):
-		self.app.save()
+	def undo(self, *args): self.app.current_doc.api.do_undo()
+	def redo(self, *args): self.app.current_doc.api.do_redo()
+	def clear_history(self, *args): self.app.current_doc.api.clear_history()
+	def cut(self, *args): self.app.current_doc.api.cut_selected()
+	def copy(self, *args): self.app.current_doc.api.copy_selected()
+	def paste(self, *args): self.app.current_doc.api.paste_selected()
+	def delete(self, *args): self.app.current_doc.api.delete_selected()
+	def select_all(self, *args): self.app.current_doc.selection.select_all()
+	def deselect(self, *args): self.app.current_doc.selection.clear()
 
-	def save_as(self, *args):
-		self.app.save_as()
-
-	def save_all(self, *args):
-		self.app.save_all()
-
-	def close(self, *args):
-		self.app.close()
-
-	def close_all(self, *args):
-		self.app.close_all()
-
-	def exit(self, *args):
-		self.app.exit()
-
-	def set_mode(self, mode):
-		self.app.current_doc.canvas.set_mode(mode)
-
-	def open_url(self, url):
-		self.app.open_url(url)
-
-	def undo(self, *args):
-		self.app.current_doc.api.do_undo()
-
-	def redo(self, *args):
-		self.app.current_doc.api.do_redo()
-
-	def clear_history(self, *args):
-		self.app.current_doc.api.clear_history()
-
-	def zoom_in(self, *args):
-		self.app.current_doc.canvas.zoom_in()
-
-	def zoom_out(self, *args):
-		self.app.current_doc.canvas.zoom_out()
-
-	def fit_zoom_to_page(self, *args):
-		self.app.current_doc.canvas.zoom_fit_to_page()
-
-	def zoom_100(self, *args):
-		self.app.current_doc.canvas.zoom_100()
-
-	def zoom_selected(self, *args):
-		self.app.current_doc.canvas.zoom_selected()
-
-	def force_redraw(self, *args):
-		if self.app.current_doc:
-			self.app.current_doc.canvas.force_redraw()
+	def zoom_in(self, *args): self.app.current_doc.canvas.zoom_in()
+	def zoom_out(self, *args): self.app.current_doc.canvas.zoom_out()
+	def fit_zoom_to_page(self, *args): self.app.current_doc.canvas.zoom_fit_to_page()
+	def zoom_100(self, *args): self.app.current_doc.canvas.zoom_100()
+	def zoom_selected(self, *args): self.app.current_doc.canvas.zoom_selected()
+	def force_redraw(self, *args): self.app.current_doc.canvas.force_redraw()
