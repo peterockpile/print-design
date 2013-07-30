@@ -68,7 +68,7 @@ class AppCanvas(wx.Panel):
 		self.app = presenter.app
 		self.doc = self.presenter.model
 		self.renderer = PDRenderer(self)
-		wx.Panel.__init__(self, parent)#, style=wx.FULL_REPAINT_ON_RESIZE)
+		wx.Panel.__init__(self, parent, style=wx.FULL_REPAINT_ON_RESIZE)
 		self.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.ctrls = self.init_controllers()
 		self.SetDoubleBuffered(True)
