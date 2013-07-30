@@ -30,6 +30,7 @@ from pdesign.parts.artprovider import create_artprovider
 from pdesign.widgets import Application
 from pdesign.app_cms import AppColorManager
 from pdesign.document import PD_Presenter
+from pdesign.clipboard import AppClipboard
 
 class pdApplication(Application, UCApplication):
 
@@ -64,6 +65,7 @@ class pdApplication(Application, UCApplication):
 		self.insp = AppInspector(self)
 		self.mw = AppMainWindow(self)
 		self.default_cms = AppColorManager(self)
+		self.clipboard = AppClipboard(self)
 
 		self.actions = app_actions.create_actions(self)
 
