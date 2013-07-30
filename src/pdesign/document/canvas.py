@@ -335,6 +335,7 @@ class AppCanvas(wx.Panel):
 			self.soft_repaint = False
 		else:
 			self.renderer.paint_document()
+			self.eventloop.emit(self.eventloop.VIEW_CHANGED)
 			self.full_repaint = False
 			self.soft_repaint = False
 
