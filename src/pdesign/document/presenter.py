@@ -25,10 +25,12 @@ from uc2.utils.fs import change_file_extension
 from pdesign import _, config, events
 from pdesign.document.eventloop import EventLoop
 from pdesign.document.selection import Selection
+from pdesign.document.api import PresenterAPI
 from pdesign.dialogs import ProgressDialog
 
 class PD_Presenter:
 
+	api = None
 	doc_presenter = None
 	doc_file = ''
 	doc_name = ''
@@ -92,6 +94,7 @@ class PD_Presenter:
 		self.cms = self.doc_presenter.cms
 		self.app.default_cms.registry_cm(self.cms)
 
+		self.api = PresenterAPI(self)
 		self.docarea = self.app.mdi.create_docarea(self)
 		self.canvas = self.docarea.canvas
 		self.canvas.set_mode()
