@@ -48,6 +48,30 @@ class AppInspector:
 		if mode == self.app.current_doc.canvas.mode: return True
 		return False
 
+	def is_undo(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		if doc.api.undo:
+			return True
+		else:
+			return False
+
+	def is_redo(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		if doc.api.redo:
+			return True
+		else:
+			return False
+
+	def is_history(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		if self.is_undo(doc) or self.is_redo(doc):
+			return True
+		else:
+			return False
+
 	def is_selection(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False

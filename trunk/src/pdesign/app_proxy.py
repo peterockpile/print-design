@@ -57,6 +57,15 @@ class AppProxy:
 	def open_url(self, url):
 		self.app.open_url(url)
 
+	def undo(self, *args):
+		self.app.current_doc.api.do_undo()
+
+	def redo(self, *args):
+		self.app.current_doc.api.do_redo()
+
+	def clear_history(self, *args):
+		self.app.current_doc.api.clear_history()
+
 	def zoom_in(self, *args):
 		self.app.current_doc.canvas.zoom_in()
 
