@@ -59,10 +59,10 @@ class PDRenderer(CairoRenderer):
 		if self.canvas.draw_page_border:
 			self.paint_page_border()
 		self.render_doc()
-#		self.render_grid()
-#		self.render_guides()
-		self.finalize()
-#		self.paint_selection()
+		self.render_grid()
+		self.render_guides()
+#		self.finalize()
+		self.paint_selection()
 
 	def start(self):
 		width, height = self.canvas.GetSize()
@@ -204,7 +204,6 @@ class PDRenderer(CairoRenderer):
 	#------MARKER RENDERING
 
 	def start_soft_repaint(self):
-		self.win_ctx = self.canvas.window.cairo_create()
 		self.temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24,
 								int(self.canvas.width),
 								int(self.canvas.height))
@@ -213,8 +212,8 @@ class PDRenderer(CairoRenderer):
 		self.ctx.paint()
 
 	def end_soft_repaint(self):
-		self.win_ctx.set_source_surface(self.temp_surface)
-		self.win_ctx.paint()
+		dc = wx.BufferedPaintDC(self.canvas)
+		dc.DrawBitmap(copy_surface_to_bitmap(self.temp_surface), 0, 0, True)
 
 	def draw_frame(self, start, end):
 		if start and end:

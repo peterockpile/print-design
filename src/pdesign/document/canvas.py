@@ -56,6 +56,8 @@ class AppCanvas(wx.Panel):
 	resize_marker = 0
 	stroke_view = False
 	draft_view = False
+	soft_repaint = False
+	full_repaint = False
 	draw_page_border = True
 
 	my_changes = False
@@ -71,6 +73,10 @@ class AppCanvas(wx.Panel):
 		self.ctrls = self.init_controllers()
 		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
+		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.doc_modified)
+		self.eventloop.connect(self.eventloop.PAGE_CHANGED, self.doc_modified)
+		self.eventloop.connect(self.eventloop.SELECTION_CHANGED,
+							self.selection_redraw)
 
 	#----- SCROLLING
 
@@ -306,6 +312,14 @@ class AppCanvas(wx.Panel):
 		self.presenter.selection.select_by_rect(rect, flag)
 
 	#----- RENDERING -----
+	def selection_redraw(self, *args):
+		if not self.full_repaint:
+			self.soft_repaint = True
+		self.force_redraw()
+
+	def doc_modified(self, *args):
+		self.full_repaint = True
+		self.force_redraw()
 
 	def force_redraw(self, *args):
 		w, h = self.GetSize()
@@ -316,7 +330,13 @@ class AppCanvas(wx.Panel):
 			self.zoom_fit_to_page()
 			self.set_mode(modes.SELECT_MODE)
 		self._keep_center()
-		self.renderer.paint_document()
+		if self.soft_repaint and not self.full_repaint:
+			self.renderer.paint_selection()
+			self.soft_repaint = False
+		else:
+			self.renderer.paint_document()
+			self.full_repaint = False
+			self.soft_repaint = False
 
 	def destroy(self):
 		self.presenter = None
