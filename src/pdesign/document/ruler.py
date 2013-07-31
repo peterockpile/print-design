@@ -15,8 +15,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
+import os, math
 import wx
+import cairo
 
 from uc2 import uc2const
 from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, DOC_ORIGIN_LU
@@ -25,6 +26,24 @@ from pdesign import config
 from pdesign.resources import get_icon, icons
 from pdesign.widgets.const import HORIZONTAL
 from pdesign.widgets import HPanel
+from pdesign.widgets import copy_surface_to_bitmap
+
+HFONT = {}
+VFONT = {}
+fntdir = os.path.join(config.resource_dir, 'fonts', 'ruler-font')
+for char in '.,-0123456789':
+	if char in '.,': file_name = os.path.join(fntdir, 'hdot.png')
+	else: file_name = os.path.join(fntdir, 'h%s.png' % char)
+	surface = cairo.ImageSurface.create_from_png(file_name)
+	HFONT[char] = (surface.get_width(), surface)
+
+	if char in '.,': file_name = os.path.join(fntdir, 'vdot.png')
+	else: file_name = os.path.join(fntdir, 'v%s.png' % char)
+	surface = cairo.ImageSurface.create_from_png(file_name)
+	VFONT[char] = (surface.get_height(), surface)
+
+CAIRO_WHITE = [1.0, 1.0, 1.0]
+CAIRO_BLACK = [0.0, 0.0, 0.0]
 
 class RulerCorner(HPanel):
 
@@ -69,7 +88,15 @@ class RulerCorner(HPanel):
 
 class Ruler(HPanel):
 
+	presenter = None
+	eventloop = None
+	style = None
+
 	init_flag = False
+	surface = None
+	ctx = None
+	width = 0
+	height = 0
 
 	def __init__(self, presenter, parent, style=HORIZONTAL):
 		self.presenter = presenter
@@ -120,6 +147,8 @@ class Ruler(HPanel):
 		return (x0, y0, dx, dy, sx, sy)
 
 	def get_ticks(self):
+		canvas = self.presenter.canvas
+		pw, ph = self.presenter.get_page_size()
 		w, h = self.panel.GetSize()
 		x0, y0, dx, dy, sx, sy = self.calc_ruler()
 		small_ticks = []
@@ -142,7 +171,10 @@ class Ruler(HPanel):
 			pos = 0
 			while pos < w:
 				pos = sxt + i * dxt
-				text_ticks.append(sxt + i * dxt)
+				doc_pos = canvas.point_win_to_doc((pos, 0))[0] + pw / 2.0
+				doc_pos *= uc2const.point_dict[config.default_unit]
+				txt = str(int(round(doc_pos)))
+				text_ticks.append((sxt + i * dxt, txt))
 				i += 1
 
 		else:
@@ -163,7 +195,10 @@ class Ruler(HPanel):
 			pos = 0
 			while pos < h:
 				pos = syt + i * dyt
-				text_ticks.append(syt + i * dyt)
+				doc_pos = canvas.point_win_to_doc((0, pos))[1] + ph / 2.0
+				doc_pos *= uc2const.point_dict[config.default_unit]
+				txt = str(int(round(doc_pos)))
+				text_ticks.append((syt + i * dyt, txt))
 				i += 1
 
 		return small_ticks, text_ticks
@@ -180,22 +215,67 @@ class Ruler(HPanel):
 		w, h = self.panel.GetSize()
 		pdc = wx.PaintDC(self.panel)
 		pdc.BeginDrawing()
-		black = wx.BLACK
-		pdc.SetBrush(wx.TRANSPARENT_BRUSH)
-		pdc.SetPen(wx.Pen(black, 1))
-
-		if self.style == HORIZONTAL:
-			pdc.DrawLine(0, h - 1, w, h - 1)
-		else:
-			pdc.DrawLine(w - 1, 0, w - 1, h)
-
+		if self.surface is None:
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+			self.width = w
+			self.height = h
+		elif self.width <> w or self.height <> h:
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+			self.width = w
+			self.height = h
+		self.ctx = cairo.Context(self.surface)
+		self.ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0))
+		self.ctx.set_source_rgb(*CAIRO_WHITE)
+		self.ctx.paint()
+		self.ctx.set_antialias(cairo.ANTIALIAS_NONE)
+		self.ctx.set_line_width(1.0)
+		self.ctx.set_dash([])
+		self.ctx.set_source_rgba(*CAIRO_BLACK)
 		if self.init_flag:
-			ticks, text = self.get_ticks()
-			if self.style == HORIZONTAL:
-				for item in ticks: pdc.DrawLine(item, h - 5, item, h - 1)
-				for item in text: pdc.DrawLine(item, h - 10, item, h - 1)
-			else:
-				for item in ticks: pdc.DrawLine(w - 5, item, w - 1, item)
-				for item in text: pdc.DrawLine(w - 10, item, w - 1, item)
+			if self.style == HORIZONTAL: self.hrender(w, h)
+			else: self.vrender(w, h)
+		pdc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0, True)
 
+	def hrender(self, w, h):
+		self.ctx.move_to(0, h)
+		self.ctx.line_to(w, h)
 
+		small_ticks, text_ticks = self.get_ticks()
+		for item in small_ticks:
+			self.ctx.move_to(item, h - 5)
+			self.ctx.line_to(item, h - 1)
+
+		for pos, txt in text_ticks:
+			self.ctx.move_to(pos, h - 10)
+			self.ctx.line_to(pos, h - 1)
+
+		self.ctx.stroke()
+
+		for pos, txt in text_ticks:
+			for character in txt:
+				data = HFONT[character]
+				self.ctx.set_source_surface(data[1], int(pos), 3)
+				self.ctx.paint()
+				pos += data[0]
+
+	def vrender(self, w, h):
+		self.ctx.move_to(w, 0)
+		self.ctx.line_to(w, h)
+
+		small_ticks, text_ticks = self.get_ticks()
+		for item in small_ticks:
+			self.ctx.move_to(w - 5, item)
+			self.ctx.line_to(w - 1, item)
+
+		for item, txt in text_ticks:
+			self.ctx.move_to(w - 10, item)
+			self.ctx.line_to(w - 1, item)
+
+		self.ctx.stroke()
+
+		for pos, txt in text_ticks:
+			for character in txt:
+				data = VFONT[character]
+				self.ctx.set_source_surface(data[1], 3, int(pos) - data[0])
+				self.ctx.paint()
+				pos -= data[0]
