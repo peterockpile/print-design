@@ -15,6 +15,8 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from pdesign.dialogs import msg_dialog
+
 class AppProxy:
 
 	def __init__(self, app):
@@ -24,7 +26,10 @@ class AppProxy:
 		self.insp = self.app.insp
 		self.mw = self.app.mw
 
-	def stub(self, *args): print 'event'
+	def stub(self, *args):
+		msg_dialog(self.mw, self.app.appdata.app_name,
+				'Sorry, but this feature is not implemented yet!\n' +
+				'Be patient and watch project development of regularly updating the source code!')
 
 	def new(self, *args): self.app.new()
 	def open(self, *args): self.app.open()
