@@ -24,6 +24,7 @@ encoding//src/pdesign/modes.py=utf-8
 encoding//src/pdesign/parts/doctabpanel.py=utf-8
 encoding//src/pdesign/parts/hp_panel.py=utf-8
 encoding//src/pdesign/parts/mdiarea.py=utf-8
+encoding//src/pdesign/parts/menubar.py=utf-8
 encoding//src/pdesign/parts/mw.py=utf-8
 encoding//src/pdesign/parts/tools.py=utf-8
 encoding//src/pdesign/pwidgets/actions.py=utf-8
