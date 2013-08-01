@@ -20,7 +20,8 @@ import wx
 import cairo
 
 from uc2 import uc2const
-from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, DOC_ORIGIN_LU
+from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, \
+DOC_ORIGIN_LU, ORIGINS
 
 from pdesign import config
 from pdesign.resources import get_icon, icons
@@ -42,6 +43,8 @@ for char in '.,-0123456789':
 	surface = cairo.ImageSurface.create_from_png(file_name)
 	VFONT[char] = (surface.get_height(), surface)
 
+BITMAPS = {}
+
 CAIRO_WHITE = [1.0, 1.0, 1.0]
 CAIRO_BLACK = [0.0, 0.0, 0.0]
 
@@ -49,19 +52,34 @@ class RulerCorner(HPanel):
 
 	bitmaps = {}
 	presenter = None
+	eventloop = None
 	origin = DOC_ORIGIN_LL
 
 	def __init__(self, presenter, parent):
 		self.presenter = presenter
+		self.eventloop = presenter.eventloop
 		HPanel.__init__(self, parent)
 		size = config.ruler_size
-		if not self.bitmaps:
-			self.bitmaps[DOC_ORIGIN_CENTER] = get_icon(icons.ORIGIN_CENTER)
-			self.bitmaps[DOC_ORIGIN_LL] = get_icon(icons.ORIGIN_LL)
-			self.bitmaps[DOC_ORIGIN_LU] = get_icon(icons.ORIGIN_LU)
+		if not BITMAPS:
+			BITMAPS[DOC_ORIGIN_CENTER] = get_icon(icons.ORIGIN_CENTER)
+			BITMAPS[DOC_ORIGIN_LL] = get_icon(icons.ORIGIN_LL)
+			BITMAPS[DOC_ORIGIN_LU] = get_icon(icons.ORIGIN_LU)
 		self.add((size, size))
 		self.SetBackgroundColour(wx.WHITE)
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
+		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.changes)
+		self.Bind(wx.EVT_LEFT_UP, self.left_click)
+
+	def changes(self, *args):
+		if not self.origin == self.presenter.model.doc_origin:
+			self.origin = self.presenter.model.doc_origin
+			self.refresh()
+
+	def left_click(self, *args):
+		origin = self.presenter.model.doc_origin
+		if origin < ORIGINS[-1]: origin += 1
+		else: origin = ORIGINS[0]
+		self.presenter.api.set_doc_origin(origin)
 
 	def destroy(self):
 		self.presenter = None
@@ -83,8 +101,7 @@ class RulerCorner(HPanel):
 		dc.GradientFillLinear(rect, grad_start, grad_end, nDirection=wx.WEST)
 		rect = wx.Rect(w - 1, 0, 1, h * 2)
 		dc.GradientFillLinear(rect, grad_start, grad_end, nDirection=wx.NORTH)
-		bmp = self.bitmaps[self.origin]
-		dc.DrawBitmap(bmp, 1, 1, True)
+		dc.DrawBitmap(BITMAPS[self.origin], 1, 1, True)
 
 class Ruler(HPanel):
 
@@ -149,6 +166,7 @@ class Ruler(HPanel):
 	def get_ticks(self):
 		canvas = self.presenter.canvas
 		pw, ph = self.presenter.get_page_size()
+		origin = self.presenter.model.doc_origin
 		w, h = self.panel.GetSize()
 		x0, y0, dx, dy, sx, sy = self.calc_ruler()
 		small_ticks = []
@@ -169,9 +187,11 @@ class Ruler(HPanel):
 
 			i = -1
 			pos = 0
+			shift = pw / 2.0
+			if origin == DOC_ORIGIN_CENTER: shift = 0.0
 			while pos < w:
 				pos = sxt + i * dxt
-				doc_pos = canvas.point_win_to_doc((pos, 0))[0] + pw / 2.0
+				doc_pos = canvas.point_win_to_doc((pos, 0))[0] + shift
 				doc_pos *= uc2const.point_dict[config.default_unit]
 				txt = str(int(round(doc_pos)))
 				text_ticks.append((sxt + i * dxt, txt))
@@ -193,9 +213,13 @@ class Ruler(HPanel):
 
 			i = -1
 			pos = 0
+			shift = 0.0
+			if origin == DOC_ORIGIN_LL: shift = ph / 2.0
+			if origin == DOC_ORIGIN_LU: shift = -ph / 2.0
 			while pos < h:
 				pos = syt + i * dyt
-				doc_pos = canvas.point_win_to_doc((0, pos))[1] + ph / 2.0
+				doc_pos = canvas.point_win_to_doc((0, pos))[1] + shift
+				if origin == DOC_ORIGIN_LU:doc_pos *= -1.0
 				doc_pos *= uc2const.point_dict[config.default_unit]
 				txt = str(int(round(doc_pos)))
 				text_ticks.append((syt + i * dyt, txt))
