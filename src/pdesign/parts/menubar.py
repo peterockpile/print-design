@@ -134,9 +134,19 @@ class ActionMenuItem(wx.MenuItem):
 			if bmp: self.SetBitmap(bmp)
 		self.action.register(self)
 		self.mw.Bind(wx.EVT_MENU, self.action.do_call, id=action_id)
+		if self.action.is_toggle():
+			self.SetCheckable(True)
 
 	def update(self):
 		self.set_enable(self.action.enabled)
+		if self.action.is_toggle():
+			self.set_active(self.action.active)
+
 
 	def set_enable(self, enabled):
 		self.Enable(enabled)
+
+	def set_active(self, val):
+		print 'check', val
+		if not self.IsChecked() == val:
+			self.Toggle()
