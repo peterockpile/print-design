@@ -70,6 +70,7 @@ class AppAction:
 
 	def register(self, widget):
 		self.widgets.append(widget)
+		self.update()
 
 	def register_as_tool(self, toolbar):
 		self.toolbar = toolbar
@@ -77,6 +78,7 @@ class AppAction:
 	def unregister(self, widget):
 		if widget in self.widgets:
 			self.widgets.remove(widget)
+		self.update()
 
 	def receiver(self, *args):
 		if self.validator_args:
@@ -105,6 +107,10 @@ class AppAction:
 		if self.enabled:
 			if self.callable_args: self.callback(*self.callable_args)
 			else: self.callback()
+		if self.is_toggle():
+			if self.checker_args:
+				self.set_active(self.checker(*self.checker_args))
+			else: self.set_active(self.checker())
 
 	def get_artid(self):
 		if self.is_icon:
