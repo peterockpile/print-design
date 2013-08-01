@@ -87,3 +87,60 @@ class AppInspector:
 			return True
 		else:
 			return False
+
+	def is_draft_view(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.draft_view
+
+	def is_stroke_view(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		print 'is_stroke_view', self.app.current_doc.canvas.stroke_view
+		return self.app.current_doc.canvas.stroke_view
+
+	def is_guides_visible(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		methods = self.app.current_doc.methods
+		guide_layer = methods.get_guide_layer()
+		if guide_layer.properties[0]: return True
+		return False
+
+	def is_grid_visible(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		methods = self.app.current_doc.methods
+		grid_layer = methods.get_gird_layer()
+		if grid_layer.properties[0]: return True
+		return False
+
+	def is_draw_page_border(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.draw_page_border
+
+	def is_show_snapping(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.canvas.show_snapping
+
+	def is_snap_to_grid(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_grid
+
+	def is_snap_to_guides(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_guides
+
+	def is_snap_to_objects(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_objects
+
+	def is_snap_to_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return self.app.current_doc.snap.snap_to_page

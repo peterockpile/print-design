@@ -59,3 +59,12 @@ class AppProxy:
 	def zoom_100(self, *args): self.app.current_doc.canvas.zoom_100()
 	def zoom_selected(self, *args): self.app.current_doc.canvas.zoom_selected()
 	def force_redraw(self, *args): self.app.current_doc.canvas.force_redraw()
+
+	def stroke_view(self, *args):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.stroke_view:
+				canvas.stroke_view = False
+			else:
+				canvas.stroke_view = True
+			canvas.force_redraw()
