@@ -96,7 +96,6 @@ class AppInspector:
 	def is_stroke_view(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
-		print 'is_stroke_view', self.app.current_doc.canvas.stroke_view
 		return self.app.current_doc.canvas.stroke_view
 
 	def is_guides_visible(self, doc=None):
