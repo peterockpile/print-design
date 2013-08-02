@@ -147,5 +147,5 @@ class ActionMenuItem(wx.MenuItem):
 		self.Enable(enabled)
 
 	def set_active(self, val):
-		if not self.IsChecked() == val:
+		if not self.IsChecked() == val and self.IsCheckable():
 			self.Toggle()
