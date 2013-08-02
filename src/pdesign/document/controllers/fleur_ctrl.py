@@ -1,0 +1,74 @@
+# -*- coding: utf-8 -*-
+#
+# 	Copyright (C) 2013 by Igor E. Novikov
+#
+# 	This program is free software: you can redistribute it and/or modify
+# 	it under the terms of the GNU General Public License as published by
+# 	the Free Software Foundation, either version 3 of the License, or
+# 	(at your option) any later version.
+#
+# 	This program is distributed in the hope that it will be useful,
+# 	but WITHOUT ANY WARRANTY; without even the implied warranty of
+# 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# 	GNU General Public License for more details.
+#
+# 	You should have received a copy of the GNU General Public License
+# 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from generic import AbstractController
+
+from pdesign import modes
+
+class FleurController(AbstractController):
+
+	mode = modes.FLEUR_MODE
+	move = False
+	fleur_timer = None
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):
+		self.move = True
+
+	def mouse_up(self, event):
+		if self.start:
+			self.end = event.GetPositionTuple()
+			dx = self.end[0] - self.start[0]
+			dy = self.end[1] - self.start[1]
+			self.canvas.scroll(dx, dy)
+			self.start = ()
+			self.end = ()
+			self.move = False
+
+	def mouse_move(self, event):
+		if self.move:
+			if self.start:
+				self.end = event.GetPositionTuple()
+			else:
+				self.start = event.GetPositionTuple()
+			self._scroll_canvas()
+
+	def _scroll_canvas(self, *args):
+		if self.start and self.end:
+			dx = self.end[0] - self.start[0]
+			dy = self.end[1] - self.start[1]
+			if dx <> 0 or dy <> 0:
+				self.canvas.scroll(dx, dy)
+				self.start = self.end
+
+
+class TempFleurController(FleurController):
+
+	mode = modes.TEMP_FLEUR_MODE
+	move = True
+
+	def __init__(self, canvas, presenter):
+		FleurController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):pass
+
+	def mouse_up(self, event):
+		FleurController.mouse_up(self, event)
+		self.move = True
+		self.canvas.restore_mode()
