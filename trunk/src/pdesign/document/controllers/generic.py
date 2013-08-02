@@ -42,10 +42,10 @@ class AbstractController:
 		self.selection = presenter.selection
 		self.eventloop = presenter.eventloop
 		self.api = presenter.api
-		self.start = []
-		self.end = []
-		self.start_doc = []
-		self.end_doc = []
+		self.start = ()
+		self.end = ()
+		self.start_doc = ()
+		self.end_doc = ()
 		self.timer = self.canvas.timer
 
 	def set_cursor(self):
@@ -69,11 +69,10 @@ class AbstractController:
 
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
-		self.start = []
-		self.end = []
-		self.start_doc = []
-		self.end_doc = []
-
+		self.start = ()
+		self.end = ()
+		self.start_doc = ()
+		self.end_doc = ()
 		self.counter = 0
 		if self.timer.IsRunning(): self.timer.Stop()
 
