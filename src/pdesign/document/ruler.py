@@ -167,10 +167,12 @@ class Ruler(HPanel):
 		canvas = self.presenter.canvas
 		pw, ph = self.presenter.get_page_size()
 		origin = self.presenter.model.doc_origin
+		unit = uc2const.unit_dict[config.default_unit]
 		w, h = self.panel.GetSize()
 		x0, y0, dx, dy, sx, sy = self.calc_ruler()
 		small_ticks = []
 		text_ticks = []
+
 		if self.style == HORIZONTAL:
 			i = -1
 			pos = 0
@@ -185,6 +187,10 @@ class Ruler(HPanel):
 			dxt = dx * coef
 			sxt = (x0 / dxt - math.floor(x0 / dxt)) * dxt
 
+			float_flag = False
+			unit_dx = dxt / (unit * canvas.zoom)
+			if unit_dx < 1.0:float_flag = True
+
 			i = -1
 			pos = 0
 			shift = pw / 2.0
@@ -193,7 +199,10 @@ class Ruler(HPanel):
 				pos = sxt + i * dxt
 				doc_pos = canvas.point_win_to_doc((pos, 0))[0] + shift
 				doc_pos *= uc2const.point_dict[config.default_unit]
-				txt = str(int(round(doc_pos)))
+				if float_flag:
+					txt = str(round(doc_pos, 4))
+					if not doc_pos:txt = '0'
+				else:txt = str(int(round(doc_pos)))
 				text_ticks.append((sxt + i * dxt, txt))
 				i += 1
 
@@ -211,6 +220,10 @@ class Ruler(HPanel):
 			dyt = dy * coef
 			syt = (y0 / dyt - math.floor(y0 / dyt)) * dyt
 
+			float_flag = False
+			unit_dy = dyt / (unit * canvas.zoom)
+			if unit_dy < 1.0:float_flag = True
+
 			i = -1
 			pos = 0
 			shift = 0.0
@@ -221,7 +234,10 @@ class Ruler(HPanel):
 				doc_pos = canvas.point_win_to_doc((0, pos))[1] + shift
 				if origin == DOC_ORIGIN_LU:doc_pos *= -1.0
 				doc_pos *= uc2const.point_dict[config.default_unit]
-				txt = str(int(round(doc_pos)))
+				if float_flag:
+					txt = str(round(doc_pos, 4))
+					if not doc_pos:txt = '0'
+				else:txt = str(int(round(doc_pos)))
 				text_ticks.append((syt + i * dyt, txt))
 				i += 1
 
