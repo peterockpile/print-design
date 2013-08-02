@@ -33,7 +33,8 @@ class Application(wx.App):
 
 	def __init__(self, name='', redirect=False):
 		wx.App.__init__(self, redirect=redirect)
-		if name:self.set_app_name(name)
+		if name:
+			self.set_app_name(name)
 		const.set_ui_colors(const.UI_COLORS)
 		self._set_font_size()
 
@@ -46,6 +47,7 @@ class Application(wx.App):
 	def set_app_name(self, name):
 		self.app_name = name
 		self.SetAppName(name)
+		self.SetClassName(name)
 
 	def update_actions(self):
 		for item in self.actions.keys():
