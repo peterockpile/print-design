@@ -80,7 +80,7 @@ def create_actions(app):
 (wx.ID_PREFERENCES, proxy.stub),
 #------ View menu -------
 (pdids.ID_STROKE_VIEW, proxy.stroke_view, doc_chnls, insp.is_doc, insp.is_stroke_view),
-(pdids.ID_DRAFT_VIEW, proxy.stub),
+(pdids.ID_DRAFT_VIEW, proxy.draft_view, doc_chnls, insp.is_doc, insp.is_draft_view),
 (wx.ID_ZOOM_100, proxy.zoom_100, doc_chnls, insp.is_doc),
 (wx.ID_ZOOM_IN, proxy.zoom_in, doc_chnls, insp.is_doc),
 (wx.ID_ZOOM_OUT, proxy.zoom_out, doc_chnls, insp.is_doc),
