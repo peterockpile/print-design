@@ -135,7 +135,7 @@ class AppCanvas(wx.Panel):
 		ctrls = {
 		modes.SELECT_MODE: dummy,
 		modes.SHAPER_MODE: dummy,
-		modes.ZOOM_MODE: dummy,
+		modes.ZOOM_MODE: controllers.ZoomController(self, self.presenter),
 		modes.FLEUR_MODE:  controllers.FleurController(self, self.presenter),
 		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: dummy,
