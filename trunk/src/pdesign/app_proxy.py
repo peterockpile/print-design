@@ -68,3 +68,13 @@ class AppProxy:
 			else:
 				canvas.stroke_view = True
 			canvas.force_redraw()
+
+	def draft_view(self, *args):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.draft_view:
+				canvas.draft_view = False
+				canvas.force_redraw()
+			else:
+				canvas.draft_view = True
+			canvas.force_redraw()
