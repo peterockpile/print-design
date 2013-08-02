@@ -22,6 +22,7 @@ from uc2.libcairo import normalize_bbox
 
 from pdesign import events, modes
 from pdesign.document.renderer import PDRenderer
+from pdesign.document import controllers
 
 PAGEFIT = 0.9
 ZOOM_IN = 1.25
@@ -73,6 +74,15 @@ class AppCanvas(wx.Panel):
 		self.ctrls = self.init_controllers()
 		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
+		#----- Mouse binding
+		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
+		self.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
+		self.Bind(wx.EVT_LEFT_DCLICK, self.mouse_left_dclick)
+		self.Bind(wx.EVT_RIGHT_DOWN, self.mouse_right_down)
+		self.Bind(wx.EVT_RIGHT_UP, self.mouse_right_up)
+		self.Bind(wx.EVT_MOUSEWHEEL, self.mouse_wheel)
+		self.Bind(wx.EVT_MOTION, self.mouse_move)
+		#-----
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.doc_modified)
 		self.eventloop.connect(self.eventloop.PAGE_CHANGED, self.doc_modified)
 		self.eventloop.connect(self.eventloop.SELECTION_CHANGED,
@@ -117,7 +127,7 @@ class AppCanvas(wx.Panel):
 		modes.SELECT_MODE: dummy,
 		modes.SHAPER_MODE: dummy,
 		modes.ZOOM_MODE: dummy,
-		modes.FLEUR_MODE: dummy,
+		modes.FLEUR_MODE:  controllers.FleurController(self, self.presenter),
 		modes.TEMP_FLEUR_MODE: dummy,
 		modes.PICK_MODE: dummy,
 		modes.LINE_MODE: dummy,
@@ -227,6 +237,17 @@ class AppCanvas(wx.Panel):
 			result.append(new_path)
 		return result
 
+	def scroll(self, cdx, cdy):
+		cdx *= self.zoom
+		cdy *= self.zoom
+		m11, m12, m21, m22, dx, dy = self.trafo
+		dx += cdx
+		dy += cdy
+		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.matrix = cairo.Matrix(*self.trafo)
+		self.update_scrolls()
+		self.force_redraw()
+
 	#----- ZOOMING
 
 	def _fit_to_page(self):
@@ -256,7 +277,7 @@ class AppCanvas(wx.Panel):
 		dx = dx * dzoom - _dx
 		dy = dy * dzoom - _dy
 		self.trafo = [m11, m12, m21, -m11, dx, dy]
-		self.matrix = cairo.Matrix(m11, m12, m21, -m11, dx, dy)
+		self.matrix = cairo.Matrix(*self.trafo)
 		self.zoom = m11
 		self.update_scrolls()
 		self.force_redraw()
@@ -347,6 +368,30 @@ class AppCanvas(wx.Panel):
 		self.ctrls = {}
 		self.current_cursor = None
 
+#==============EVENT CONTROLLING==========================
+	def mouse_left_down(self, event):
+		self.controller.set_cursor()
+		self.controller.mouse_down(event)
+
+	def mouse_left_up(self, event):
+		self.controller.mouse_up(event)
+
+	def mouse_left_dclick(self, event):
+		self.controller.set_cursor()
+		self.controller.mouse_double_click(event)
+
+	def mouse_move(self, event):
+		self.controller.mouse_move(event)
+
+	def mouse_right_down(self, event):
+		self.controller.mouse_down(event)
+
+	def mouse_right_up(self, event):
+		self.controller.mouse_up(event)
+
+	def mouse_wheel(self, event):
+		self.controller.wheel(event)
+
 class DummyController:
 
 	def __init__(self, canvas, presenter):
@@ -358,4 +403,15 @@ class DummyController:
 
 	def set_cursor(self):
 		self.canvas.set_canvas_cursor(self.canvas.mode)
+
+	def mouse_down(self, event):pass
+#		print 'mouse_down'
+	def mouse_double_click(self, event):pass
+#		print 'mouse_double_click'
+	def mouse_up(self, event):pass
+#		print 'mouse_up'
+	def mouse_move(self, event):pass
+#		print 'mouse_move'
+	def wheel(self, event):pass
+#		print 'mouse_wheel'
 
