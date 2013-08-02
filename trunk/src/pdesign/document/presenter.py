@@ -26,6 +26,7 @@ from pdesign import _, config, events
 from pdesign.document.eventloop import EventLoop
 from pdesign.document.selection import Selection
 from pdesign.document.api import PresenterAPI
+from pdesign.document.snapping import SnapManager
 from pdesign.dialogs import ProgressDialog
 
 class PD_Presenter:
@@ -99,6 +100,7 @@ class PD_Presenter:
 		self.canvas = self.docarea.canvas
 		self.canvas.set_mode()
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.modified)
+		self.snap = SnapManager(self)
 		self.set_title()
 
 	def set_title(self):
