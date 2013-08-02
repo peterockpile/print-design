@@ -71,7 +71,8 @@ class MainWindow(wx.Frame):
 
 	def __init__(self, title='Frame', size=(100, 100), orientation=wx.VERTICAL):
 
-		wx.Frame.__init__(self, None, wx.ID_ANY, title, pos=DEF_SIZE, size=size)
+		wx.Frame.__init__(self, None, wx.ID_ANY, title, pos=DEF_SIZE, size=size,
+						name=title)
 		self.Centre()
 		self.box = wx.BoxSizer(orientation)
 		self.SetSizer(self.box)
