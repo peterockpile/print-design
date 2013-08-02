@@ -78,3 +78,39 @@ class AppProxy:
 			else:
 				canvas.draft_view = True
 			canvas.force_redraw()
+
+	def show_grid(self, *args):
+		if self.insp.is_doc():
+			methods = self.app.current_doc.methods
+			api = self.app.current_doc.api
+			grid_layer = methods.get_gird_layer()
+			if grid_layer.properties[0]:
+				prop = [] + grid_layer.properties
+				prop[0] = 0
+			else:
+				prop = [] + grid_layer.properties
+				prop[0] = 1
+			api.set_layer_properties(grid_layer, prop)
+
+	def show_guides(self, *args):
+		if self.insp.is_doc():
+			methods = self.app.current_doc.methods
+			api = self.app.current_doc.api
+			guide_layer = methods.get_guide_layer()
+			if guide_layer.properties[0]:
+				prop = [] + guide_layer.properties
+				prop[0] = 0
+			else:
+				prop = [] + guide_layer.properties
+				prop[0] = 1
+			api.set_layer_properties(guide_layer, prop)
+#			self.app.current_doc.snap.update_guides_grid()
+
+	def draw_page_border(self, *args):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.draw_page_border:
+				canvas.draw_page_border = False
+			else:
+				canvas.draw_page_border = True
+			canvas.force_redraw()
