@@ -17,7 +17,7 @@
 
 
 from pdesign import modes
-from pdesign.appconst import LEFT_BUTTON, MIDDLE_BUTTON, RIGHT_BUTTON, RENDERING_DELAY
+from pdesign.appconst import RENDERING_DELAY
 
 class AbstractController:
 
@@ -46,6 +46,7 @@ class AbstractController:
 		self.end = []
 		self.start_doc = []
 		self.end_doc = []
+		self.timer = self.canvas.timer
 
 	def set_cursor(self):
 		if self.mode is None:
@@ -60,6 +61,11 @@ class AbstractController:
 	def repaint(self):pass
 	def do_action(self, event): pass
 	def mouse_double_click(self, event): pass
+	def mouse_right_down(self, event):pass
+	def mouse_right_up(self, event):pass
+	def mouse_middle_down(self, event):
+		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+	def mouse_middle_up(self, event):pass
 
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
@@ -69,33 +75,29 @@ class AbstractController:
 		self.end_doc = []
 
 		self.counter = 0
-#		if not  self.timer is None:
-#			gobject.source_remove(self.timer)
-		self.timer = None
+		if self.timer.IsRunning(): self.timer.Stop()
 
-		if event.button == LEFT_BUTTON:
-			self.draw = True
-			self.start = event.GetPositionTuple()
-			self.end = event.GetPositionTuple()
-			if self.check_snap:
-				self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
-				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
-			self.counter = 0
-#			self.timer = gobject.timeout_add(RENDERING_DELAY, self._draw_frame)
-#		elif event.button == MIDDLE_BUTTON:
-#			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+		self.draw = True
+		self.start = event.GetPositionTuple()
+		self.end = event.GetPositionTuple()
+		if self.check_snap:
+			self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
+			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+		self.counter = 0
+		self.timer.Start(RENDERING_DELAY)
+		print 'start', self.timer.IsRunning()
 
 	def mouse_up(self, event):
-		if event.button == LEFT_BUTTON:
-			if self.draw:
-#				gobject.source_remove(self.timer)
-				self.draw = False
-				self.counter = 0
-				self.end = event.GetPositionTuple()
-				if self.check_snap:
-					self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
-				self.canvas.renderer.stop_draw_frame(self.start, self.end)
-				self.do_action(event)
+		if self.draw:
+			self.timer.Stop()
+			print 'stop', self.timer.IsRunning()
+			self.draw = False
+			self.counter = 0
+			self.end = event.GetPositionTuple()
+			if self.check_snap:
+				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+			self.canvas.renderer.stop_draw_frame(self.start, self.end)
+			self.do_action(event)
 
 	def mouse_move(self, event):
 		if self.draw:
@@ -112,8 +114,11 @@ class AbstractController:
 #			direction = -1
 #		va.set_value(va.get_value() - dy * direction)
 
+	def _on_timer(self):
+		print 'timer'
+#		self._draw_frame()
+
 	def _draw_frame(self, *args):
 		if self.end:
 			self.canvas.renderer.draw_frame(self.start, self.end)
 			self.end = []
-		return True

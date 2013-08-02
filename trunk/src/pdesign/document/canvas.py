@@ -40,8 +40,10 @@ class AppCanvas(wx.Panel):
 	renderer = None
 	hscroll = None
 	vscroll = None
+	timer = None
 
 	mode = None
+	previous_mode = None
 	controller = None
 	ctrls = {}
 	current_cursor = None
@@ -71,6 +73,10 @@ class AppCanvas(wx.Panel):
 		self.renderer = PDRenderer(self)
 		wx.Panel.__init__(self, parent, style=wx.FULL_REPAINT_ON_RESIZE)
 		self.SetBackgroundColour(wx.Colour(255, 255, 255))
+
+		self.timer = wx.Timer(self)
+		self.Bind(wx.EVT_TIMER, self._on_timer)
+
 		self.ctrls = self.init_controllers()
 		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
@@ -80,6 +86,8 @@ class AppCanvas(wx.Panel):
 		self.Bind(wx.EVT_LEFT_DCLICK, self.mouse_left_dclick)
 		self.Bind(wx.EVT_RIGHT_DOWN, self.mouse_right_down)
 		self.Bind(wx.EVT_RIGHT_UP, self.mouse_right_up)
+		self.Bind(wx.EVT_MIDDLE_DOWN, self.mouse_middle_down)
+		self.Bind(wx.EVT_MIDDLE_UP, self.mouse_middle_up)
 		self.Bind(wx.EVT_MOUSEWHEEL, self.mouse_wheel)
 		self.Bind(wx.EVT_MOTION, self.mouse_move)
 		#-----
@@ -122,13 +130,13 @@ class AppCanvas(wx.Panel):
 	#----- CONTROLLERS
 
 	def init_controllers(self):
-		dummy = DummyController(self, self.presenter)
+		dummy = controllers.AbstractController(self, self.presenter)
 		ctrls = {
 		modes.SELECT_MODE: dummy,
 		modes.SHAPER_MODE: dummy,
 		modes.ZOOM_MODE: dummy,
 		modes.FLEUR_MODE:  controllers.FleurController(self, self.presenter),
-		modes.TEMP_FLEUR_MODE: dummy,
+		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: dummy,
 		modes.LINE_MODE: dummy,
 		modes.CURVE_MODE: dummy,
@@ -155,6 +163,38 @@ class AppCanvas(wx.Panel):
 	def set_canvas_cursor(self, mode):
 		self.current_cursor = self.app.cursors[mode]
 		self.SetCursor(self.current_cursor)
+
+	def set_temp_mode(self, mode=modes.SELECT_MODE, callback=None):
+		if not mode == self.mode:
+			self.previous_mode = self.mode
+			self.ctrls[self.mode].standby()
+			self.mode = mode
+			self.controller = self.ctrls[mode]
+			self.controller.callback = callback
+			self.controller.start_()
+			self.controller.set_cursor()
+
+	def restore_mode(self):
+		if not self.previous_mode is None:
+			if not self.controller is None:
+				self.controller.stop_()
+			self.mode = self.previous_mode
+			self.controller = self.ctrls[self.mode]
+			self.controller.set_cursor()
+			self.controller.restore()
+			events.emit(events.MODE_CHANGED, self.mode)
+			self.previous_mode = None
+
+	def set_temp_cursor(self, cursor):
+		self.orig_cursor = self.app.cursors[self.mode]
+		self.current_cursor = cursor
+		self.SetCursor(cursor)
+
+	def restore_cursor(self):
+		if not self.orig_cursor is None:
+			self.SetCursor(self.orig_cursor)
+			self.current_cursor = self.orig_cursor
+			self.orig_cursor = None
 
 	#----- CANVAS MATH
 
@@ -238,8 +278,6 @@ class AppCanvas(wx.Panel):
 		return result
 
 	def scroll(self, cdx, cdy):
-		cdx *= self.zoom
-		cdy *= self.zoom
 		m11, m12, m21, m22, dx, dy = self.trafo
 		dx += cdx
 		dy += cdy
@@ -369,6 +407,10 @@ class AppCanvas(wx.Panel):
 		self.current_cursor = None
 
 #==============EVENT CONTROLLING==========================
+
+	def _on_timer(self, event):
+		self.controller._on_timer()
+
 	def mouse_left_down(self, event):
 		self.controller.set_cursor()
 		self.controller.mouse_down(event)
@@ -384,34 +426,18 @@ class AppCanvas(wx.Panel):
 		self.controller.mouse_move(event)
 
 	def mouse_right_down(self, event):
-		self.controller.mouse_down(event)
+		self.controller.mouse_right_down(event)
 
 	def mouse_right_up(self, event):
-		self.controller.mouse_up(event)
+		self.controller.mouse_right_up(event)
+
+	def mouse_middle_down(self, event):
+		self.controller.mouse_middle_down(event)
+
+	def mouse_middle_up(self, event):
+		self.controller.mouse_middle_up(event)
 
 	def mouse_wheel(self, event):
 		self.controller.wheel(event)
 
-class DummyController:
-
-	def __init__(self, canvas, presenter):
-		self.canvas = canvas
-		self.presenter = presenter
-
-	def stop_(self):pass
-	def start_(self):pass
-
-	def set_cursor(self):
-		self.canvas.set_canvas_cursor(self.canvas.mode)
-
-	def mouse_down(self, event):pass
-#		print 'mouse_down'
-	def mouse_double_click(self, event):pass
-#		print 'mouse_double_click'
-	def mouse_up(self, event):pass
-#		print 'mouse_up'
-	def mouse_move(self, event):pass
-#		print 'mouse_move'
-	def wheel(self, event):pass
-#		print 'mouse_wheel'
 

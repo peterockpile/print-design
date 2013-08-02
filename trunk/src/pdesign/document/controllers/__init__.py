@@ -15,4 +15,5 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from fleur_ctrl import FleurController
+from generic import AbstractController
+from fleur_ctrl import FleurController, TempFleurController

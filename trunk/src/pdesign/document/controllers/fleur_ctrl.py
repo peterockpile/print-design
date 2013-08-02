@@ -18,6 +18,7 @@
 from generic import AbstractController
 
 from pdesign import modes
+from pdesign.appconst import RENDERING_DELAY
 
 class FleurController(AbstractController):
 
@@ -30,32 +31,33 @@ class FleurController(AbstractController):
 
 	def mouse_down(self, event):
 		self.move = True
+		self.start = event.GetPositionTuple()
+		if not self.timer.IsRunning(): self.timer.Start(RENDERING_DELAY)
 
 	def mouse_up(self, event):
+		if self.timer.IsRunning(): self.timer.Stop()
 		if self.start:
-			self.end = event.GetPositionTuple()
-			dx = self.end[0] - self.start[0]
-			dy = self.end[1] - self.start[1]
-			self.canvas.scroll(dx, dy)
 			self.start = ()
 			self.end = ()
 			self.move = False
 
 	def mouse_move(self, event):
+		if not self.timer.IsRunning(): self.timer.Start(RENDERING_DELAY)
 		if self.move:
 			if self.start:
 				self.end = event.GetPositionTuple()
 			else:
 				self.start = event.GetPositionTuple()
-			self._scroll_canvas()
+
+	def _on_timer(self): self._scroll_canvas()
 
 	def _scroll_canvas(self, *args):
 		if self.start and self.end:
 			dx = self.end[0] - self.start[0]
 			dy = self.end[1] - self.start[1]
 			if dx <> 0 or dy <> 0:
-				self.canvas.scroll(dx, dy)
 				self.start = self.end
+				self.canvas.scroll(dx, dy)
 
 
 class TempFleurController(FleurController):
@@ -68,7 +70,7 @@ class TempFleurController(FleurController):
 
 	def mouse_down(self, event):pass
 
-	def mouse_up(self, event):
+	def mouse_middle_up(self, event):
 		FleurController.mouse_up(self, event)
 		self.move = True
 		self.canvas.restore_mode()
