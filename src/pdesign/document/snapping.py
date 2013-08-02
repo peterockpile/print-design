@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
 #	Copyright (C) 2013 by Igor E. Novikov
-#	
+#
 #	This program is free software: you can redistribute it and/or modify
 #	it under the terms of the GNU General Public License as published by
 #	the Free Software Foundation, either version 3 of the License, or
 #	(at your option) any later version.
-#	
+#
 #	This program is distributed in the hope that it will be useful,
 #	but WITHOUT ANY WARRANTY; without even the implied warranty of
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU General Public License for more details.
-#	
+#
 #	You should have received a copy of the GNU General Public License
-#	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+#	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
 
@@ -94,8 +94,8 @@ class SnapManager:
 		self.objects_grid = [[], []]
 		layers = self.presenter.get_visible_layers()
 		for layer in layers:
-			for object in layer.childs:
-				points = libgeom.bbox_middle_points(object.cache_bbox)
+			for obj in layer.childs:
+				points = libgeom.bbox_middle_points(obj.cache_bbox)
 				for point in points:
 					self.objects_grid[0].append(point[0])
 					self.objects_grid[1].append(point[1])
@@ -147,7 +147,7 @@ class SnapManager:
 		w, h = self.presenter.get_page_size()
 		self.page_grid = [[-w / 2.0, 0.0, w / 2.0], [-h / 2.0, 0.0, h / 2.0]]
 
-	def _snap_point_to_dict(self, point, doc_point, dict):
+	def _snap_point_to_dict(self, point, doc_point, snap_dict):
 		ret = False
 		self.active_snap = [None, None]
 		x = point[0]
@@ -157,7 +157,7 @@ class SnapManager:
 		snap_dist = config.snap_distance / self.canvas.zoom
 
 		if self.snap_x:
-			for item in dict[0]:
+			for item in snap_dict[0]:
 				if abs(item - doc_point[0]) < snap_dist:
 					ret = True
 					x = self.canvas.point_doc_to_win([item, doc_point[1]])[0]
@@ -166,7 +166,7 @@ class SnapManager:
 					break
 
 		if self.snap_y:
-			for item in dict[1]:
+			for item in snap_dict[1]:
 				if abs(item - doc_point[1]) < snap_dist:
 					ret = True
 					y = self.canvas.point_doc_to_win([doc_point[0], item])[1]
@@ -246,20 +246,20 @@ class SnapManager:
 	def is_over_guide(self, point):
 		doc_point = self.canvas.point_win_to_doc(point)
 		ret = False
-		dict = self.guides_grid
+		snap_dict = self.guides_grid
 
 		pos = 0
 		orient = 0
 		snap_dist = config.snap_distance / (2.0 * self.canvas.zoom)
 
-		for item in dict[0]:
+		for item in snap_dict[0]:
 			if abs(item - doc_point[0]) < snap_dist:
 				ret = True
 				pos = item
 				orient = uc2const.VERTICAL
 				break
 
-		for item in dict[1]:
+		for item in snap_dict[1]:
 			if abs(item - doc_point[1]) < snap_dist:
 				ret = True
 				pos = item
