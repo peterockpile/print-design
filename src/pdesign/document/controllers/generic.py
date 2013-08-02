@@ -58,7 +58,7 @@ class AbstractController:
 	def stop_(self):pass
 	def standby(self):pass
 	def restore(self):pass
-	def repaint(self):pass
+	def repaint(self): self._draw_frame()
 	def do_action(self, event): pass
 	def mouse_double_click(self, event): pass
 	def mouse_right_down(self, event):pass
@@ -85,12 +85,10 @@ class AbstractController:
 			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 		self.counter = 0
 		self.timer.Start(RENDERING_DELAY)
-		print 'start', self.timer.IsRunning()
 
 	def mouse_up(self, event):
 		if self.draw:
 			self.timer.Stop()
-			print 'stop', self.timer.IsRunning()
 			self.draw = False
 			self.counter = 0
 			self.end = event.GetPositionTuple()
@@ -98,6 +96,7 @@ class AbstractController:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 			self.canvas.renderer.stop_draw_frame(self.start, self.end)
 			self.do_action(event)
+			self.start = self.end = ()
 
 	def mouse_move(self, event):
 		if self.draw:
@@ -115,10 +114,8 @@ class AbstractController:
 #		va.set_value(va.get_value() - dy * direction)
 
 	def _on_timer(self):
-		print 'timer'
-#		self._draw_frame()
+		self.canvas.force_redraw()
 
 	def _draw_frame(self, *args):
 		if self.end:
 			self.canvas.renderer.draw_frame(self.start, self.end)
-			self.end = []

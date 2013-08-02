@@ -20,7 +20,7 @@ import wx, cairo
 from uc2.uc2const import mm_to_pt
 from uc2.libcairo import normalize_bbox
 
-from pdesign import events, modes
+from pdesign import events, modes, config
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
 
@@ -62,6 +62,7 @@ class AppCanvas(wx.Panel):
 	soft_repaint = False
 	full_repaint = False
 	draw_page_border = True
+	show_snapping = config.show_snap
 
 	my_changes = False
 
@@ -397,6 +398,11 @@ class AppCanvas(wx.Panel):
 			self.eventloop.emit(self.eventloop.VIEW_CHANGED)
 			self.full_repaint = False
 			self.soft_repaint = False
+		if not self.controller is None:
+			if not self.previous_mode is None:
+				self.ctrls[self.previous_mode].repaint()
+			else:
+				self.controller.repaint()
 
 	def destroy(self):
 		self.presenter = None
