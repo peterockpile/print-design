@@ -31,23 +31,23 @@ class FleurController(AbstractController):
 
 	def mouse_down(self, event):
 		self.move = True
-		self.start = event.GetPositionTuple()
+		self.start = list(event.GetPositionTuple())
 		if not self.timer.IsRunning(): self.timer.Start(RENDERING_DELAY)
 
 	def mouse_up(self, event):
 		if self.timer.IsRunning(): self.timer.Stop()
 		if self.start:
-			self.start = ()
-			self.end = ()
+			self.start = []
+			self.end = []
 			self.move = False
 
 	def mouse_move(self, event):
 		if not self.timer.IsRunning(): self.timer.Start(RENDERING_DELAY)
 		if self.move:
 			if self.start:
-				self.end = event.GetPositionTuple()
+				self.end = list(event.GetPositionTuple())
 			else:
-				self.start = event.GetPositionTuple()
+				self.start = list(event.GetPositionTuple())
 
 	def _on_timer(self): self._scroll_canvas()
 
