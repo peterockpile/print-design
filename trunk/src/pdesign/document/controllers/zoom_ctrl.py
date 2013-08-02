@@ -15,9 +15,9 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from generic import AbstractController
 
 from pdesign import modes
+from generic import AbstractController
 
 ZOOM_IN = 1.25
 ZOOM_OUT = 0.8
@@ -30,7 +30,7 @@ class ZoomController(AbstractController):
 		AbstractController.__init__(self, canvas, presenter)
 
 	def mouse_right_down(self, event):
-		self.start = event.GetPositionTuple()
+		self.start = list(event.GetPositionTuple())
 		cursor = self.canvas.app.cursors[modes.ZOOM_OUT_MODE]
 		self.canvas.set_temp_cursor(cursor)
 
@@ -47,5 +47,5 @@ class ZoomController(AbstractController):
 				self.canvas.zoom_at_point(self.start, ZOOM_IN)
 			else:
 				self.canvas.zoom_to_rectangle(self.start, self.end)
-			self.start = ()
-			self.end = ()
+			self.start = []
+			self.end = []

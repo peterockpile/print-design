@@ -42,10 +42,10 @@ class AbstractController:
 		self.selection = presenter.selection
 		self.eventloop = presenter.eventloop
 		self.api = presenter.api
-		self.start = ()
-		self.end = ()
-		self.start_doc = ()
-		self.end_doc = ()
+		self.start = []
+		self.end = []
+		self.start_doc = []
+		self.end_doc = []
 		self.timer = self.canvas.timer
 
 	def set_cursor(self):
@@ -69,16 +69,16 @@ class AbstractController:
 
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
-		self.start = ()
-		self.end = ()
-		self.start_doc = ()
-		self.end_doc = ()
+		self.start = []
+		self.end = []
+		self.start_doc = []
+		self.end_doc = []
 		self.counter = 0
 		if self.timer.IsRunning(): self.timer.Stop()
 
 		self.draw = True
-		self.start = event.GetPositionTuple()
-		self.end = event.GetPositionTuple()
+		self.start = list(event.GetPositionTuple())
+		self.end = list(event.GetPositionTuple())
 		if self.check_snap:
 			self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
 			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
@@ -90,16 +90,17 @@ class AbstractController:
 			self.timer.Stop()
 			self.draw = False
 			self.counter = 0
-			self.end = event.GetPositionTuple()
+			self.end = list(event.GetPositionTuple())
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 			self.canvas.renderer.stop_draw_frame(self.start, self.end)
 			self.do_action(event)
-			self.start = self.end = ()
+			self.start = []
+			self.end = []
 
 	def mouse_move(self, event):
 		if self.draw:
-			self.end = event.GetPositionTuple()
+			self.end = list(event.GetPositionTuple())
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 
