@@ -40,14 +40,17 @@ class AppPalettePanel(HPanel):
 							onrightclick=self.set_stroke,
 							onmin=self.left_enable,
 							onmax=self.right_enable)
+		
+		native=False
+		if const.is_msw():native=True
 
 		tip = _('Scroll palette to left')
 		self.dleft_but = ImageButton(self.panel, icons.DOUBLE_ARROW_LEFT,
-								tooltip=tip, decoration_padding=4, native=False,
+								tooltip=tip, decoration_padding=4, native=native,
 								onclick=self.palette.dscroll_left, repeat=True)
 		self.add(self.dleft_but)
 		self.left_but = ImageButton(self.panel, icons.ARROW_LEFT, tooltip=tip,
-								decoration_padding=4, native=False,
+								decoration_padding=4, native=native,
 								onclick=self.palette.scroll_left, repeat=True)
 		self.add(self.left_but)
 
@@ -60,11 +63,11 @@ class AppPalettePanel(HPanel):
 
 		tip = _('Scroll palette to right')
 		self.right_but = ImageButton(self.panel, icons.ARROW_RIGHT, tooltip=tip,
-								decoration_padding=4, native=False,
+								decoration_padding=4, native=native,
 								onclick=self.palette.scroll_right, repeat=True)
 		self.add(self.right_but)
 		self.dright_but = ImageButton(self.panel, icons.DOUBLE_ARROW_RIGHT,
-								tooltip=tip, decoration_padding=4, native=False,
+								tooltip=tip, decoration_padding=4, native=native,
 								onclick=self.palette.dscroll_right, repeat=True)
 		self.add(self.dright_but)
 		self.left_enable(False)
