@@ -81,7 +81,7 @@ class WidgetPanel(VPanel):
 
 		il = ImageLabel(p, text='<Image label disabled>', fontbold=True,
 			tooltip='this is disabled label', onclick=self.repeat_test)
-		il.set_enabled(False)
+		il.set_enable(False)
 		p.add(il, 0, flags, 5)
 
 		b = Button(p, 'Change', onclick=self.test_ilab1)
@@ -106,7 +106,7 @@ class WidgetPanel(VPanel):
 		ib = ImageButton(p, wx.ART_COPY, const.SIZE_16,
 			tooltip='this is label3', text='Clipboard',
 			onclick=self.repeat_test)
-		ib.set_enabled(False)
+		ib.set_enable(False)
 		p.add(ib, 0, flags, 5)
 
 		self.add(p, 0, pflags)
@@ -128,7 +128,7 @@ class WidgetPanel(VPanel):
 		itb = ImageToggleButton(p, True, wx.ART_FILE_OPEN, const.SIZE_24,
 			tooltip='this is label4, disabled', text='Clipboard',
 			onchange=self.repeat_test)
-		itb.set_enabled(False)
+		itb.set_enable(False)
 		p.add(itb, 0, flags, 5)
 
 		self.add(p, 0, pflags)
@@ -158,7 +158,7 @@ class WidgetPanel(VPanel):
 		ib = ImageButton(p, wx.ART_COPY, const.SIZE_16,
 			tooltip='this is label3', text='Clipboard', native=False,
 			onclick=self.repeat_test)
-		ib.set_enabled(False)
+		ib.set_enable(False)
 		p.add(ib, 0, flags, 5)
 
 		self.add(p, 0, pflags)
@@ -182,7 +182,7 @@ class WidgetPanel(VPanel):
 		itb = ImageToggleButton(p, True, wx.ART_FILE_OPEN, const.SIZE_24,
 			tooltip='this is label4, disabled', text='Clipboard', native=False,
 			onchange=self.repeat_test)
-		itb.set_enabled(False)
+		itb.set_enable(False)
 		p.add(itb, 0, flags, 5)
 
 		self.add(p, 0, pflags)
