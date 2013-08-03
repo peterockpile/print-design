@@ -25,7 +25,7 @@ DOC_ORIGIN_LU, ORIGINS
 
 from pdesign import config
 from pdesign.resources import get_icon, icons
-from pdesign.widgets.const import HORIZONTAL
+from pdesign.widgets.const import HORIZONTAL, is_mac
 from pdesign.widgets import HPanel
 from pdesign.widgets import copy_surface_to_bitmap
 
@@ -126,10 +126,18 @@ class Ruler(HPanel):
 		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
+		if is_mac():
+			self.timer = wx.Timer(self)
+			self.Bind(wx.EVT_TIMER, self._repaint_after)
+			self.timer.Start(50)
+
+	def _repaint_after(self, event):
+		self.repaint()
+		self.timer.Stop()
 
 	def destroy(self):
 		self.presenter = None
-		
+
 	def calc_ruler(self):
 		canvas = self.presenter.canvas
 		w, h = self.presenter.get_page_size()
