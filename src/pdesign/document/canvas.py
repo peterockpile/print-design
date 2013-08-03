@@ -403,8 +403,10 @@ class AppCanvas(wx.Panel):
 				self.ctrls[self.previous_mode].repaint()
 			else:
 				self.controller.repaint()
+		self.renderer.finalize()
 
 	def destroy(self):
+		if self.timer.IsRunning():self.timer.Stop()
 		self.presenter = None
 		self.app = None
 		self.mode = None

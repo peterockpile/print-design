@@ -61,7 +61,6 @@ class PDRenderer(CairoRenderer):
 		self.render_doc()
 		self.render_grid()
 		self.render_guides()
-#		self.finalize()
 		self.paint_selection()
 
 	def start(self):
@@ -81,7 +80,7 @@ class PDRenderer(CairoRenderer):
 
 	def finalize(self):
 		dc = wx.BufferedPaintDC(self.canvas)
-		dc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0, True)
+		dc.DrawBitmap(copy_surface_to_bitmap(self.temp_surface), 0, 0, False)
 
 	def paint_page_border(self):
 		self.ctx.set_line_width(1.0 / self.canvas.zoom)
@@ -212,8 +211,7 @@ class PDRenderer(CairoRenderer):
 		self.ctx.paint()
 
 	def end_soft_repaint(self):
-		dc = wx.BufferedPaintDC(self.canvas)
-		dc.DrawBitmap(copy_surface_to_bitmap(self.temp_surface), 0, 0, True)
+		pass
 
 	def draw_frame(self, start, end):
 		if start and end:
