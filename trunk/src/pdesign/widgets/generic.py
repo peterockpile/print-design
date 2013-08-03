@@ -17,7 +17,7 @@
 
 import wx
 
-from const import FONT_SIZE
+from const import FONT_SIZE, is_msw
 
 class Widget:
 
@@ -85,14 +85,14 @@ class GenericGWidget(wx.Panel, Widget):
 	onclick = None
 	repeat = False
 	flat = True
-	buffer=None
+	buffer = None
 
 	def __init__(self, parent, tooltip='', onclick=None, repeat=False):
 		self.parent = parent
 		self.onclick = onclick
 		self.repeat = repeat
 		wx.Panel.__init__(self, parent, wx.ID_ANY)
-		self.SetDoubleBuffered(True)
+		if is_msw(): self.SetDoubleBuffered(True)
 		self.box = wx.BoxSizer(wx.HORIZONTAL)
 		self.SetSizer(self.box)
 		self.box.Add((1, 1))

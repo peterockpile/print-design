@@ -18,6 +18,7 @@
 import cairo
 import wx
 from const import UI_COLORS, DEF_SIZE, TOP, BOTTOM, LEFT, RIGHT
+from pdesign.widgets.const import is_msw
 
 def copy_surface_to_bitmap(surface):
 	"""
@@ -154,8 +155,11 @@ class LabelRenderer:
 	#----- RENDERING
 	def _start(self):
 		self.size = self.widget.GetSize()
-		self.widget.buffer=wx.EmptyBitmapRGBA(*self.size)
-		self.pdc = wx.BufferedPaintDC(self.widget,self.widget.buffer)
+		if is_msw():
+			self.widget.buffer = wx.EmptyBitmapRGBA(*self.size)
+			self.pdc = wx.BufferedPaintDC(self.widget, self.widget.buffer)
+		else:
+			self.pdc = wx.PaintDC(self.widget)
 		try:
 			self.dc = wx.GCDC(self.pdc)
 		except:self.dc = self.pdc
@@ -298,7 +302,6 @@ class ButtonRenderer(LabelRenderer):
 		self.dc.DrawLine(w - 2, 4, w - 2, h - 3)
 
 		color = UI_COLORS['hover_solid_border']
-		color=(255,255,255)
 		self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
 		self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
 		self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
