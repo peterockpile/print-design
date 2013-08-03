@@ -97,6 +97,7 @@ class AbstractController:
 			self.do_action(event)
 			self.start = []
 			self.end = []
+			self.canvas.selection_redraw()
 
 	def mouse_move(self, event):
 		if self.draw:
