@@ -38,6 +38,7 @@ encoding//src/pdesign/pwidgets/hpalette.py=utf-8
 encoding//src/pdesign/uc2const.py=utf-8
 encoding//src/pdesign/widgets/__init__.py=utf-8
 encoding//src/pdesign/widgets/basic.py=utf-8
+encoding//src/pdesign/widgets/const.py=utf-8
 encoding//src/pdesign/widgets/gctrls.py=utf-8
 encoding//src/pdesign/widgets/generic.py=utf-8
 encoding//src/pdesign/widgets/renderer.py=utf-8
