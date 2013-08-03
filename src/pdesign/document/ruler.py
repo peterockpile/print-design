@@ -123,12 +123,13 @@ class Ruler(HPanel):
 		size = config.ruler_size
 		self.add((size, size))
 		self.SetBackgroundColour(wx.WHITE)
+		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
 
 	def destroy(self):
 		self.presenter = None
-
+		
 	def calc_ruler(self):
 		canvas = self.presenter.canvas
 		w, h = self.presenter.get_page_size()
@@ -240,7 +241,6 @@ class Ruler(HPanel):
 				else:txt = str(int(round(doc_pos)))
 				text_ticks.append((syt + i * dyt, txt))
 				i += 1
-
 		return small_ticks, text_ticks
 
 	def repaint(self, *args):
@@ -253,7 +253,7 @@ class Ruler(HPanel):
 
 	def _on_paint(self, event):
 		w, h = self.panel.GetSize()
-		pdc = wx.PaintDC(self.panel)
+		pdc = wx.BufferedPaintDC(self.panel)
 		pdc.BeginDrawing()
 		if self.surface is None:
 			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
