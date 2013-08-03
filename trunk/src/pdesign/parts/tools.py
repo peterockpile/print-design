@@ -34,7 +34,6 @@ class AppTools(VPanel):
 		VPanel.__init__(self, parent, border=RIGHT)
 		self.add((5, 5))
 		border = 0
-		if const.is_msw(): border = 3
 		for item in BUTTONS:
 			if item is None: self.add(HLine(self.panel), 0, ALL | EXPAND)
 			else:
@@ -55,12 +54,10 @@ class ActionTool(ImageToggleButton):
 		text = ''
 		tooltip = action.get_tooltip_text()
 		padding = 0
-		decoration_padding = 5
-		native = True
-		if const.is_msw(): native = False
+		decoration_padding = 4
 		ImageToggleButton.__init__(self, parent, value, art_id, art_size, text,
 								tooltip, padding, decoration_padding,
-								True, native, onchange=action.do_call)
+								True, True, onchange=action.do_call)
 		self.action.register(self)
 
 	def update(self):
@@ -85,11 +82,9 @@ class ActionToolButton(ImageButton):
 		text = ''
 		tooltip = action.get_tooltip_text()
 		padding = 0
-		decoration_padding = 5
-		native = True
-		if const.is_msw(): native = False
+		decoration_padding = 4
 		ImageButton.__init__(self, parent, art_id, art_size, text, tooltip,
-							padding, decoration_padding, True, native,
+							padding, decoration_padding, True, True,
 							onclick=action.do_call)
 		self.action.register(self)
 
