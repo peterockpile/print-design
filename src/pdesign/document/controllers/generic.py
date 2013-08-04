@@ -59,7 +59,7 @@ class AbstractController:
 	def standby(self):pass
 	def restore(self):pass
 	def repaint(self): self._draw_frame()
-	def do_action(self, event): pass
+	def do_action(self, event): return True
 	def mouse_double_click(self, event): pass
 	def mouse_right_down(self, event):pass
 	def mouse_right_up(self, event):pass
@@ -94,10 +94,10 @@ class AbstractController:
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 			self.canvas.renderer.stop_draw_frame(self.start, self.end)
-			self.do_action(event)
-			self.start = []
-			self.end = []
-			self.canvas.selection_redraw()
+			if self.do_action(event):
+				self.start = []
+				self.end = []
+				self.canvas.selection_redraw()
 
 	def mouse_move(self, event):
 		if self.draw:
