@@ -417,7 +417,7 @@ class AppCanvas(wx.Panel):
 #==============EVENT CONTROLLING==========================
 
 	def _on_timer(self, event):
-		self.controller._on_timer()
+		self.controller.on_timer()
 
 	def mouse_left_down(self, event):
 		self.controller.set_cursor()

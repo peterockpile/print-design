@@ -51,9 +51,7 @@ class FleurController(AbstractController):
 			else:
 				self.start = list(event.GetPositionTuple())
 
-	def _on_timer(self): self._scroll_canvas()
-
-	def _scroll_canvas(self, *args):
+	def on_timer(self):
 		if self.start and self.end:
 			dx = self.end[0] - self.start[0]
 			dy = self.end[1] - self.start[1]

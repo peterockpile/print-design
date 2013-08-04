@@ -55,6 +55,7 @@ class RectangleCreator(AbstractCreator):
 			abs(self.end[1] - self.start[1]) > 2:
 				rect = self.start_doc + self.end_doc
 				self.api.create_rectangle(rect)
+		return True
 
 class EllipseCreator(AbstractCreator):
 
@@ -69,6 +70,7 @@ class EllipseCreator(AbstractCreator):
 			abs(self.end[1] - self.start[1]) > 2:
 				rect = self.start_doc + self.end_doc
 				self.api.create_ellipse(rect)
+		return True
 
 class PolygonCreator(AbstractCreator):
 
@@ -83,3 +85,4 @@ class PolygonCreator(AbstractCreator):
 			abs(self.end[1] - self.start[1]) > 2:
 				rect = self.start_doc + self.end_doc
 				self.api.create_polygon(rect)
+		return True
