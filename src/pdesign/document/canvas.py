@@ -133,7 +133,7 @@ class AppCanvas(wx.Panel):
 	def init_controllers(self):
 		dummy = controllers.AbstractController(self, self.presenter)
 		ctrls = {
-		modes.SELECT_MODE: dummy,
+		modes.SELECT_MODE: controllers.SelectController(self, self.presenter),
 		modes.SHAPER_MODE: dummy,
 		modes.ZOOM_MODE: controllers.ZoomController(self, self.presenter),
 		modes.FLEUR_MODE:  controllers.FleurController(self, self.presenter),
@@ -145,7 +145,7 @@ class AppCanvas(wx.Panel):
 		modes.ELLIPSE_MODE: controllers.EllipseCreator(self, self.presenter),
 		modes.TEXT_MODE: dummy,
 		modes.POLYGON_MODE: controllers.PolygonCreator(self, self.presenter),
-		modes.MOVE_MODE: dummy,
+		modes.MOVE_MODE: controllers.MoveController(self, self.presenter),
 		modes.RESIZE_MODE: dummy,
 		modes.GUIDE_MODE: dummy,
 		}
