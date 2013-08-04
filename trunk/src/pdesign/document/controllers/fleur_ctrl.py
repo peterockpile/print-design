@@ -41,6 +41,8 @@ class FleurController(AbstractController):
 			self.end = []
 			self.move = False
 
+	def repaint(self, *args):pass
+
 	def mouse_move(self, event):
 		if not self.timer.IsRunning(): self.timer.Start(RENDERING_DELAY)
 		if self.move:
