@@ -58,7 +58,6 @@ class AbstractController:
 	def stop_(self):pass
 	def standby(self):pass
 	def restore(self):pass
-	def repaint(self): self._draw_frame()
 	def do_action(self, event): return True
 	def mouse_double_click(self, event): pass
 	def mouse_right_down(self, event):pass
@@ -66,6 +65,7 @@ class AbstractController:
 	def mouse_middle_down(self, event):
 		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 	def mouse_middle_up(self, event):pass
+	def wheel(self, event):pass
 
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
@@ -93,7 +93,6 @@ class AbstractController:
 			self.end = list(event.GetPositionTuple())
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
-			self.canvas.renderer.stop_draw_frame(self.start, self.end)
 			if self.do_action(event):
 				self.start = []
 				self.end = []
@@ -105,18 +104,9 @@ class AbstractController:
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 
-
-	def wheel(self, event):pass
-#		va = self.canvas.mw.v_adj
-#		dy = va.get_step_increment()
-#		direction = 1
-#		if event.direction == gtk.gdk.SCROLL_DOWN:
-#			direction = -1
-#		va.set_value(va.get_value() - dy * direction)
-
-	def _on_timer(self):
+	def on_timer(self):
 		self.canvas.force_redraw()
 
-	def _draw_frame(self, *args):
+	def repaint(self):
 		if self.end:
 			self.canvas.renderer.draw_frame(self.start, self.end)
