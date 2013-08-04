@@ -49,3 +49,4 @@ class ZoomController(AbstractController):
 				self.canvas.zoom_to_rectangle(self.start, self.end)
 			self.start = []
 			self.end = []
+		return False
