@@ -105,7 +105,7 @@ class AbstractController:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 
 	def on_timer(self):
-		self.canvas.force_redraw()
+		self.canvas.selection_redraw()
 
 	def repaint(self):
 		if self.end:
