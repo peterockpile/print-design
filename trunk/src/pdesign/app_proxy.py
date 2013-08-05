@@ -60,7 +60,7 @@ class AppProxy:
 	def zoom_selected(self, *args): self.app.current_doc.canvas.zoom_selected()
 	def force_redraw(self, *args): self.app.current_doc.canvas.force_redraw()
 
-	def stroke_view(self, *args):
+	def stroke_view(self):
 		if self.insp.is_doc():
 			canvas = self.app.current_doc.canvas
 			if canvas.stroke_view:
@@ -69,7 +69,7 @@ class AppProxy:
 				canvas.stroke_view = True
 			canvas.force_redraw()
 
-	def draft_view(self, *args):
+	def draft_view(self):
 		if self.insp.is_doc():
 			canvas = self.app.current_doc.canvas
 			if canvas.draft_view:
@@ -79,7 +79,16 @@ class AppProxy:
 				canvas.draft_view = True
 			canvas.force_redraw()
 
-	def show_grid(self, *args):
+	def show_snapping(self):
+		if self.insp.is_doc():
+			canvas = self.app.current_doc.canvas
+			if canvas.show_snapping:
+				canvas.show_snapping = False
+			else:
+				canvas.show_snapping = True
+				self.app.current_doc.snap.active_snap = [None, None]
+
+	def show_grid(self):
 		if self.insp.is_doc():
 			methods = self.app.current_doc.methods
 			api = self.app.current_doc.api
@@ -92,7 +101,7 @@ class AppProxy:
 				prop[0] = 1
 			api.set_layer_properties(grid_layer, prop)
 
-	def show_guides(self, *args):
+	def show_guides(self):
 		if self.insp.is_doc():
 			methods = self.app.current_doc.methods
 			api = self.app.current_doc.api
@@ -104,9 +113,45 @@ class AppProxy:
 				prop = [] + guide_layer.properties
 				prop[0] = 1
 			api.set_layer_properties(guide_layer, prop)
-#			self.app.current_doc.snap.update_guides_grid()
+			self.app.current_doc.snap.update_guides_grid()
 
-	def draw_page_border(self, *args):
+	def snap_to_grid(self):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_grid:
+				snap.snap_to_grid = False
+			else:
+				snap.snap_to_grid = True
+				snap.update_grid()
+
+	def snap_to_guides(self):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_guides:
+				snap.snap_to_guides = False
+			else:
+				snap.snap_to_guides = True
+				snap.update_guides_grid()
+
+	def snap_to_objects(self):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_objects:
+				snap.snap_to_objects = False
+			else:
+				snap.snap_to_objects = True
+				snap.update_objects_grid()
+
+	def snap_to_page(self):
+		if self.insp.is_doc():
+			snap = self.app.current_doc.snap
+			if snap.snap_to_page:
+				snap.snap_to_page = False
+			else:
+				snap.snap_to_page = True
+				snap.update_page_grid()
+
+	def draw_page_border(self):
 		if self.insp.is_doc():
 			canvas = self.app.current_doc.canvas
 			if canvas.draw_page_border:
