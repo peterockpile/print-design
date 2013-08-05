@@ -64,7 +64,6 @@ class AppCanvas(wx.Panel):
 	full_repaint = False
 	selection_repaint = True
 	draw_page_border = True
-
 	show_snapping = config.show_snap
 
 	my_changes = False
