@@ -42,14 +42,13 @@ class MoveController(AbstractController):
 		self.snap = self.presenter.snap
 		self.start = list(event.GetPositionTuple())
 		self.move = True
-		self.canvas.renderer.show_move_frame()
+		self.canvas.selection_repaint = False
 		self.timer.Start(RENDERING_DELAY)
 
-	def _draw_frame(self, *args):
+	def repaint(self):
 		if self.end:
 			self.canvas.renderer.draw_move_frame(self.trafo)
 			self.end = []
-		return True
 
 	def _calc_trafo(self, point1, point2):
 		start_point = self.canvas.win_to_doc(point1)
@@ -95,7 +94,7 @@ class MoveController(AbstractController):
 				else:
 					new[0] = self.start[0]
 			self.end = new
-			self.canvas.renderer.hide_move_frame()
+			self.canvas.selection_repaint = True
 			self.move = False
 			if self.moved:
 				self.trafo = self._calc_trafo(self.start, self.end)

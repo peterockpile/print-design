@@ -61,7 +61,6 @@ class PDRenderer(CairoRenderer):
 		self.render_doc()
 		self.render_grid()
 		self.render_guides()
-		self.paint_selection()
 
 	def start(self):
 		width, height = self.canvas.GetSize()
