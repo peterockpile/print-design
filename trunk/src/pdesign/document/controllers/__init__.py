@@ -17,7 +17,7 @@
 
 from generic import AbstractController
 from select_ctrl import SelectController, PickController
-from trafo_ctrl import MoveController
+from trafo_ctrl import MoveController, TransformController
 from fleur_ctrl import FleurController, TempFleurController
 from zoom_ctrl import ZoomController
 from creators import EllipseCreator, PolygonCreator, RectangleCreator
