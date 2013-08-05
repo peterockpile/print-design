@@ -60,3 +60,24 @@ class SelectController(AbstractController):
 			if self.selection.is_point_over(dpoint):
 				self.canvas.set_temp_mode(modes.MOVE_MODE)
 		return True
+
+class PickController(AbstractController):
+
+	mode = modes.PICK_MODE
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):pass
+
+	def mouse_up(self, event):
+		self.end = list(event.GetPositionTuple())
+		self.do_action()
+
+	def mouse_move(self, event):pass
+
+	def do_action(self):
+		obj = self.canvas.pick_at_point(self.end)
+		if not self.callback(obj):
+			self.callback = None
+			self.canvas.restore_mode()
