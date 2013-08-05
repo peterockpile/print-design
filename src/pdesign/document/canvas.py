@@ -57,11 +57,14 @@ class AppCanvas(wx.Panel):
 	orig_cursor = None
 	current_cursor = None
 	resize_marker = 0
+
 	stroke_view = False
 	draft_view = False
 	soft_repaint = False
 	full_repaint = False
+	selection_repaint = True
 	draw_page_border = True
+
 	show_snapping = config.show_snap
 
 	my_changes = False
@@ -391,18 +394,16 @@ class AppCanvas(wx.Panel):
 			self.set_mode(modes.SELECT_MODE)
 		self._keep_center()
 		if self.soft_repaint and not self.full_repaint:
-			self.renderer.paint_selection()
+			if self.selection_repaint: self.renderer.paint_selection()
 			self.soft_repaint = False
 		else:
 			self.renderer.paint_document()
+			if self.selection_repaint: self.renderer.paint_selection()
 			self.eventloop.emit(self.eventloop.VIEW_CHANGED)
 			self.full_repaint = False
 			self.soft_repaint = False
 		if not self.controller is None:
-			if not self.previous_mode is None:
-				self.ctrls[self.previous_mode].repaint()
-			else:
-				self.controller.repaint()
+			self.controller.repaint()
 		self.renderer.finalize()
 
 	def destroy(self):
