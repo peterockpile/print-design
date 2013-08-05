@@ -202,6 +202,7 @@ class TransformController(AbstractController):
 		self.snap = self.presenter.snap
 		self.start = list(event.GetPositionTuple())
 		self.move = True
+		self.canvas.selection_repaint = False
 		if not self.canvas.resize_marker == 9:
 			#self.canvas.renderer.show_move_frame()
 			self.painter = self._draw_frame
@@ -214,6 +215,7 @@ class TransformController(AbstractController):
 		self.timer.Stop()
 		self.end = list(event.GetPositionTuple())
 		self.move = False
+		self.canvas.selection_repaint = True
 		if not self.canvas.resize_marker == 9:
 			self.canvas.renderer.hide_move_frame()
 			if self.moved:
