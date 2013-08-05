@@ -21,3 +21,4 @@ from trafo_ctrl import MoveController
 from fleur_ctrl import FleurController, TempFleurController
 from zoom_ctrl import ZoomController
 from creators import EllipseCreator, PolygonCreator, RectangleCreator
+from guide_ctrl import GuideController

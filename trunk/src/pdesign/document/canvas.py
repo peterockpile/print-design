@@ -149,7 +149,7 @@ class AppCanvas(wx.Panel):
 		modes.POLYGON_MODE: controllers.PolygonCreator(self, self.presenter),
 		modes.MOVE_MODE: controllers.MoveController(self, self.presenter),
 		modes.RESIZE_MODE: dummy,
-		modes.GUIDE_MODE: dummy,
+		modes.GUIDE_MODE: controllers.GuideController(self, self.presenter),
 		}
 		return ctrls
 
