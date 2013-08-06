@@ -355,6 +355,11 @@ class Ruler(HPanel):
 		self.draw_guide = True
 		self.set_cursor(True)
 		self.presenter.canvas.timer.Start(RENDERING_DELAY)
+		self.presenter.canvas.set_temp_mode(modes.GUIDE_MODE)
+		if self.style == HORIZONTAL:
+			self.presenter.canvas.controller.mode = modes.HGUIDE_MODE
+		else:
+			self.presenter.canvas.controller.mode = modes.VGUIDE_MODE
 
 	def mouse_up(self, event):
 		self.pointer = list(event.GetPositionTuple())
@@ -370,14 +375,13 @@ class Ruler(HPanel):
 				p = [x_win, self.pointer[1]]
 				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
 				self.presenter.api.create_guides([[p_doc[0], uc2const.VERTICAL], ])
-
 		self.set_cursor()
 		self.presenter.canvas.timer.Stop()
+		self.presenter.canvas.restore_mode()
 		self.draw_guide = False
 		self.pointer = []
-		self.repaint_guide()
+		self.presenter.canvas.dragged_guide = ()
 		self.presenter.canvas.force_redraw()
-		self.presenter.canvas.set_temp_mode(modes.GUIDE_MODE)
 
 	def mouse_move(self, event):
 		if self.draw_guide:
@@ -397,4 +401,4 @@ class Ruler(HPanel):
 				p = [x_win, self.pointer[1]]
 				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
 				orient = uc2const.VERTICAL
-		self.presenter.canvas.dragged_guide = (p_doc, orient)
+		self.presenter.canvas.controller.end = p

@@ -405,6 +405,7 @@ class AppCanvas(wx.Panel):
 		if not self.controller is None: self.controller.repaint()
 		if self.dragged_guide:
 			self.renderer.paint_guide_dragging(*self.dragged_guide)
+			if not self.mode == modes.GUIDE_MODE: self.dragged_guide = ()
 		self.renderer.finalize()
 
 	def destroy(self):
