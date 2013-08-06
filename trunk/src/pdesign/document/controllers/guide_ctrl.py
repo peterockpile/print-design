@@ -37,9 +37,11 @@ class GuideController(AbstractController):
 	def mouse_move(self, event):
 		self.end = list(event.GetPositionTuple())
 		if not self.draw:
-			ret = self.snap.is_over_guide(self.end)[0]
-			if not ret:
+			if not self.snap.is_over_guide(self.end)[0]:
 				self.canvas.restore_mode()
+			else:
+				self.guide = self.snap.active_guide
+				self.set_cursor()
 
 	def mouse_up(self, event):
 		self.end = list(event.GetPositionTuple())
@@ -58,17 +60,17 @@ class GuideController(AbstractController):
 			self.presenter.api.delete_guides([self.guide])
 		self.canvas.dragged_guide = ()
 		self.canvas.selection_redraw()
-		self.canvas.restore_mode()
-		self.canvas.set_temp_mode(modes.GUIDE_MODE)
 
 	def start_(self):
 		self.snap = self.presenter.snap
 		if not self.snap.active_guide is None:
 			self.guide = self.snap.active_guide
+			self.set_cursor()
 
 	def stop_(self):
-		if self.timer.IsRunning():
-			self.timer.Stop()
+		self.presenter.snap.active_guide = None
+		self.timer.Stop()
+		self.canvas.selection_redraw()
 		self.end = []
 		self.guide = None
 
