@@ -56,8 +56,10 @@ class GuideController(AbstractController):
 			self.presenter.api.set_guide_propeties(self.guide, pos, orient)
 		else:
 			self.presenter.api.delete_guides([self.guide])
+		self.canvas.dragged_guide = ()
 		self.canvas.selection_redraw()
 		self.canvas.restore_mode()
+		self.canvas.set_temp_mode(modes.GUIDE_MODE)
 
 	def start_(self):
 		self.snap = self.presenter.snap
@@ -88,4 +90,4 @@ class GuideController(AbstractController):
 			else:
 				p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)[2]
 				orient = uc2const.VERTICAL
-		self.canvas.renderer.paint_guide_dragging(p_doc, orient)
+		self.canvas.dragged_guide = (p_doc, orient)

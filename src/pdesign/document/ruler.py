@@ -23,9 +23,10 @@ from uc2 import uc2const
 from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, \
 DOC_ORIGIN_LU, ORIGINS
 
-from pdesign import config
+from pdesign import config, modes
+from pdesign.appconst import RENDERING_DELAY
 from pdesign.resources import get_icon, icons
-from pdesign.widgets.const import HORIZONTAL, is_mac
+from pdesign.widgets.const import HORIZONTAL, VERTICAL, is_mac
 from pdesign.widgets import HPanel
 from pdesign.widgets import copy_surface_to_bitmap
 
@@ -110,10 +111,14 @@ class Ruler(HPanel):
 	style = None
 
 	init_flag = False
+	draw_guide = False
 	surface = None
 	ctx = None
+	default_cursor = None
+	guide_cursor = None
 	width = 0
 	height = 0
+	pointer = []
 
 	def __init__(self, presenter, parent, style=HORIZONTAL):
 		self.presenter = presenter
@@ -122,9 +127,17 @@ class Ruler(HPanel):
 		HPanel.__init__(self, parent)
 		size = config.ruler_size
 		self.add((size, size))
+		self.default_cursor = self.GetCursor()
+		if self.style == HORIZONTAL:
+			self.guide_cursor = self.presenter.app.cursors[modes.HGUIDE_MODE]
+		else:
+			self.guide_cursor = self.presenter.app.cursors[modes.VGUIDE_MODE]
 		self.SetBackgroundColour(wx.WHITE)
 		self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
+		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_down)
+		self.Bind(wx.EVT_LEFT_UP, self.mouse_up)
+		self.Bind(wx.EVT_MOTION, self.mouse_move)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
 		if is_mac():
 			self.timer = wx.Timer(self)
@@ -327,3 +340,61 @@ class Ruler(HPanel):
 				self.ctx.set_source_surface(data[1], 3, int(pos) - data[0])
 				self.ctx.paint()
 				pos -= data[0]
+
+	#------ Guides creation
+	def set_cursor(self, mode=False):
+		if not mode: self.SetCursor(self.default_cursor)
+		else: self.SetCursor(self.guide_cursor)
+
+	def mouse_down(self, event):
+		w, h = self.GetSize()
+		w = float(w)
+		h = float(h)
+		self.width = w
+		self.height = h
+		self.draw_guide = True
+		self.set_cursor(True)
+		self.presenter.canvas.timer.Start(RENDERING_DELAY)
+
+	def mouse_up(self, event):
+		self.pointer = list(event.GetPositionTuple())
+		if self.style == HORIZONTAL:
+			y_win = self.pointer[1] - self.height
+			if y_win > 0.0:
+				p = [self.pointer[0], y_win]
+				p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)[1:]
+				self.presenter.api.create_guides([[p_doc[1], uc2const.HORIZONTAL], ])
+		else:
+			x_win = self.pointer[0] - self.width
+			if x_win > 0.0:
+				p = [x_win, self.pointer[1]]
+				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
+				self.presenter.api.create_guides([[p_doc[0], uc2const.VERTICAL], ])
+
+		self.set_cursor()
+		self.presenter.canvas.timer.Stop()
+		self.draw_guide = False
+		self.pointer = []
+		self.repaint_guide()
+		self.presenter.canvas.force_redraw()
+		self.presenter.canvas.set_temp_mode(modes.GUIDE_MODE)
+
+	def mouse_move(self, event):
+		if self.draw_guide:
+			self.pointer = list(event.GetPositionTuple())
+			self.repaint_guide()
+
+	def repaint_guide(self, *args):
+		p_doc = []
+		orient = uc2const.HORIZONTAL
+		if self.draw_guide and self.pointer:
+			if self.style == HORIZONTAL:
+				y_win = self.pointer[1] - self.height
+				p = [self.pointer[0], y_win]
+				p, p_doc = self.presenter.snap.snap_point(p, snap_x=False)[1:]
+			else:
+				x_win = self.pointer[0] - self.width
+				p = [x_win, self.pointer[1]]
+				p, p_doc = self.presenter.snap.snap_point(p, snap_y=False)[1:]
+				orient = uc2const.VERTICAL
+		self.presenter.canvas.dragged_guide = (p_doc, orient)

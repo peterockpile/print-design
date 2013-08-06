@@ -204,7 +204,6 @@ class TransformController(AbstractController):
 		self.move = True
 		self.canvas.selection_repaint = False
 		if not self.canvas.resize_marker == 9:
-			#self.canvas.renderer.show_move_frame()
 			self.painter = self._draw_frame
 		else:
 			self.offset_start = [] + self.selection.center_offset
