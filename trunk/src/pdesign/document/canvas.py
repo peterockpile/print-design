@@ -65,6 +65,7 @@ class AppCanvas(wx.Panel):
 	selection_repaint = True
 	draw_page_border = True
 	show_snapping = config.show_snap
+	dragged_guide = ()
 
 	my_changes = False
 
@@ -401,8 +402,9 @@ class AppCanvas(wx.Panel):
 			self.eventloop.emit(self.eventloop.VIEW_CHANGED)
 			self.full_repaint = False
 			self.soft_repaint = False
-		if not self.controller is None:
-			self.controller.repaint()
+		if not self.controller is None: self.controller.repaint()
+		if self.dragged_guide:
+			self.renderer.paint_guide_dragging(*self.dragged_guide)
 		self.renderer.finalize()
 
 	def destroy(self):
