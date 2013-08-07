@@ -360,6 +360,7 @@ class Ruler(HPanel):
 			self.presenter.canvas.controller.mode = modes.HGUIDE_MODE
 		else:
 			self.presenter.canvas.controller.mode = modes.VGUIDE_MODE
+		self.presenter.canvas.set_canvas_cursor(self.presenter.canvas.controller.mode)
 
 	def mouse_up(self, event):
 		self.pointer = list(event.GetPositionTuple())
