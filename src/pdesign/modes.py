@@ -55,6 +55,7 @@ RESIZE_MODE13_COPY = 33
 GUIDE_MODE = 34
 VGUIDE_MODE = 35
 HGUIDE_MODE = 36
+WAIT_MODE = 100
 
 MODE_LIST = [SELECT_MODE, SHAPER_MODE, ZOOM_MODE, LINE_MODE,
 			CURVE_MODE, RECT_MODE, ELLIPSE_MODE, TEXT_MODE,
@@ -106,4 +107,5 @@ def get_cursors():
 			cursors[key] = wx.Cursor(path, wx.BITMAP_TYPE_CUR)
 		else:
 			cursors[key] = wx.Cursor(path, wx.BITMAP_TYPE_PNG, x, y)
+	cursors[WAIT_MODE] = wx.StockCursor(wx.CURSOR_WAIT)
 	return cursors
