@@ -63,7 +63,8 @@ class AbstractController:
 	def mouse_right_down(self, event):pass
 	def mouse_right_up(self, event):pass
 	def mouse_middle_down(self, event):
-		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+#		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
+		self.canvas.set_temp_mode(modes.WAIT_MODE)
 	def mouse_middle_up(self, event):pass
 	def wheel(self, event):pass
 
@@ -110,3 +111,18 @@ class AbstractController:
 	def repaint(self):
 		if self.end:
 			self.canvas.renderer.draw_frame(self.start, self.end)
+
+class WaitController(AbstractController):
+
+	mode = modes.WAIT_MODE
+	move = False
+	fleur_timer = None
+
+	def __init__(self, canvas, presenter):
+		AbstractController.__init__(self, canvas, presenter)
+
+	def mouse_down(self, event):pass
+	def mouse_up(self, event):pass
+	def repaint(self, *args):pass
+	def mouse_move(self, event):pass
+	def on_timer(self):pass
