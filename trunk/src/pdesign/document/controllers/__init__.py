@@ -15,7 +15,7 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from generic import AbstractController
+from generic import AbstractController, WaitController
 from select_ctrl import SelectController, PickController
 from trafo_ctrl import MoveController, TransformController
 from fleur_ctrl import FleurController, TempFleurController
