@@ -86,10 +86,8 @@ class AbstractController:
 			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 		self.counter = 0
 		self.timer.Start(RENDERING_DELAY)
-		self.canvas.CaptureMouse()
 
 	def mouse_up(self, event):
-		self.canvas.ReleaseMouse()
 		if self.draw:
 			self.timer.Stop()
 			self.draw = False
