@@ -64,6 +64,7 @@ class AppCanvas(wx.Panel):
 	full_repaint = False
 	selection_repaint = True
 	draw_page_border = True
+	mouse_captured = False
 	show_snapping = config.show_snap
 	dragged_guide = ()
 
@@ -94,6 +95,7 @@ class AppCanvas(wx.Panel):
 		self.Bind(wx.EVT_MIDDLE_UP, self.mouse_middle_up)
 		self.Bind(wx.EVT_MOUSEWHEEL, self.mouse_wheel)
 		self.Bind(wx.EVT_MOTION, self.mouse_move)
+		self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.capture_lost)
 		#-----
 		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.doc_modified)
 		self.eventloop.connect(self.eventloop.PAGE_CHANGED, self.doc_modified)
@@ -420,15 +422,31 @@ class AppCanvas(wx.Panel):
 
 #==============EVENT CONTROLLING==========================
 
+	def capture_mouse(self):
+		self.CaptureMouse()
+		self.mouse_captured = True
+
+	def release_mouse(self):
+		if self.mouse_captured:
+			self.ReleaseMouse()
+			self.mouse_captured = False
+
+	def capture_lost(self):
+		self.mouse_captured = False
+		self.controller.stop_()
+		self.timer.Stop()
+
 	def _on_timer(self, event):
 		self.controller.on_timer()
 
 	def mouse_left_down(self, event):
+		self.capture_mouse()
 		self.controller.set_cursor()
 		self.controller.mouse_down(event)
 
 	def mouse_left_up(self, event):
 		self.controller.mouse_up(event)
+		self.release_mouse()
 
 	def mouse_left_dclick(self, event):
 		self.controller.set_cursor()
