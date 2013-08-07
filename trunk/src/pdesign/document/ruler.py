@@ -26,7 +26,7 @@ DOC_ORIGIN_LU, ORIGINS
 from pdesign import config, modes
 from pdesign.appconst import RENDERING_DELAY
 from pdesign.resources import get_icon, icons
-from pdesign.widgets.const import HORIZONTAL, VERTICAL, is_mac
+from pdesign.widgets.const import HORIZONTAL, VERTICAL, is_mac, is_msw
 from pdesign.widgets import HPanel
 from pdesign.widgets import copy_surface_to_bitmap
 
@@ -116,6 +116,7 @@ class Ruler(HPanel):
 	ctx = None
 	default_cursor = None
 	guide_cursor = None
+	mouse_captured = False
 	width = 0
 	height = 0
 	pointer = []
@@ -138,6 +139,7 @@ class Ruler(HPanel):
 		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_down)
 		self.Bind(wx.EVT_LEFT_UP, self.mouse_up)
 		self.Bind(wx.EVT_MOTION, self.mouse_move)
+		self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.capture_lost)
 		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.repaint)
 		if is_mac():
 			self.timer = wx.Timer(self)
@@ -345,6 +347,12 @@ class Ruler(HPanel):
 	def set_cursor(self, mode=False):
 		if not mode: self.SetCursor(self.default_cursor)
 		else: self.SetCursor(self.guide_cursor)
+		
+	def capture_lost(self, event):
+		if self.mouse_captured:
+			self.mouse_captured=False
+			self.ReleaseMouse()
+		self.set_cursor()
 
 	def mouse_down(self, event):
 		w, h = self.GetSize()
@@ -354,6 +362,9 @@ class Ruler(HPanel):
 		self.height = h
 		self.draw_guide = True
 		self.set_cursor(True)
+		if is_msw():
+			self.CaptureMouse()
+			self.mouse_captured = True
 		self.presenter.canvas.timer.Start(RENDERING_DELAY)
 		self.presenter.canvas.set_temp_mode(modes.GUIDE_MODE)
 		if self.style == HORIZONTAL:
@@ -364,6 +375,9 @@ class Ruler(HPanel):
 
 	def mouse_up(self, event):
 		self.pointer = list(event.GetPositionTuple())
+		if self.mouse_captured:
+			self.mouse_captured=False
+			self.ReleaseMouse()
 		if self.style == HORIZONTAL:
 			y_win = self.pointer[1] - self.height
 			if y_win > 0.0:
