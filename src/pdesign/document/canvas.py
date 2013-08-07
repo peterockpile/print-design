@@ -433,10 +433,13 @@ class AppCanvas(wx.Panel):
 			self.ReleaseMouse()
 			self.mouse_captured = False
 
-	def capture_lost(self):
-		self.mouse_captured = False
-		self.controller.stop_()
-		self.timer.Stop()
+	def capture_lost(self, event):
+		print 'capture lost'
+		if self.mouse_captured:
+			self.ReleaseMouse()
+			self.mouse_captured = False
+# 			self.controller.stop_()
+# 			self.timer.Stop()
 
 	def _on_timer(self, event):
 		self.controller.on_timer()

@@ -62,9 +62,11 @@ class AbstractController:
 	def mouse_double_click(self, event): pass
 	def mouse_right_down(self, event):
 		if event.ControlDown():
+			self.canvas.capture_mouse()
 			self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 	def mouse_right_up(self, event):pass
 	def mouse_middle_down(self, event):
+		self.canvas.capture_mouse()
 		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 	def mouse_middle_up(self, event):pass
 	def wheel(self, event):pass
