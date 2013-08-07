@@ -21,6 +21,7 @@ from uc2.uc2const import mm_to_pt
 from uc2.libcairo import normalize_bbox
 
 from pdesign import events, modes, config
+from pdesign.widgets import const
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
 
@@ -423,8 +424,9 @@ class AppCanvas(wx.Panel):
 #==============EVENT CONTROLLING==========================
 
 	def capture_mouse(self):
-		self.CaptureMouse()
-		self.mouse_captured = True
+		if const.is_msw():
+			self.CaptureMouse()
+			self.mouse_captured = True
 
 	def release_mouse(self):
 		if self.mouse_captured:
