@@ -74,3 +74,8 @@ class TempFleurController(FleurController):
 		FleurController.mouse_up(self, event)
 		self.move = True
 		self.canvas.restore_mode()
+
+	def mouse_right_up(self, event):
+		FleurController.mouse_up(self, event)
+		self.move = True
+		self.canvas.restore_mode()
