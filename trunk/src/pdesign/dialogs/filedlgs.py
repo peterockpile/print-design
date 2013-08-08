@@ -22,6 +22,7 @@ from uc2 import uc2const
 from uc2.formats import data
 
 from pdesign import _
+from pdesign.widgets.const import is_mac
 from pdesign.utils.fs import expanduser_unicode
 
 def _get_open_filters():
@@ -34,6 +35,8 @@ def _get_open_filters():
 		for extension in ext[item]:
 			wildcard += '*.' + extension + ';'
 			wildcard += '*.' + extension.upper() + ';'
+	if is_mac():return wildcard
+
 	wildcard += '|'
 
 	wildcard += _('All files (*.*)') + '|'
@@ -44,7 +47,7 @@ def _get_open_filters():
 		for extension in ext[item]:
 			wildcard += '*.' + extension + ';'
 			wildcard += '*.' + extension.upper() + ';'
-		if not item==items[-1]:
+		if not item == items[-1]:
 			wildcard += '|'
 
 	return wildcard
@@ -78,7 +81,7 @@ def _get_save_fiters():
 		for extension in ext[item]:
 			wildcard += '*.' + extension + ';'
 			wildcard += '*.' + extension.upper() + ';'
-		if not item==items[-1]:
+		if not item == items[-1]:
 			wildcard += '|'
 	return wildcard
 
