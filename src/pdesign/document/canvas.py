@@ -108,15 +108,15 @@ class AppCanvas(wx.Panel):
 	def _set_scrolls(self, hscroll, vscroll):
 		self.hscroll = hscroll
 		self.vscroll = vscroll
-		self.hscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
-		self.vscroll.SetScrollbar(50, 10, 110, 10, refresh=True)
+		self.hscroll.SetScrollbar(500, 100, 1100, 100, refresh=True)
+		self.vscroll.SetScrollbar(500, 100, 1100, 100, refresh=True)
 		self.hscroll.Bind(wx.EVT_SCROLL, self._scrolling, self.hscroll)
 		self.vscroll.Bind(wx.EVT_SCROLL, self._scrolling, self.vscroll)
 
 	def _scrolling(self, *args):
 		if self.my_changes:return
-		xpos = self.hscroll.GetThumbPosition() / 100.0
-		ypos = (100 - self.vscroll.GetThumbPosition()) / 100.0
+		xpos = self.hscroll.GetThumbPosition() / 1000.0
+		ypos = (1000 - self.vscroll.GetThumbPosition()) / 1000.0
 		x = (xpos - 0.5) * self.workspace[0]
 		y = (ypos - 0.5) * self.workspace[1]
 		center = self.doc_to_win((x, y))
@@ -128,10 +128,10 @@ class AppCanvas(wx.Panel):
 		center = self._get_center()
 		x = (center[0] + self.workspace[0] / 2.0) / self.workspace[0]
 		y = (center[1] + self.workspace[1] / 2.0) / self.workspace[1]
-		hscroll = int(100 * x)
-		vscroll = int(100 - 100 * y)
-		self.hscroll.SetScrollbar(hscroll, 10, 110, 10, refresh=True)
-		self.vscroll.SetScrollbar(vscroll, 10, 110, 10, refresh=True)
+		hscroll = int(1000 * x)
+		vscroll = int(1000 - 1000 * y)
+		self.hscroll.SetScrollbar(hscroll, 100, 1100, 100, refresh=True)
+		self.vscroll.SetScrollbar(vscroll, 100, 1100, 100, refresh=True)
 		self.my_changes = False
 
 	#----- CONTROLLERS
