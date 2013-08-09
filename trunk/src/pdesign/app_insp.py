@@ -15,6 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from uc2.formats.pdxf import model
+
 class AppInspector:
 
 	def __init__(self, app):
@@ -143,3 +145,87 @@ class AppInspector:
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
 		return self.app.current_doc.snap.snap_to_page
+
+	def is_obj_primitive(self, obj):return obj.cid > model.PRIMITIVE_CLASS
+	def is_obj_curve(self, obj):return obj.cid == model.CURVE
+	def is_obj_rect(self, obj):return obj.cid == model.RECTANGLE
+	def is_obj_circle(self, obj):return obj.cid == model.CIRCLE
+	def is_obj_polygon(self, obj):return obj.cid == model.POLYGON
+	def is_obj_text(self, obj):return obj.cid == model.TEXT_BLOCK
+	def is_obj_pixmap(self, obj):return obj.cid == model.PIXMAP
+
+	def can_be_combined(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			result = True
+			objs = doc.selection.objs
+			if len(objs) < 2: return False
+			for obj in objs:
+				if obj.cid < model.PRIMITIVE_CLASS:
+					result = False
+					break
+			return result
+		else:
+			return False
+
+	def can_be_breaked(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			result = False
+			objs = doc.selection.objs
+			if len(objs) == 1 and objs[0].cid == model.CURVE:
+				if len(objs[0].paths) > 1:
+					result = True
+			return result
+		else:
+			return False
+
+	def can_be_curve(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			result = False
+			for obj in doc.selection.objs:
+				if self.is_obj_primitive(obj) and not self.is_obj_curve(obj):
+					result = True
+					break
+			return result
+		else:
+			return False
+
+	def can_be_grouped(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			result = False
+			if len(doc.selection.objs) > 1:
+				result = True
+			return result
+		else:
+			return False
+
+	def can_be_ungrouped(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc)and len(doc.selection.objs) == 1:
+			result = False
+			if doc.selection.objs[0].cid == model.GROUP:
+				result = True
+			return result
+		else:
+			return False
+
+	def can_be_ungrouped_all(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			result = False
+			for obj in doc.selection.objs:
+				if obj.cid == model.GROUP:
+					result = True
+					break
+			return result
+		else:
+			return False

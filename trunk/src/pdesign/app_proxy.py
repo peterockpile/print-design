@@ -159,3 +159,11 @@ class AppProxy:
 			else:
 				canvas.draw_page_border = True
 			canvas.force_redraw()
+
+	def convert_to_curve(self):self.app.current_doc.api.convert_to_curve_selected()
+	def group(self):self.app.current_doc.api.group_selected()
+	def ungroup(self):self.app.current_doc.api.ungroup_selected()
+	def ungroup_all(self):self.app.current_doc.api.ungroup_all()
+	def combine_selected(self):self.app.current_doc.api.combine_selected()
+	def break_apart_selected(self):self.app.current_doc.api.break_apart_selected()
+
