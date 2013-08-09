@@ -219,6 +219,7 @@ class pdApplication(Application, UCApplication):
 		return result
 
 	def exit(self, *args):
+		if not self.insp.is_any_doc_not_saved(): self.mw.Hide()
 		if self.close_all():
 			self.update_config()
 			self.mw.Destroy()
