@@ -17,8 +17,10 @@
 
 import wx, cairo
 
-from uc2.uc2const import mm_to_pt
+from uc2.uc2const import mm_to_pt, point_dict
 from uc2.libcairo import normalize_bbox
+from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, \
+DOC_ORIGIN_LU, ORIGINS
 
 from pdesign import events, modes, config
 from pdesign.widgets import const
@@ -263,6 +265,14 @@ class AppCanvas(wx.Panel):
 		y_new = (y - dy) / m22
 		return [x_new, y_new]
 
+	def win_to_doc_coords(self, point=[0, 0]):
+		x, y = self.win_to_doc(point)
+		origin = self.presenter.model.doc_origin
+		w, h = self.presenter.get_page_size()
+		if origin == DOC_ORIGIN_LL: return [w / 2.0 + x, h / 2.0 + y]
+		elif origin == DOC_ORIGIN_LU: return [w / 2.0 + x, h / 2.0 - y]
+		else:return [x, y]
+
 	def point_win_to_doc(self, point=[0.0, 0.0]):
 		if not point:return []
 		if len(point) == 2:
@@ -434,12 +444,9 @@ class AppCanvas(wx.Panel):
 			self.mouse_captured = False
 
 	def capture_lost(self, event):
-		print 'capture lost'
 		if self.mouse_captured:
 			self.ReleaseMouse()
 			self.mouse_captured = False
-# 			self.controller.stop_()
-# 			self.timer.Stop()
 
 	def _on_timer(self, event):
 		self.controller.on_timer()
@@ -458,6 +465,10 @@ class AppCanvas(wx.Panel):
 		self.controller.mouse_double_click(event)
 
 	def mouse_move(self, event):
+		x, y = self.win_to_doc_coords(list(event.GetPositionTuple()))
+		unit = config.default_unit
+		msg = '  %i x %i' % (x * point_dict[unit], y * point_dict[unit])
+		events.emit(events.MOUSE_STATUS, '%s %s' % (msg, unit))
 		self.controller.mouse_move(event)
 
 	def mouse_right_down(self, event):
