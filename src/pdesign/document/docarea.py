@@ -21,7 +21,6 @@ from pdesign.widgets import ALL, EXPAND, HORIZONTAL, VERTICAL, LEFT, TOP
 from pdesign.widgets import const, VPanel
 from pdesign.document.ruler import Ruler, RulerCorner
 from pdesign.document.canvas import AppCanvas
-from pdesign.document.pager import DocPager
 from pdesign.document.viewer import DocViewer
 
 class DocArea(VPanel):
