@@ -648,12 +648,12 @@ class PresenterAPI(AbstractAPI):
 			parent = group.parent
 			index = parent.childs.index(group)
 
-			objs.reverse()
-			parent.childs.remove(group)
-			parent_list = []
+			child_list = parent.childs[:index] + objs
+			child_list += parent.childs[index + 1:]
+			parent.childs = child_list
 
+			parent_list = []
 			for obj in objs:
-				parent.childs.insert(index, obj)
 				obj.parent = parent
 				parent_list.append([obj, group])
 
