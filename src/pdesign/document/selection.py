@@ -49,6 +49,8 @@ class Selection:
 		if len(self.objs) == 1:
 			cid = self.objs[0].cid
 			msg = model.CID_TO_NAME[cid] + _(' object in selection')
+		elif not len(self.objs):
+			msg = _('No selection')
 		else:
 			msg = _('objects in selection')
 			msg = '%i %s' % (len(self.objs), msg)
