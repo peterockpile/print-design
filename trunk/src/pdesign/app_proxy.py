@@ -182,10 +182,14 @@ class AppProxy:
 #		if ret:
 #			self.app.current_doc.api.insert_page(*ret)
 #
-	def goto_page(self):pass
-#		index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
-#		if index >= 0:
-#			self.app.current_doc.goto_page(index)
+	def goto_start(self): self.goto_page(0)
+	def goto_end(self): self.goto_page(len(self.app.current_doc.get_pages()) - 1)
+
+	def goto_page(self, index=None):
+		if index is None:pass
+#			index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
+		if index >= 0:
+			self.app.current_doc.goto_page(index)
 
 	def convert_to_curve(self):self.app.current_doc.api.convert_to_curve_selected()
 	def group(self):self.app.current_doc.api.group_selected()
