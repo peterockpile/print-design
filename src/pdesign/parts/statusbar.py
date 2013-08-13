@@ -126,39 +126,43 @@ class PageMonitor(HPanel):
 		native = False
 		if const.is_msw(): native = True
 
+		callback = self.app.proxy.goto_start
 		self.start_but = ImageButton(self.panel,
 							icons.PD_PM_ARROW_START,
 							tooltip=_('Go to fist page'),
 							decoration_padding=4,
 							native=native,
-							onclick=self.stub)
+							onclick=callback)
 		self.add(self.start_but, 0, LEFT | CENTER)
 
+		callback = self.app.proxy.previous_page
 		self.prev_but = ImageButton(self.panel,
 							icons.PD_PM_ARROW_LEFT,
 							tooltip=_('Go to previous page'),
 							decoration_padding=4,
 							native=native,
-							onclick=self.stub)
+							onclick=callback)
 		self.add(self.prev_but, 0, LEFT | CENTER)
 
 		self.page_txt = Label(self.panel, text=' ')
 		self.add(self.page_txt, 0, LEFT | CENTER)
 
+		callback = self.app.proxy.next_page
 		self.next_but = ImageButton(self.panel,
 							icons.PD_PM_ARROW_RIGHT,
 							tooltip=_('Go to next page'),
 							decoration_padding=4,
 							native=native,
-							onclick=self.stub)
+							onclick=callback)
 		self.add(self.next_but, 0, LEFT | CENTER)
 
+		callback = self.app.proxy.goto_end
 		self.end_but = ImageButton(self.panel,
 							icons.PD_PM_ARROW_END,
 							tooltip=_('Go to last page'),
 							decoration_padding=4,
 							native=native,
-							onclick=self.stub)
+							onclick=callback)
 		self.add(self.end_but, 0, LEFT | CENTER)
 
 
