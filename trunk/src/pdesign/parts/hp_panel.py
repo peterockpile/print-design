@@ -15,6 +15,8 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import wx
+
 from pdesign import _
 from pdesign.widgets import const, HPanel, ImageButton, ImageLabel
 from pdesign.pwidgets import HPalette
@@ -36,13 +38,13 @@ class AppPalettePanel(HPanel):
 		self.add((1, 20))
 
 		self.palette = HPalette(self.panel, self.app.default_cms, CMYK_PALETTE,
-							onleftclick=self.set_fill,
-							onrightclick=self.set_stroke,
+							onleftclick=self.app.proxy.fill_selected,
+							onrightclick=self.app.proxy.stroke_selected,
 							onmin=self.left_enable,
 							onmax=self.right_enable)
-		
-		native=False
-		if const.is_msw():native=True
+
+		native = False
+		if const.is_msw():native = True
 
 		tip = _('Scroll palette to left')
 		self.dleft_but = ImageButton(self.panel, icons.DOUBLE_ARROW_LEFT,
@@ -56,7 +58,8 @@ class AppPalettePanel(HPanel):
 
 		tip = _('Empty pattern')
 		self.no_color = ImageLabel(self.panel, icons.NO_COLOR, tooltip=tip,
-								 onclick=self.stub)
+								 onclick=self.set_no_fill)
+		self.no_color.Bind(wx.EVT_RIGHT_UP, self.set_no_stroke, self.no_color)
 		self.add(self.no_color)
 
 		self.add(self.palette, 1, const.ALL | const.EXPAND, 1)
@@ -73,7 +76,8 @@ class AppPalettePanel(HPanel):
 		self.left_enable(False)
 
 
-	def stub(self): print 'event'
+	def set_no_fill(self): self.app.proxy.fill_selected([])
+	def set_no_stroke(self, event): self.app.proxy.stroke_selected([])
 
 	def set_fill(self, color):
 		print color
