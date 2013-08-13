@@ -693,13 +693,15 @@ class PresenterAPI(AbstractAPI):
 					objs_list = []
 					self._ungroup_tree(obj, objs_list, parent_list_before)
 					index = obj.parent.childs.index(obj)
-					objs_list.reverse()
+					parent = obj.parent
+
+					child_list = parent.childs[:index] + objs_list
+					child_list += parent.childs[index + 1:]
+					parent.childs = child_list
+
 					for item in objs_list:
-						parent_list_after.append([item, obj.parent])
-						item.parent = obj.parent
-						obj.parent.childs.insert(index, item)
+						item.parent = parent
 						sel_after.append(item)
-					obj.parent.childs.remove(obj)
 				else:
 					sel_after.append(obj)
 
