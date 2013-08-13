@@ -198,3 +198,16 @@ class AppProxy:
 	def combine_selected(self):self.app.current_doc.api.combine_selected()
 	def break_apart_selected(self):self.app.current_doc.api.break_apart_selected()
 
+	def fill_selected(self, color):
+		if self.app.current_doc is None:
+			#FIXME: here should be default style changing
+			pass
+		else:
+			self.app.current_doc.api.fill_selected(color)
+
+	def stroke_selected(self, color):
+		if self.app.current_doc is None:
+			#FIXME: here should be default style changing
+			pass
+		else:
+			self.app.current_doc.api.stroke_selected(color)
