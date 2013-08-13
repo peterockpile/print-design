@@ -34,6 +34,7 @@ def create_actions(app):
 	tool_chnls = [NO_DOCS, DOC_CHANGED, MODE_CHANGED]
 	doc_save_chnls = [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, DOC_SAVED]
 	sel_chnls = [NO_DOCS, DOC_CHANGED, SELECTION_CHANGED]
+	page_chnls = [NO_DOCS, DOC_CHANGED, DOC_MODIFIED, PAGE_CHANGED]
 	insp = app.insp
 	proxy = app.proxy
 	actions = {}
@@ -96,11 +97,11 @@ def create_actions(app):
 	(pdids.ID_SNAP_TO_PAGE, proxy.snap_to_page, doc_chnls, insp.is_doc, insp.is_snap_to_page),
 (wx.ID_REFRESH, proxy.force_redraw, doc_chnls, insp.is_doc),
 #------ Layout menu -------
-(pdids.ID_INSERT_PAGE, proxy.stub),
-(pdids.ID_DELETE_PAGE, proxy.stub),
-(pdids.ID_GOTO_PAGE, proxy.stub),
-(pdids.ID_NEXT_PAGE, proxy.stub),
-(pdids.ID_PREV_PAGE, proxy.stub),
+(pdids.ID_INSERT_PAGE, proxy.insert_page, page_chnls, insp.is_doc),
+(pdids.ID_DELETE_PAGE, proxy.delete_page, page_chnls, insp.can_delete_page),
+(pdids.ID_GOTO_PAGE, proxy.goto_page, page_chnls, insp.can_goto_page),
+(pdids.ID_NEXT_PAGE, proxy.next_page, page_chnls, insp.can_be_next_page),
+(pdids.ID_PREV_PAGE, proxy.previous_page, page_chnls, insp.can_be_previous_page),
 #------ Arrange menu -------
 (pdids.ID_COMBINE, proxy.combine_selected, sel_chnls, insp.can_be_combined),
 (pdids.ID_BREAK_APART, proxy.break_apart_selected, sel_chnls, insp.can_be_breaked),

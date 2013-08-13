@@ -160,6 +160,33 @@ class AppProxy:
 				canvas.draw_page_border = True
 			canvas.force_redraw()
 
+	#---Page management
+	def next_page(self):
+		doc = self.app.current_doc
+		pages = doc.get_pages()
+		if pages.index(doc.active_page) < len(pages) - 1:
+			self.app.current_doc.next_page()
+		else:
+			self.insert_page()
+
+	def previous_page(self):
+		self.app.current_doc.previous_page()
+
+	def delete_page(self):pass
+#		index = dialogs.delete_page_dialog(self.mw, self.app.current_doc)
+#		if index >= 0:
+#			self.app.current_doc.api.delete_page(index)
+#
+	def insert_page(self):pass
+#		ret = dialogs.insert_page_dialog(self.mw, self.app.current_doc)
+#		if ret:
+#			self.app.current_doc.api.insert_page(*ret)
+#
+	def goto_page(self):pass
+#		index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
+#		if index >= 0:
+#			self.app.current_doc.goto_page(index)
+
 	def convert_to_curve(self):self.app.current_doc.api.convert_to_curve_selected()
 	def group(self):self.app.current_doc.api.group_selected()
 	def ungroup(self):self.app.current_doc.api.ungroup_selected()

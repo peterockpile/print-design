@@ -146,6 +146,31 @@ class AppInspector:
 		if doc is None: return False
 		return self.app.current_doc.snap.snap_to_page
 
+	def can_be_next_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		return True
+
+	def can_be_previous_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		pages = doc.get_pages()
+		if pages.index(doc.active_page): return True
+		return False
+
+	def can_goto_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		if len(doc.get_pages()) > 1:return True
+		return False
+
+	def can_delete_page(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		pages = doc.get_pages()
+		if len(pages) - 1: return True
+		return False
+
 	def is_obj_primitive(self, obj):return obj.cid > model.PRIMITIVE_CLASS
 	def is_obj_curve(self, obj):return obj.cid == model.CURVE
 	def is_obj_rect(self, obj):return obj.cid == model.RECTANGLE
