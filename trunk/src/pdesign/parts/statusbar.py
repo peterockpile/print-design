@@ -17,9 +17,9 @@
 
 import wx
 
-from pdesign import events
-from pdesign.widgets import ALL, EXPAND, TOP, LEFT, CENTER
-from pdesign.widgets import HPanel, Label, VLine
+from pdesign import _, events
+from pdesign.widgets import ALL, EXPAND, TOP, LEFT, CENTER, const
+from pdesign.widgets import HPanel, Label, VLine, ImageButton
 from pdesign.pwidgets import ColorSwatch
 from pdesign.resources import get_icon, icons
 
@@ -28,6 +28,7 @@ class AppStatusbar(HPanel):
 	mw = None
 	panel1 = None
 	mouse_info = None
+	page_info = None
 	info = None
 	panel2 = None
 	clr_monitor = None
@@ -38,12 +39,23 @@ class AppStatusbar(HPanel):
 		self.add((1, 20))
 		panel1 = HPanel(self.panel)
 		panel1.add((5, 20))
+
 		self.mouse_info = MouseMonitor(self.mw.app, panel1)
 		panel1.add(self.mouse_info, 0, ALL | EXPAND)
 		self.mouse_info.hide()
+
+		self.page_info = PageMonitor(self.mw.app, panel1)
+		panel1.add(self.page_info, 0, ALL | EXPAND)
+		self.page_info.hide()
+
+		bitmap = wx.StaticBitmap(panel1.panel, bitmap=get_icon(icons.PD_APP_STATUS))
+		panel1.add(bitmap, 0, LEFT | CENTER)
+		panel1.add((5, 3))
+
 		self.info = Label(panel1.panel, text='')
 		panel1.add(self.info, 0, LEFT | CENTER)
 		self.add(panel1, 1, ALL | EXPAND)
+
 		self.clr_monitor = ColorMonitor(self.mw.app, self.panel)
 		self.add(self.clr_monitor, 0, ALL | EXPAND)
 		self.clr_monitor.hide()
@@ -104,7 +116,83 @@ class MouseMonitor(HPanel):
 		if not self.is_shown():
 			self.show(True)
 
+class PageMonitor(HPanel):
 
+	def __init__(self, app, parent):
+		self.app = app
+		self.parent = parent
+		HPanel.__init__(self, parent)
+
+		native = False
+		if const.is_msw(): native = True
+
+		self.start_but = ImageButton(self.panel,
+							icons.PD_PM_ARROW_START,
+							tooltip=_('Go to fist page'),
+							decoration_padding=4,
+							native=native,
+							onclick=self.stub)
+		self.add(self.start_but, 0, LEFT | CENTER)
+
+		self.prev_but = ImageButton(self.panel,
+							icons.PD_PM_ARROW_LEFT,
+							tooltip=_('Go to previous page'),
+							decoration_padding=4,
+							native=native,
+							onclick=self.stub)
+		self.add(self.prev_but, 0, LEFT | CENTER)
+
+		self.page_txt = Label(self.panel, text=' ')
+		self.add(self.page_txt, 0, LEFT | CENTER)
+
+		self.next_but = ImageButton(self.panel,
+							icons.PD_PM_ARROW_RIGHT,
+							tooltip=_('Go to next page'),
+							decoration_padding=4,
+							native=native,
+							onclick=self.stub)
+		self.add(self.next_but, 0, LEFT | CENTER)
+
+		self.end_but = ImageButton(self.panel,
+							icons.PD_PM_ARROW_END,
+							tooltip=_('Go to last page'),
+							decoration_padding=4,
+							native=native,
+							onclick=self.stub)
+		self.add(self.end_but, 0, LEFT | CENTER)
+
+
+		self.add(VLine(self.panel), 0, ALL | EXPAND, 4)
+		events.connect(events.NO_DOCS, self.hide_monitor)
+		events.connect(events.DOC_CHANGED, self.update)
+		events.connect(events.PAGE_CHANGED, self.update)
+
+	def stub(self, *args):pass
+
+	def update(self, *args):
+		if self.app.current_doc:
+			presenter = self.app.current_doc
+			pages = presenter.get_pages()
+			current_index = pages.index(presenter.active_page)
+
+			if current_index:
+				self.start_but.set_enable(True)
+				self.prev_but.set_enable(True)
+			else:
+				self.start_but.set_enable(False)
+				self.prev_but.set_enable(False)
+
+			if current_index == len(pages) - 1:
+				self.end_but.set_enable(False)
+			else:
+				self.end_but.set_enable(True)
+
+			text = _(" Page %i of %i ") % (current_index + 1, len(pages))
+			self.page_txt.set_text(text)
+			self.show(True)
+
+	def hide_monitor(self, *args):
+		self.hide(True)
 
 
 
