@@ -15,7 +15,7 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from colorswatch import ColorSwatch
+from colorswatch import ColorSwatch, FillSwatch, StrokeSwatch
 from hpalette import HPalette
 from actions import AppAction
 from mactoolbar import MacTB_ActionButton, MacTB_ActionNestedButtons

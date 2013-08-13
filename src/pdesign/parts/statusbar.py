@@ -20,7 +20,7 @@ import wx
 from pdesign import _, events
 from pdesign.widgets import ALL, EXPAND, TOP, LEFT, CENTER, const
 from pdesign.widgets import HPanel, Label, VLine, ImageButton
-from pdesign.pwidgets import ColorSwatch
+from pdesign.pwidgets import FillSwatch, StrokeSwatch
 from pdesign.resources import get_icon, icons
 
 class AppStatusbar(HPanel):
@@ -78,13 +78,26 @@ class ColorMonitor(HPanel):
 		HPanel.__init__(self, parent)
 		self.fill_txt = Label(self.panel, text='Fill:')
 		self.add(self.fill_txt, 0, LEFT | CENTER)
-		self.fill_swatch = ColorSwatch(self.panel)
+		self.fill_swatch = FillSwatch(self.panel, self.app, self.fill_txt)
 		self.add(self.fill_swatch, 0, LEFT | CENTER, 2)
 		self.stroke_txt = Label(self.panel, text='Stroke:')
 		self.add(self.stroke_txt, 0, LEFT | CENTER, 10)
-		self.stroke_swatch = ColorSwatch(self.panel)
+		self.stroke_swatch = StrokeSwatch(self.panel, self.app, self.stroke_txt)
 		self.add(self.stroke_swatch, 0, LEFT | CENTER, 2)
 		self.add((5, 5))
+		events.connect(events.SELECTION_CHANGED, self.update)
+		events.connect(events.DOC_CHANGED, self.update)
+		events.connect(events.NO_DOCS, self.update)
+
+	def update(self, *args):
+		if self.app.insp.is_doc() and self.app.insp.is_selection():
+			sel = self.app.current_doc.selection.objs
+			if len(sel) == 1 and self.app.insp.is_obj_primitive(sel[0]):
+				self.fill_swatch.update_from_obj(sel[0])
+				self.stroke_swatch.update_from_obj(sel[0])
+				self.show(True)
+		else:
+			self.hide(True)
 
 class MouseMonitor(HPanel):
 
