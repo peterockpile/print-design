@@ -38,6 +38,7 @@ class PD_Presenter:
 
 
 	model = None
+	cms = None
 	methods = None
 	renderer = None
 	active_page = None
