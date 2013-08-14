@@ -113,11 +113,11 @@ class MouseMonitor(HPanel):
 		bitmap = wx.StaticBitmap(self.panel, bitmap=get_icon(icons.PD_MOUSE_MONITOR))
 		self.add(bitmap, 0, LEFT | CENTER)
 
-		fontzise = 0
-		if const.is_mac(): fontsize = -1
+		fontzise = 0; width = 100
+		if const.is_mac(): fontsize = -1; width = 130
 
 		self.pointer_txt = Label(self.panel, text=' ', fontsize=fontsize)
-		self.pointer_txt.SetMinSize((100, -1))
+		self.pointer_txt.SetMinSize((width, -1))
 		self.add(self.pointer_txt, 0, LEFT | CENTER)
 		self.add(VLine(self.panel), 0, ALL | EXPAND, 2)
 		events.connect(events.MOUSE_STATUS, self.set_value)
