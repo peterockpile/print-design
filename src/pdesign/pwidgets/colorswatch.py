@@ -167,9 +167,10 @@ class StrokeSwatch(ColorSwatch):
 	def update_val(self):
 		text = _('Stroke:')
 		if self.point_val:
-			val = str(round(self.point_val * point_dict[config.default_unit], 3))
+			unit = self.app.current_doc.model.doc_units
+			val = str(round(self.point_val * point_dict[unit], 3))
 			text += (' %s ') % (val)
-			text += config.default_unit
+			text += uc2const.unit_short_names[unit]
 		else:
 			text += ' ' + _('None')
 		self.label.set_text(text)
