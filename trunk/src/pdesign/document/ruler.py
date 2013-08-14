@@ -157,7 +157,7 @@ class Ruler(HPanel):
 		canvas = self.presenter.canvas
 		w, h = self.presenter.get_page_size()
 		x = y = 0
-		dx = dy = uc2const.unit_dict[config.default_unit]
+		dx = dy = uc2const.unit_dict[self.presenter.model.doc_units]
 		origin = self.presenter.model.doc_origin
 		if origin == DOC_ORIGIN_LL:
 			x0, y0 = canvas.point_doc_to_win([-w / 2.0 + x, -h / 2.0 + y])
@@ -191,7 +191,7 @@ class Ruler(HPanel):
 		canvas = self.presenter.canvas
 		pw, ph = self.presenter.get_page_size()
 		origin = self.presenter.model.doc_origin
-		unit = uc2const.unit_dict[config.default_unit]
+		unit = uc2const.unit_dict[self.presenter.model.doc_units]
 		w, h = self.panel.GetSize()
 		x0, y0, dx, dy, sx, sy = self.calc_ruler()
 		small_ticks = []
@@ -222,7 +222,7 @@ class Ruler(HPanel):
 			while pos < w:
 				pos = sxt + i * dxt
 				doc_pos = canvas.point_win_to_doc((pos, 0))[0] + shift
-				doc_pos *= uc2const.point_dict[config.default_unit]
+				doc_pos *= uc2const.point_dict[self.presenter.model.doc_units]
 				if float_flag:
 					txt = str(round(doc_pos, 4))
 					if not doc_pos:txt = '0'
@@ -257,7 +257,7 @@ class Ruler(HPanel):
 				pos = syt + i * dyt
 				doc_pos = canvas.point_win_to_doc((0, pos))[1] + shift
 				if origin == DOC_ORIGIN_LU:doc_pos *= -1.0
-				doc_pos *= uc2const.point_dict[config.default_unit]
+				doc_pos *= uc2const.point_dict[self.presenter.model.doc_units]
 				if float_flag:
 					txt = str(round(doc_pos, 4))
 					if not doc_pos:txt = '0'
@@ -347,10 +347,10 @@ class Ruler(HPanel):
 	def set_cursor(self, mode=False):
 		if not mode: self.SetCursor(self.default_cursor)
 		else: self.SetCursor(self.guide_cursor)
-		
+
 	def capture_lost(self, event):
 		if self.mouse_captured:
-			self.mouse_captured=False
+			self.mouse_captured = False
 			self.ReleaseMouse()
 		self.set_cursor()
 
@@ -376,7 +376,7 @@ class Ruler(HPanel):
 	def mouse_up(self, event):
 		self.pointer = list(event.GetPositionTuple())
 		if self.mouse_captured:
-			self.mouse_captured=False
+			self.mouse_captured = False
 			self.ReleaseMouse()
 		if self.style == HORIZONTAL:
 			y_win = self.pointer[1] - self.height

@@ -26,6 +26,7 @@ from pdesign import events, modes, config
 from pdesign.widgets import const
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
+from uc2 import uc2const
 
 PAGEFIT = 0.9
 ZOOM_IN = 1.25
@@ -466,9 +467,10 @@ class AppCanvas(wx.Panel):
 
 	def mouse_move(self, event):
 		x, y = self.win_to_doc_coords(list(event.GetPositionTuple()))
-		unit = config.default_unit
+		unit = self.presenter.model.doc_units
+		tr_unit = uc2const.unit_short_names[unit]
 		msg = '  %i x %i' % (x * point_dict[unit], y * point_dict[unit])
-		events.emit(events.MOUSE_STATUS, '%s %s' % (msg, unit))
+		events.emit(events.MOUSE_STATUS, '%s %s' % (msg, tr_unit))
 		self.controller.mouse_move(event)
 
 	def mouse_right_down(self, event):
