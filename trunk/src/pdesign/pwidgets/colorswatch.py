@@ -98,7 +98,7 @@ class FillSwatch(ColorSwatch):
 			self.alpha = 1.0
 			self.color_name = ''
 			self.non_solid = False
-		print self.color
+
 		if self.color:
 			cms = self.app.current_doc.cms
 			r, g, b = cms.get_display_color(fill[2])
