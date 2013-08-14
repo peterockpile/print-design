@@ -52,7 +52,7 @@ class AppStatusbar(HPanel):
 		panel1.add(bitmap, 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
-		fontzise = 0
+		fontsize = 0
 		if const.is_mac(): fontsize = -1
 		self.info = Label(panel1.panel, text='', fontsize=fontsize)
 		panel1.add(self.info, 0, LEFT | CENTER)
@@ -79,7 +79,7 @@ class ColorMonitor(HPanel):
 		self.parent = parent
 		HPanel.__init__(self, parent)
 
-		fontzise = 0
+		fontsize = 0
 		if const.is_mac(): fontsize = -1
 
 		self.fill_txt = Label(self.panel, text='Fill:', fontsize=fontsize)
@@ -151,7 +151,7 @@ class PageMonitor(HPanel):
 
 		native = False
 		if const.is_msw(): native = True
-		fontzise = 0
+		fontsize = 0
 		if const.is_mac(): fontsize = -1
 
 		callback = self.app.proxy.goto_start
