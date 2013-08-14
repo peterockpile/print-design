@@ -176,7 +176,7 @@ class LabelRenderer:
 	def _draw_text(self, text, x, y):
 		if self.text:
 			self.pdc.SetFont(self.font)
-			if self.widget.IsEnabled():
+			if self.widget.enabled:
 				color = UI_COLORS['text']
 				self.pdc.SetTextForeground(wx.Colour(*color))
 				self.pdc.DrawText(text, x, y)
@@ -190,7 +190,7 @@ class LabelRenderer:
 
 	def _draw_bmp(self, x, y):
 		if self.bmp:
-			if self.widget.IsEnabled():
+			if self.widget.enabled:
 				self.dc.DrawBitmap(self.bmp, x, y, True)
 			else:
 				if not self.disabled_bmp: self._set_disabled_bmp()

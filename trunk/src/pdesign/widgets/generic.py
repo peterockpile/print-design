@@ -108,8 +108,11 @@ class GenericGWidget(wx.Panel, Widget):
 
 
 	def set_enable(self, value):
-		Widget.set_enable(self, value)
+		self.enabled = value
 		self.refresh()
+
+	def get_enabled(self):
+		return self.enabled
 
 	def set_size(self, w, h):
 		self._set_size(w, h)
