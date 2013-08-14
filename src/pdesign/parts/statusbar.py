@@ -102,8 +102,8 @@ class ColorMonitor(HPanel):
 				self.fill_swatch.update_from_obj(sel[0])
 				self.stroke_swatch.update_from_obj(sel[0])
 				self.show(True)
-		else:
-			self.hide(True)
+				return
+		self.hide(True)
 
 class MouseMonitor(HPanel):
 
