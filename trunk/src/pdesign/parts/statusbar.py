@@ -52,7 +52,9 @@ class AppStatusbar(HPanel):
 		panel1.add(bitmap, 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
-		self.info = Label(panel1.panel, text='')
+		fontzise = 0
+		if const.is_mac(): fontsize = -1
+		self.info = Label(panel1.panel, text='', fontsize=fontsize)
 		panel1.add(self.info, 0, LEFT | CENTER)
 		self.add(panel1, 1, ALL | EXPAND)
 
@@ -76,11 +78,15 @@ class ColorMonitor(HPanel):
 		self.app = app
 		self.parent = parent
 		HPanel.__init__(self, parent)
-		self.fill_txt = Label(self.panel, text='Fill:')
+
+		fontzise = 0
+		if const.is_mac(): fontsize = -1
+
+		self.fill_txt = Label(self.panel, text='Fill:', fontsize=fontsize)
 		self.add(self.fill_txt, 0, LEFT | CENTER)
 		self.fill_swatch = FillSwatch(self.panel, self.app, self.fill_txt)
 		self.add(self.fill_swatch, 0, LEFT | CENTER, 2)
-		self.stroke_txt = Label(self.panel, text='Stroke:')
+		self.stroke_txt = Label(self.panel, text='Stroke:', fontsize=fontsize)
 		self.add(self.stroke_txt, 0, LEFT | CENTER, 10)
 		self.stroke_swatch = StrokeSwatch(self.panel, self.app, self.stroke_txt)
 		self.add(self.stroke_swatch, 0, LEFT | CENTER, 2)
@@ -106,7 +112,11 @@ class MouseMonitor(HPanel):
 		HPanel.__init__(self, parent)
 		bitmap = wx.StaticBitmap(self.panel, bitmap=get_icon(icons.PD_MOUSE_MONITOR))
 		self.add(bitmap, 0, LEFT | CENTER)
-		self.pointer_txt = Label(self.panel, text=' --- x --- ')
+
+		fontzise = 0
+		if const.is_mac(): fontsize = -1
+
+		self.pointer_txt = Label(self.panel, text=' ', fontsize=fontsize)
 		self.pointer_txt.SetMinSize((100, -1))
 		self.add(self.pointer_txt, 0, LEFT | CENTER)
 		self.add(VLine(self.panel), 0, ALL | EXPAND, 2)
@@ -138,6 +148,8 @@ class PageMonitor(HPanel):
 
 		native = False
 		if const.is_msw(): native = True
+		fontzise = 0
+		if const.is_mac(): fontsize = -1
 
 		callback = self.app.proxy.goto_start
 		self.start_but = ImageButton(self.panel,
@@ -157,7 +169,7 @@ class PageMonitor(HPanel):
 							onclick=callback)
 		self.add(self.prev_but, 0, LEFT | CENTER)
 
-		self.page_txt = Label(self.panel, text=' ')
+		self.page_txt = Label(self.panel, text=' ', fontsize=fontsize)
 		self.add(self.page_txt, 0, LEFT | CENTER)
 
 		callback = self.app.proxy.next_page
