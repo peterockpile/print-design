@@ -150,7 +150,7 @@ class PolyLineCreator(AbstractCreator):
 			self.init_timer()
 		return True
 
-	def on_timer(self, event):
+	def on_timer(self):
 		if not self.timer_callback is None:
 			self.timer_callback()
 
