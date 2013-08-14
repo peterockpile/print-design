@@ -18,6 +18,7 @@
 import wx
 
 from uc2 import uc2const
+from uc2.cms import verbose_color
 from uc2.uc2const import point_dict
 from uc2.formats.pdxf.const import FILL_SOLID
 
@@ -102,44 +103,20 @@ class FillSwatch(ColorSwatch):
 			cms = self.app.current_doc.cms
 			r, g, b = cms.get_display_color(fill[2])
 			self.rgb_color = (int(r * 255), int(g * 255), int(b * 255))
+			self.update_label(fill[2])
 		else:
 			self.rgb_color = ()
-		self.update_label()
+			self.update_label()
 		self.refresh()
 
-	def update_label(self):
+	def update_label(self, color=[]):
 		text = _('Fill:')
 		if self.non_solid:
 			pass
 		elif self.colorspace is None:
 			text += ' ' + _('None')
 		else:
-			if self.colorspace == uc2const.COLOR_CMYK:
-				c, m, y, k = self.color
-				text += ' C-%d%% M-%d%% Y-%d%% K-%d%%' % (c * 100, m * 100,
-														 y * 100, k * 100)
-			elif self.colorspace == uc2const.COLOR_RGB:
-				r, g, b = self.color
-				text += ' R-%d G-%d B-%d' % (r * 255, g * 255, b * 255)
-			elif self.colorspace == uc2const.COLOR_LAB:
-				l, a, b = self.color
-				text += ' L-%d a-%d b-%d' % (l * 255, a * 255, b * 255)
-			elif self.colorspace == uc2const.COLOR_GRAY:
-				gray, = self.color
-				text += ' gray-%d' % (gray * 255)
-			elif self.colorspace == uc2const.COLOR_SPOT:
-				text += ' %s' % (self.color_name)
-			else:
-				pass
-
-			if self.alpha < 1.0:
-				if self.colorspace == uc2const.COLOR_CMYK:
-					alpha = int(round(self.alpha * 100))
-					text += ' A-%d%%' % (alpha)
-				else:
-					alpha = int(round(self.alpha * 255))
-					text += ' A-%d' % (alpha)
-
+			text += verbose_color(color)
 		self.label.set_text(text)
 
 class StrokeSwatch(ColorSwatch):
