@@ -18,7 +18,7 @@
 import copy
 import wx
 
-from pdesign.utils.color import verbose_color
+from uc2.cms import verbose_color
 from pdesign.widgets import HPanel, Label
 
 CELL_WIDTH = 40.0
