@@ -244,3 +244,156 @@ class PolyLineCreator(AbstractCreator):
 				self.api.create_curve(paths)
 			else:
 				self.api.update_curve(obj, paths)
+
+
+class PathsCreator(PolyLineCreator):
+
+	mode = modes.CURVE_MODE
+	curve_point = []
+	control_point0 = []
+	control_point1 = []
+	control_point2 = []
+	curve_point_doc = []
+	control_point0_doc = []
+	control_point1_doc = []
+	control_point2_doc = []
+
+	def __init__(self, canvas, presenter):
+		PolyLineCreator.__init__(self, canvas, presenter)
+
+	def standby(self):
+		self.init_timer()
+		self.cursor = []
+		self.on_timer()
+
+	def restore(self):
+		self.point = self.canvas.point_doc_to_win(self.point_doc)
+		self.curve_point = self.canvas.point_doc_to_win(self.curve_point_doc)
+		self.control_point0 = self.canvas.point_doc_to_win(self.control_point0_doc)
+		self.control_point1 = self.canvas.point_doc_to_win(self.control_point1_doc)
+		self.control_point2 = self.canvas.point_doc_to_win(self.control_point2_doc)
+		self.on_timer()
+
+	def update_from_obj(self):
+		self.paths = apply_trafo_to_paths(self.obj.paths, self.obj.trafo)
+		path = self.paths[-1]
+		if path[-1] == const.CURVE_OPENED:
+			self.path = path
+			self.points = self.path[1]
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths)
+			last = bezier_base_point(self.points[-1])
+			self.control_point0 = self.canvas.point_doc_to_win(last)
+			self.control_point0_doc = [] + last
+			self.point = [] + self.control_point0
+			self.point_doc = [] + last
+			self.control_point2 = [] + self.control_point0
+			self.control_point2_doc = [] + last
+			self.curve_point = [] + self.control_point0
+			self.curve_point_doc = [] + last
+		else:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			self.canvas.renderer.paint_curve(paths)
+		self.draw = True
+
+	def mouse_down(self, event):
+		if not self.draw:
+			self.draw = True
+			self.clear_data()
+		p = list(event.GetPositionTuple())
+		flag, self.curve_point, self.curve_point_doc = self.snap.snap_point(p)
+		self.control_point2 = []
+		self.control_point2_doc = []
+		self.create = True
+		self.init_timer()
+
+	def mouse_up(self, event):
+		if self.draw:
+			self.create = False
+			self.ctrl_mask = False
+			self.alt_mask = False
+			p = list(event.GetPositionTuple())
+			flag, self.control_point2, self.control_point2_doc = self.snap.snap_point(p)
+			self.ctrl_mask = event.ControlDown()
+			self.alt_mask = event.AltDown()
+			if self.path[0]:
+				if self.alt_mask:
+					p = list(event.GetPositionTuple())
+					flag, self.point, self.point_doc = self.snap.snap_point(p)
+					self.add_point([] + self.point, [] + self.point_doc)
+					self.control_point0 = [] + self.point
+					self.cursor = list(event.GetPositionTuple())
+					self.curve_point = [] + self.point
+				elif self.control_point2:
+					self.point = [] + self.curve_point
+					self.point_doc = [] + self.curve_point_doc
+					self.control_point1 = contra_point(self.control_point2,
+															 self.curve_point)
+					self.control_point1_doc = contra_point(self.control_point2_doc,
+															 self.curve_point_doc)
+					self.add_point([self.control_point0, self.control_point1,
+								self.curve_point, const.NODE_SYMMETRICAL],
+								[self.control_point0_doc, self.control_point1_doc,
+								self.curve_point_doc, const.NODE_SYMMETRICAL])
+					self.control_point0 = [] + self.control_point2
+					self.control_point0_doc = [] + self.control_point2_doc
+					p = list(event.GetPositionTuple())
+					self.cursor = [] + p
+					flag, self.curve_point, self.curve_point_doc = self.snap.snap_point(p)
+			else:
+				p = list(event.GetPositionTuple())
+				flag, self.point, self.point_doc = self.snap.snap_point(p)
+				self.add_point(self.point, self.point_doc)
+				self.control_point0 = [] + self.point
+				self.control_point0_doc = [] + self.point_doc
+			self.on_timer()
+
+	def mouse_move(self, event):
+		if self.draw:
+			p = list(event.GetPositionTuple())
+			flag, self.control_point2, self.control_point2_doc = self.snap.snap_point(p)
+			self.cursor = [] + p
+			if not self.create:
+				self.curve_point = [] + self.control_point2
+				self.curve_point_doc = [] + self.control_point2_doc
+			self.set_repaint_timer()
+		else:
+			self.init_timer()
+			self.counter += 1
+			if self.counter > 5:
+				self.counter = 0
+				point = list(event.GetPositionTuple())
+				dpoint = self.canvas.win_to_doc(point)
+				if self.selection.is_point_over_marker(dpoint):
+					mark = self.selection.is_point_over_marker(dpoint)[0]
+					self.canvas.resize_marker = mark
+					self.cursor = []
+					self.canvas.set_temp_mode(modes.RESIZE_MODE)
+
+	def repaint_draw(self):
+		if self.path[0] or self.paths:
+			paths = self.canvas.paths_doc_to_win(self.paths)
+			cursor = self.cursor
+			if not self.path[0]: cursor = []
+			path = []
+			if self.control_point0:
+				self.control_point1 = contra_point(self.control_point2,
+												self.curve_point)
+				path = [self.point, [self.control_point0,
+									self.control_point1,
+									self.curve_point]]
+			cpoint = []
+			if self.create: cpoint = self.control_point2
+			self.canvas.renderer.paint_curve(paths, cursor, path, cpoint)
+		return True
+
+	def init_data(self):
+		PolyLineCreator.init_data(self)
+		self.curve_point = []
+		self.control_point0 = []
+		self.control_point1 = []
+		self.control_point2 = []
+		self.curve_point_doc = []
+		self.control_point0_doc = []
+		self.control_point1_doc = []
+		self.control_point2_doc = []

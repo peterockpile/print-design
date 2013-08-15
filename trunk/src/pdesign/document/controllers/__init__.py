@@ -22,4 +22,4 @@ from fleur_ctrl import FleurController, TempFleurController
 from zoom_ctrl import ZoomController
 from creators import EllipseCreator, PolygonCreator, RectangleCreator
 from guide_ctrl import GuideController
-from paint_ctrl import PolyLineCreator
+from paint_ctrl import PolyLineCreator, PathsCreator
