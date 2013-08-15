@@ -116,7 +116,7 @@ class FillSwatch(ColorSwatch):
 		elif self.colorspace is None:
 			text += ' ' + _('None')
 		else:
-			text += verbose_color(color)
+			text += ' ' + verbose_color(color)
 		self.label.set_text(text)
 
 class StrokeSwatch(ColorSwatch):
