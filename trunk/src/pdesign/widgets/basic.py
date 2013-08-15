@@ -59,6 +59,7 @@ class Application(wx.App):
 		if self.mw:
 			self.SetTopWindow(self.mw)
 			self.mw.build()
+			if self.mw.maximized: self.mw.Maximize()
 			self.mw.Show(True)
 			self.mdi = self.mw.mdi
 			if self.actions:self.update_actions()
@@ -70,8 +71,11 @@ class Application(wx.App):
 class MainWindow(wx.Frame):
 
 	mdi = None
+	maximized = False
 
-	def __init__(self, title='Frame', size=(100, 100), orientation=wx.VERTICAL):
+	def __init__(self, title='Frame', size=(100, 100), orientation=wx.VERTICAL,
+				maximized=False):
+		self.maximized = maximized
 
 		wx.Frame.__init__(self, None, wx.ID_ANY, title, pos=DEF_SIZE, size=size,
 						name=title)
