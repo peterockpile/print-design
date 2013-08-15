@@ -15,7 +15,7 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign.dialogs import msg_dialog
+from pdesign import dialogs
 
 class AppProxy:
 
@@ -27,7 +27,7 @@ class AppProxy:
 		self.mw = self.app.mw
 
 	def stub(self, *args):
-		msg_dialog(self.mw, self.app.appdata.app_name,
+		dialogs.msg_dialog(self.mw, self.app.appdata.app_name,
 				'Sorry, but this feature is not implemented yet!\n' +
 				'Be patient and watch project development of regularly updating the source code!')
 
@@ -42,6 +42,7 @@ class AppProxy:
 
 	def set_mode(self, mode): self.app.current_doc.canvas.set_mode(mode)
 	def open_url(self, url): self.app.open_url(url)
+	def about(self): dialogs.about_dialog(self.mw)
 
 	def undo(self): self.app.current_doc.api.do_undo()
 	def redo(self): self.app.current_doc.api.do_redo()

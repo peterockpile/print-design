@@ -124,7 +124,7 @@ def create_actions(app):
 (pdids.ID_APP_WEBSITE, proxy.open_url, [], None, None, ('http://sk1project.org',)),
 (pdids.ID_APP_FORUM, proxy.open_url, [], None, None, ('http://sk1project.org/forum/index.php',)),
 (pdids.ID_APP_FBPAGE, proxy.open_url, [], None, None, ('http://www.facebook.com/pages/sK1-Project/308311182521658',)),
-(wx.ID_ABOUT, proxy.stub),
+(wx.ID_ABOUT, proxy.about),
 	]
 # action_id, callback, channels, validator, checker,
 # callable_args, validator_args, checker_args
