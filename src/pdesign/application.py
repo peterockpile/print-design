@@ -16,6 +16,7 @@
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, sys
+import webbrowser
 
 from uc2 import uc2const
 from uc2.application import UCApplication
@@ -232,8 +233,8 @@ class pdApplication(Application, UCApplication):
 		w, h = self.mw.GetSize()
 		config.mw_width = w
 		config.mw_height = h
+		config.mw_maximized = self.mw.IsMaximized()
 		config.save(self.appdata.app_config)
 
 	def open_url(self, url):
-		import webbrowser
 		webbrowser.open_new(url)

@@ -42,7 +42,7 @@ class AppMainWindow(MainWindow):
 		height = max(config.mw_min_height, config.mw_height)
 		width = max(config.mw_min_width, config.mw_width)
 		size = (width, height)
-		MainWindow.__init__(self, title, size)
+		MainWindow.__init__(self, title, size, maximized=config.mw_maximized)
 		self.set_minsize(config.mw_min_width, config.mw_min_height)
 		self.icons = self.create_icon_bundle()
 		self.SetIcons(self.icons)
