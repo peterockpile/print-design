@@ -63,22 +63,22 @@ class PolyLineCreator(AbstractCreator):
 				self.obj = sel_objs[0]
 				self.update_from_obj()
 		self.presenter.selection.clear()
-		self.repaint()
+		self.on_timer()
 
 	def stop_(self):
 		self.init_flags()
 		self.init_data()
 		self.init_timer()
 		self.canvas.renderer.paint_curve([])
-		self.canvas.selection_repaint()
+		self.on_timer()
 
 	def standby(self):
 		self.init_timer()
 		self.cursor = []
-		self.repaint()
+		self.on_timer()
 
 	def restore(self):
-		self.repaint()
+		self.on_timer()
 
 	def mouse_down(self, event):
 		if not self.draw:
@@ -97,7 +97,7 @@ class PolyLineCreator(AbstractCreator):
 			point = list(event.GetPositionTuple())
 			flag, point, doc_point = self.snap.snap_point(point)
 			self.add_point(point, doc_point)
-			self.repaint()
+			self.on_timer()
 
 	def mouse_double_click(self, event):
 		if self.ctrl_mask:
@@ -131,6 +131,10 @@ class PolyLineCreator(AbstractCreator):
 					self.canvas.set_temp_mode(modes.RESIZE_MODE)
 
 	def repaint(self):
+		if not self.timer_callback is None:
+			self.timer_callback()
+
+	def repaint_draw(self):
 		if self.path[0] or self.paths:
 			paths = self.canvas.paths_doc_to_win(self.paths)
 			if self.cursor:
@@ -145,23 +149,18 @@ class PolyLineCreator(AbstractCreator):
 		if self.create and self.cursor:
 			flag, point, doc_point = self.snap.snap_point(self.cursor)
 			self.add_point(point, doc_point)
-			self.repaint()
+			self.repaint_draw()
 		else:
 			self.init_timer()
 		return True
 
-	def on_timer(self):
-		if not self.timer_callback is None:
-			self.timer_callback()
-
 	def init_timer(self):
-		if self.timer.IsRunning():
-			self.timer.Stop()
-			self.timer_callback = None
+		if self.timer.IsRunning(): self.timer.Stop()
+		self.timer_callback = self.repaint_draw
 
 	def set_repaint_timer(self):
 		if not self.timer.IsRunning():
-			self.timer_callback = self.repaint
+			self.timer_callback = self.repaint_draw
 			self.timer.Start(RENDERING_DELAY)
 
 	def set_drawing_timer(self):
@@ -221,7 +220,7 @@ class PolyLineCreator(AbstractCreator):
 						self.release_curve()
 					else:
 						self.draw = False
-					self.repaint()
+					self.on_timer()
 				elif not is_point_in_rect2(subpoint, last, w, h):
 					self.points.append(doc_point)
 					self.path[1] = self.points
