@@ -149,7 +149,7 @@ class AppCanvas(wx.Panel):
 		modes.TEMP_FLEUR_MODE: controllers.TempFleurController(self, self.presenter),
 		modes.PICK_MODE: controllers.PickController(self, self.presenter),
 		modes.LINE_MODE: controllers.PolyLineCreator(self, self.presenter),
-		modes.CURVE_MODE: dummy,
+		modes.CURVE_MODE: controllers.PathsCreator(self, self.presenter),
 		modes.RECT_MODE: controllers.RectangleCreator(self, self.presenter),
 		modes.ELLIPSE_MODE: controllers.EllipseCreator(self, self.presenter),
 		modes.TEXT_MODE: dummy,
