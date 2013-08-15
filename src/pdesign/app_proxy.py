@@ -187,8 +187,9 @@ class AppProxy:
 	def goto_end(self): self.goto_page(len(self.app.current_doc.get_pages()) - 1)
 
 	def goto_page(self, index=None):
-		if index is None:pass
-#			index = dialogs.goto_page_dialog(self.mw, self.app.current_doc)
+		if index is None:
+			index = dialogs.goto_page_dlg(self.mw, self.app.current_doc)
+			if index is None:return
 		if index >= 0:
 			self.app.current_doc.goto_page(index)
 
