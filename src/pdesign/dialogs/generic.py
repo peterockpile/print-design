@@ -21,6 +21,10 @@ from pdesign.widgets import HLine, const
 
 class GenericDialog(wx.Dialog):
 
+	sizer = None
+	hbox = None
+	button_box = None
+
 	def __init__(self, parent, title, size=(-1, -1)):
 
 		wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size)
@@ -29,15 +33,17 @@ class GenericDialog(wx.Dialog):
 		self.SetSizer(self.sizer)
 
 		self.hbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer.Add(self.hbox, 0, wx.ALL)
+		self.sizer.Add(self.hbox, 0, wx.ALL, 5)
 
 		self.build()
 
-		line = HLine(self)
-		self.sizer.Add(line, 0, wx.ALL)
+		hbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.sizer.Add(hbox, 0, wx.ALL)
+		line = wx.StaticLine(self)
+		hbox.Add(line, 0, wx.ALL)
 
 		self.button_box = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT)
+		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
 
 		ok_btn = wx.Button(self, wx.ID_OK, "", wx.DefaultPosition, wx.DefaultSize, 0)
 		self.Bind(wx.EVT_BUTTON, self.on_ok, ok_btn)
