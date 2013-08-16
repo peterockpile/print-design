@@ -57,9 +57,12 @@ class GenericDialog(wx.Dialog):
 		if const.is_gtk():
 			self.button_box.Add(self.cancel_btn, 0, wx.ALIGN_RIGHT)
 			self.button_box.Add(self.ok_btn, 0, wx.ALIGN_RIGHT)
-		else:
+		elif const.is_msw():
 			self.button_box.Add(self.ok_btn, 0, ALL | wx.ALIGN_RIGHT)
 			self.button_box.Add(self.cancel_btn, 0, ALL | wx.ALIGN_RIGHT)
+		else:
+			self.button_box.Add(self.ok_btn, 0, ALL | wx.ALIGN_RIGHT, 5)
+			self.button_box.Add(self.cancel_btn, 0, ALL | wx.ALIGN_RIGHT, 5)
 		self.cancel_btn.SetDefault()
 		self.sizer.Fit(self)
 
