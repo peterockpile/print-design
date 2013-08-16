@@ -939,9 +939,8 @@ class PresenterAPI(AbstractAPI):
 		sel_before = [] + self.selection.objs
 		active_index_before = pages.index(self.presenter.active_page)
 
-		active_index_after = active_index_before
-		if position == uc2const.AFTER:
-			active_index_after = active_index_before + 1
+		active_index_after = target
+		if position == uc2const.AFTER: active_index_after += 1
 
 		for item in range(number):
 			page = self.methods.insert_page(active_index_after + item)
