@@ -278,12 +278,14 @@ class Ruler(HPanel):
 		w, h = self.panel.GetSize()
 		pdc = wx.BufferedPaintDC(self.panel)
 		pdc.BeginDrawing()
+		shift=0
+		if is_msw():shift=1
 		if self.surface is None:
-			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w-shift, h-shift)
 			self.width = w
 			self.height = h
 		elif self.width <> w or self.height <> h:
-			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w-shift, h-shift)
 			self.width = w
 			self.height = h
 		self.ctx = cairo.Context(self.surface)
