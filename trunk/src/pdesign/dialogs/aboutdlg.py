@@ -27,7 +27,7 @@ def about_dialog(parent):
 	info.Name = "PrintDesign"
 	info.Version = "1.0"
 	info.Copyright = "(C) 2013 Igor E. Novikov"
-	descr = '(rev.468 preview build)\n'
+	descr = '(rev.495 preview build)\n'
 	descr += _("Vector graphics editor based on sK1 0.9.x\n")
 	descr += _("and Skencil 0.6.x experience.")
 	info.Description = descr
