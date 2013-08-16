@@ -54,7 +54,7 @@ class AppCanvas(wx.Panel):
 
 	workspace = (WORKSPACE_WIDTH, WORKSPACE_HEIGHT)
 	matrix = None
-	trafo = []
+	trafo = [1.0,0.0,0.0,1.0,0.0,0.0]
 	zoom = 1.0
 	width = 0
 	height = 0
