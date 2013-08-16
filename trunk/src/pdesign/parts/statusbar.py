@@ -197,6 +197,7 @@ class PageMonitor(HPanel):
 		self.add(VLine(self.panel), 0, ALL | EXPAND, 4)
 		events.connect(events.NO_DOCS, self.hide_monitor)
 		events.connect(events.DOC_CHANGED, self.update)
+		events.connect(events.DOC_MODIFIED, self.update)
 		events.connect(events.PAGE_CHANGED, self.update)
 
 	def stub(self, *args):pass
