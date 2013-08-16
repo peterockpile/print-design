@@ -17,8 +17,11 @@
 
 import wx
 
+from uc2 import uc2const
+
 from pdesign import _
-from pdesign.widgets import Label, Spin
+from pdesign.widgets import ALL, VERTICAL
+from pdesign.widgets import Label, Spin, HPanel, VPanel, Radiobutton
 from generic import GenericDialog
 
 class GotoPageDialog(GenericDialog):
@@ -31,25 +34,23 @@ class GotoPageDialog(GenericDialog):
 
 	def build(self):
 		label = Label(self, _("Page No.:"))
-		self.box.add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.box.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 		pages = self.presenter.get_pages()
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
 		self.spin = Spin(self, current_page, (1, page_num))
-		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 	def get_result(self):
 		return self.spin.get_value() - 1
 
 def goto_page_dlg(parent, presenter):
-	dlg = GotoPageDialog(parent, _("Go to page..."), presenter)
+	ret = None
+	dlg = GotoPageDialog(parent, _("Go to page"), presenter)
 	dlg.Centre()
-	if dlg.ShowModal() == wx.ID_OK:
-		ret = dlg.get_result()
-	else:
-		ret = None
+	if dlg.ShowModal() == wx.ID_OK: ret = dlg.get_result()
 	dlg.Destroy()
 	return ret
 
@@ -63,25 +64,87 @@ class DeletePageDialog(GenericDialog):
 
 	def build(self):
 		label = Label(self, _("Delete page No.:"))
-		self.box.add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.box.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 		pages = self.presenter.get_pages()
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
 		self.spin = Spin(self, current_page, (1, page_num))
-		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 	def get_result(self):
 		return self.spin.get_value() - 1
 
 
 def delete_page_dlg(parent, presenter):
-	dlg = DeletePageDialog(parent, _("Delete page..."), presenter)
+	ret = None
+	dlg = DeletePageDialog(parent, _("Delete page"), presenter)
 	dlg.Centre()
-	if dlg.ShowModal() == wx.ID_OK:
-		ret = dlg.get_result()
-	else:
-		ret = None
+	if dlg.ShowModal() == wx.ID_OK: ret = dlg.get_result()
+	dlg.Destroy()
+	return ret
+
+class InsertPageDialog(GenericDialog):
+
+	presenter = None
+	page_num = None
+	before_opt = None
+	after_opt = None
+	page_index = None
+
+	def __init__(self, parent, title, presenter):
+		self.presenter = presenter
+		GenericDialog.__init__(self, parent, title, style=VERTICAL)
+
+	def build(self):
+
+		panel = HPanel(self.box)
+		self.box.add(panel, 0, ALL, 5)
+
+		label = Label(panel, _("Insert:"))
+		panel.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+
+		self.page_num = Spin(panel, 1, (1, 100))
+		panel.add(self.page_num, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+
+		label = Label(panel, _("page(s)"))
+		panel.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+
+		panel = HPanel(self.box)
+		self.box.add(panel, 0, ALL)
+
+		panel.add((5, 5))
+		vpanel = VPanel(panel)
+		panel.add(vpanel, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+		self.before_opt = Radiobutton(vpanel, _('Before'), group=True)
+		vpanel.add(self.before_opt, 0, ALL)
+		self.after_opt = Radiobutton(vpanel, _('After'))
+		vpanel.add(self.after_opt, 0, ALL)
+
+		self.after_opt.set_value(True)
+
+		label = Label(panel, _("page No.:"))
+		panel.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+
+		pages = self.presenter.get_pages()
+		page_num = len(pages)
+		current_page = pages.index(self.presenter.active_page) + 1
+
+		self.page_index = Spin(panel, current_page, (1, page_num))
+		panel.add(self.page_index, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
+
+	def get_result(self):
+		number = self.page_num.get_value()
+		target = self.page_index.get_value() - 1
+		position = uc2const.BEFORE
+		if self.after_opt.get_value():position = uc2const.AFTER
+		return (number, target, position)
+
+def insert_page_dlg(parent, presenter):
+	ret = ()
+	dlg = InsertPageDialog(parent, _("Insert page"), presenter)
+	dlg.Centre()
+	if dlg.ShowModal() == wx.ID_OK: ret = dlg.get_result()
 	dlg.Destroy()
 	return ret
