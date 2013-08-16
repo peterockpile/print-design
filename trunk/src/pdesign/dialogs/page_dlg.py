@@ -52,3 +52,36 @@ def goto_page_dlg(parent, presenter):
 		ret = None
 	dlg.Destroy()
 	return ret
+
+class DeletePageDialog(GenericDialog):
+
+	presenter = None
+
+	def __init__(self, parent, title, presenter):
+		self.presenter = presenter
+		GenericDialog.__init__(self, parent, title)
+
+	def build(self):
+		label = Label(self, _("Delete page No.:"))
+		self.hbox.add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+		pages = self.presenter.get_pages()
+		page_num = len(pages)
+		current_page = pages.index(self.presenter.active_page) + 1
+
+		self.spin = Spin(self, current_page, (1, page_num))
+		self.hbox.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+	def get_result(self):
+		return self.spin.get_value() - 1
+
+
+def delete_page_dlg(parent, presenter):
+	dlg = DeletePageDialog(parent, _("Delete page..."), presenter)
+	dlg.Centre()
+	if dlg.ShowModal() == wx.ID_OK:
+		ret = dlg.get_result()
+	else:
+		ret = None
+	dlg.Destroy()
+	return ret

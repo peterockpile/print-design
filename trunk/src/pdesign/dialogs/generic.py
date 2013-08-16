@@ -25,6 +25,8 @@ class GenericDialog(wx.Dialog):
 	sizer = None
 	hbox = None
 	button_box = None
+	ok_btn = None
+	cancel_btn = None
 
 	def __init__(self, parent, title, size=(-1, -1)):
 
@@ -39,19 +41,22 @@ class GenericDialog(wx.Dialog):
 		self.build()
 
 		self.button_box = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT | EXPAND, 5)
+		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
 
-		ok_btn = wx.Button(self, wx.ID_OK, "", wx.DefaultPosition, wx.DefaultSize, 0)
-		self.Bind(wx.EVT_BUTTON, self.on_ok, ok_btn)
+		self.ok_btn = wx.Button(self, wx.ID_OK, "", wx.DefaultPosition,
+							wx.DefaultSize, 0)
+		self.Bind(wx.EVT_BUTTON, self.on_ok, self.ok_btn)
 
-		cancel_btn = wx.Button(self, wx.ID_CANCEL, "", wx.DefaultPosition, wx.DefaultSize, 0)
-		self.Bind(wx.EVT_BUTTON, self.on_cancel, cancel_btn)
+		self.cancel_btn = wx.Button(self, wx.ID_CANCEL, "", wx.DefaultPosition,
+								wx.DefaultSize, 0)
+		self.Bind(wx.EVT_BUTTON, self.on_cancel, self.cancel_btn)
 		if const.is_gtk():
-			self.button_box.Add(cancel_btn, 0, ALL | wx.ALIGN_RIGHT)
-			self.button_box.Add(ok_btn, 0, ALL | wx.ALIGN_RIGHT)
+			self.button_box.Add(self.cancel_btn, 0, wx.ALIGN_RIGHT)
+			self.button_box.Add(self.ok_btn, 0, wx.ALIGN_RIGHT)
 		else:
-			self.button_box.Add(ok_btn, 0, ALL | wx.ALIGN_RIGHT)
-			self.button_box.Add(cancel_btn, 0, ALL | wx.ALIGN_RIGHT)
+			self.button_box.Add(self.ok_btn, 0, ALL | wx.ALIGN_RIGHT)
+			self.button_box.Add(self.cancel_btn, 0, ALL | wx.ALIGN_RIGHT)
+		self.cancel_btn.SetDefault()
 		self.sizer.Fit(self)
 
 	def build(self):pass
