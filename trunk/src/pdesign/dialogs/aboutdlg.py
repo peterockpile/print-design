@@ -27,7 +27,7 @@ def about_dialog(parent):
 	info.Name = "PrintDesign"
 	info.Version = "1.0"
 	info.Copyright = "(C) 2013 Igor E. Novikov"
-	descr = '(rev.495 preview build)\n'
+	descr = '(rev.497 preview build)\n'
 	descr += _("Vector graphics editor based on sK1 0.9.x\n")
 	descr += _("and Skencil 0.6.x experience.")
 	info.Description = descr
@@ -39,8 +39,8 @@ def about_dialog(parent):
 	main_dev += "<igor.e.novikov@gmail.com>\n\n" + sep
 	init_dev = "Bernhard Herzog (Skencil, Tk version)\n"
 	init_dev += "<bernhard@users.sourceforge.net>\n" + sep
-	info.Developers = [main_dev, init_dev, CREDITS]
+#	info.Developers = [main_dev, init_dev, CREDITS]
 
-	info.License = LICENSE
+#	info.License = LICENSE
 
 	wx.AboutBox(info)
