@@ -17,26 +17,30 @@
 
 import wx
 
-from pdesign.widgets import BOTTOM, EXPAND, ALL
-from pdesign.widgets import const, HPanel
+from pdesign.widgets import BOTTOM, EXPAND, ALL, VERTICAL, HORIZONTAL
+from pdesign.widgets import const, HPanel, VPanel
 
 class GenericDialog(wx.Dialog):
 
 	sizer = None
-	hbox = None
+	box = None
 	button_box = None
 	ok_btn = None
 	cancel_btn = None
 
-	def __init__(self, parent, title, size=(-1, -1)):
+	def __init__(self, parent, title, size=(-1, -1), style=HORIZONTAL):
 
 		wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size)
 
 		self.sizer = wx.BoxSizer(wx.VERTICAL)
 		self.SetSizer(self.sizer)
 
-		self.hbox = HPanel(self, border=BOTTOM, space=5)
-		self.sizer.Add(self.hbox, 0, ALL | EXPAND)
+		if style == HORIZONTAL:
+			self.box = HPanel(self, border=BOTTOM, space=5)
+			self.sizer.Add(self.box, 0, ALL | EXPAND)
+		else:
+			self.box = VPanel(self, border=BOTTOM, space=5)
+			self.sizer.Add(self.box, 0, ALL | EXPAND)
 
 		self.build()
 
