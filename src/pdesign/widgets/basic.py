@@ -135,31 +135,59 @@ class SizedPanel(Panel):
 class BorderedPanel(SizedPanel):
 	def __init__(self, parent, orientation=wx.HORIZONTAL, border=None, space=0):
 		if border is None:
-			if orientation == wx.HORIZONTAL:
-				inner_orientation = wx.VERTICAL
-			else:
-				inner_orientation = wx.HORIZONTAL
-		else:
-			if orientation == wx.HORIZONTAL:
-				inner_orientation = wx.HORIZONTAL
-				orientation = wx.VERTICAL
-			else:
-				inner_orientation = wx.VERTICAL
-				orientation = wx.HORIZONTAL
-		SizedPanel.__init__(self, parent, orientation)
-		if not border is None:
+			SizedPanel.__init__(self, parent, orientation)
+			self.panel = self
 			self.inner_box = self.box
-			if border in (wx.BOTH, wx.TOP, wx.LEFT):
-				line = wx.StaticLine(self, style=inner_orientation)
-				self.add(line, 0, wx.ALL | wx.EXPAND)
-			panel = SizedPanel(self, inner_orientation)
-			self.add(panel, 1, wx.ALL | wx.EXPAND, space)
-			if border in (wx.BOTH, wx.BOTTOM, wx.RIGHT):
-				line = wx.StaticLine(self, style=inner_orientation)
-				self.add(line, 0, wx.ALL | wx.EXPAND)
-			self.box = panel.box
-			self.panel = panel
-
+		else:
+			if orientation == wx.HORIZONTAL and border in (wx.TOP, wx.BOTTOM):
+				SizedPanel.__init__(self, parent, wx.VERTICAL)
+				if border == wx.TOP:
+					line = wx.StaticLine(self, style=wx.HORIZONTAL)
+					self.add(line, 0, wx.ALL | wx.EXPAND)
+				box = wx.BoxSizer(wx.HORIZONTAL)
+				self.box.Add(box, 0, wx.ALL | wx.EXPAND)
+				self.inner_box = self.box
+				self.box = box
+				if border == wx.BOTTOM:
+					line = wx.StaticLine(self, style=wx.HORIZONTAL)
+					self.inner_box.Add(line, 0, wx.ALL | wx.EXPAND)
+			elif orientation == wx.HORIZONTAL and border in (wx.LEFT, wx.RIGHT):
+				SizedPanel.__init__(self, parent, wx.HORIZONTAL)
+				if border == wx.LEFT:
+					line = wx.StaticLine(self, style=wx.VERTICAL)
+					self.add(line, 0, wx.ALL | wx.EXPAND)
+				box = wx.BoxSizer(wx.HORIZONTAL)
+				self.box.Add(box, 0, wx.ALL | wx.EXPAND)
+				self.inner_box = self.box
+				self.box = box
+				if border == wx.RIGHT:
+					line = wx.StaticLine(self, style=wx.VERTICAL)
+					self.inner_box.Add(line, 0, wx.ALL | wx.EXPAND)
+			elif orientation == wx.VERTICAL and border in (wx.TOP, wx.BOTTOM):
+				SizedPanel.__init__(self, parent, wx.VERTICAL)
+				if border == wx.TOP:
+					line = wx.StaticLine(self, style=wx.HORIZONTAL)
+					self.add(line, 0, wx.ALL | wx.EXPAND)
+				box = wx.BoxSizer(wx.VERTICAL)
+				self.box.Add(box, 0, wx.ALL | wx.EXPAND)
+				self.inner_box = self.box
+				self.box = box
+				if border == wx.BOTTOM:
+					line = wx.StaticLine(self, style=wx.HORIZONTAL)
+					self.inner_box.Add(line, 0, wx.ALL | wx.EXPAND)
+			else:
+				SizedPanel.__init__(self, parent, wx.HORIZONTAL)
+				if border == wx.LEFT:
+					line = wx.StaticLine(self, style=wx.VERTICAL)
+					self.add(line, 0, wx.ALL | wx.EXPAND)
+				box = wx.BoxSizer(wx.VERTICAL)
+				self.box.Add(box, 0, wx.ALL | wx.EXPAND)
+				self.inner_box = self.box
+				self.box = box
+				if border == wx.RIGHT:
+					line = wx.StaticLine(self, style=wx.VERTICAL)
+					self.inner_box.Add(line, 0, wx.ALL | wx.EXPAND)
+			self.panel = self
 
 class HPanel(BorderedPanel):
 	def __init__(self, parent, border=None, space=0):
