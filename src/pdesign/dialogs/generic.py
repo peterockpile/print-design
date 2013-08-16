@@ -35,11 +35,14 @@ class GenericDialog(wx.Dialog):
 		self.sizer = wx.BoxSizer(wx.VERTICAL)
 		self.SetSizer(self.sizer)
 
+		margin = 5
+		if not const.is_gtk(): margin = 10
+
 		if style == HORIZONTAL:
-			self.box = HPanel(self, border=BOTTOM, space=5)
+			self.box = HPanel(self, border=BOTTOM, space=margin)
 			self.sizer.Add(self.box, 0, ALL | EXPAND)
 		else:
-			self.box = VPanel(self, border=BOTTOM, space=5)
+			self.box = VPanel(self, border=BOTTOM, space=margin)
 			self.sizer.Add(self.box, 0, ALL | EXPAND)
 
 		self.build()

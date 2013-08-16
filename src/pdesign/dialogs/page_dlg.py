@@ -113,17 +113,17 @@ class InsertPageDialog(GenericDialog):
 
 		panel = HPanel(self.box)
 		self.box.add(panel, 0, ALL)
-		
-		margin=0
-		if const.is_msw():margin=3
+
+		margin = 0
+		if not const.is_gtk():margin = 3
 
 		panel.add((5, 5))
 		vpanel = VPanel(panel)
 		panel.add(vpanel, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 		self.before_opt = Radiobutton(vpanel, _('Before'), group=True)
-		vpanel.add(self.before_opt, 0, ALL,margin)
+		vpanel.add(self.before_opt, 0, ALL, margin)
 		self.after_opt = Radiobutton(vpanel, _('After'))
-		vpanel.add(self.after_opt, 0, ALL,margin)
+		vpanel.add(self.after_opt, 0, ALL, margin)
 
 		self.after_opt.set_value(True)
 
