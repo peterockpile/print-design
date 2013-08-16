@@ -173,16 +173,15 @@ class AppProxy:
 	def previous_page(self):
 		self.app.current_doc.previous_page()
 
-	def delete_page(self):pass
-#		index = dialogs.delete_page_dialog(self.mw, self.app.current_doc)
-#		if index >= 0:
-#			self.app.current_doc.api.delete_page(index)
-#
+	def delete_page(self):
+		index = dialogs.delete_page_dlg(self.mw, self.app.current_doc)
+		if index >= 0: self.app.current_doc.api.delete_page(index)
+
 	def insert_page(self):pass
 #		ret = dialogs.insert_page_dialog(self.mw, self.app.current_doc)
 #		if ret:
 #			self.app.current_doc.api.insert_page(*ret)
-#
+
 	def goto_start(self): self.goto_page(0)
 	def goto_end(self): self.goto_page(len(self.app.current_doc.get_pages()) - 1)
 
