@@ -31,14 +31,14 @@ class GotoPageDialog(GenericDialog):
 
 	def build(self):
 		label = Label(self, _("Page No.:"))
-		self.hbox.Add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.hbox.add(label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
 		pages = self.presenter.get_pages()
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
 		self.spin = Spin(self, current_page, (1, page_num))
-		self.hbox.Add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+		self.hbox.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
 	def get_result(self):
 		return self.spin.get_value() - 1
