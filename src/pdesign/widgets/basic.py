@@ -421,7 +421,9 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 		txt = self.entry.get_value()
 		res = ''
 		for item in txt:
-			if item in '.0123456789-+/*':
+			chars = '.0123456789-+/*'
+			if not self.digits: chars = '0123456789-+/*'
+			if item in chars:
 				res += item
 		if not txt == res:
 			self.flag = True
@@ -449,6 +451,7 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 	def _set_value(self, val):
 		coef = pow(10, self.digits)
 		self.value = self._check_in_range(val)
+		if not self.digits: self.value = int(self.value)
 		self.entry.set_value(str(self.value))
 		self.sb.set_value(int(self.value * coef))
 
@@ -461,7 +464,8 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 		self.flag = True
 		self._set_value(val)
 		self.flag = False
-		self.callback(None)
+		if not self.callback is None:
+			self.callback(None)
 
 	def GetValue(self):
 		if not self.value == self._calc_entry():
