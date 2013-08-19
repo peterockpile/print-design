@@ -26,9 +26,46 @@ from pdesign.widgets import Application, MainWindow, VPanel, HPanel, Button, Lab
 
 class CairoCanvas(VPanel):
 
+	drawing = False
+	start = []
+	end = []
+
 	def __init__(self, parent):
 		VPanel.__init__(self, parent)
 		self.Bind(wx.EVT_PAINT, self.on_paint)
+		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_down)
+		self.Bind(wx.EVT_LEFT_UP, self.mouse_up)
+		self.Bind(wx.EVT_MOTION, self.mouse_move)
+
+	def mouse_down(self, event):
+		self.drawing = True
+		self.start = list(event.GetPositionTuple())
+		self.end = list(event.GetPositionTuple())
+		print 'down'
+
+	def mouse_up(self, event):
+		self.render_frame()
+		self.drawing = False
+		self.start = self.end = []
+		print 'up'
+
+	def mouse_move(self, event):
+		if self.drawing:
+			self.render_frame()
+			self.end = list(event.GetPositionTuple())
+			self.render_frame()
+
+	def render_frame(self):
+		if self.start and self.end:
+			x, y = self.start
+			x1, y1 = self.end
+			dc = wx.ClientDC(self)
+			dc.SetLogicalFunction(wx.INVERT)
+			pen = wx.Pen(wx.Colour(0, 0, 0), 1)
+			#pen.SetDashes([5, 5, 5, 5])
+			dc.SetPen(pen)
+			dc.SetBrush(wx.TRANSPARENT_BRUSH)
+			dc.DrawRectangle(x, y, x1 - x, y1 - y)
 
 	def on_paint(self, event):
 		dc = wx.BufferedPaintDC(self)
