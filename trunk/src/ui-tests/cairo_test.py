@@ -87,8 +87,8 @@ class CairoCanvas(VPanel):
 			if not h: h = 1
 			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
 			ctx = cairo.Context(temp_surface)
-			ctx.set_source_surface(self.surface, -x, -y)
-			ctx.paint()
+#			ctx.set_source_surface(self.surface, -x, -y)
+#			ctx.paint()
 			ctx.set_antialias(cairo.ANTIALIAS_NONE)
 			ctx.set_line_width(1.0)
 			ctx.set_source_rgb(1, 1, 1)
@@ -99,7 +99,7 @@ class CairoCanvas(VPanel):
 			ctx.rectangle(1, 1, w - 1, h - 1)
 			ctx.stroke()
 			dc = wx.ClientDC(self)
-			dc.DrawBitmap(copy_surface_to_bitmap(temp_surface), x, y)
+#			dc.DrawBitmap(copy_surface_to_bitmap(temp_surface), x, y)
 			rects = [[0, 0, 1, h - 1], [0, 0, w - 1, 1],
 				[w - 1, 0, 1, h - 1], [0, h - 1, w - 1, 1]]
 			for rect in rects:
@@ -130,7 +130,7 @@ class CairoCanvas(VPanel):
 
 	def on_paint(self, event):
 		dc = wx.PaintDC(self)
-		if self.surface is None: self.draw_content(*dc.GetSize())
+		self.draw_content(*dc.GetSize())
 		dc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0)
 
 	def draw_content(self, width, height):
