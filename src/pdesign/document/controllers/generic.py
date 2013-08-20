@@ -89,12 +89,26 @@ class AbstractController:
 		self.counter = 0
 		self.timer.Start(RENDERING_DELAY)
 
+	def _get_proportional(self, start, end):
+		x0, y0 = start
+		x1, y1 = end
+		dx = x1 - x0
+		dy = y1 - y0
+		delta = min(abs(dx), abs(dy))
+		if dx < 0: dx = -delta
+		else: dx = delta
+		if dy < 0: dy = -delta
+		else: dy = delta
+		return [x0 + dx, y0 + dy]
+
 	def mouse_up(self, event):
 		if self.draw:
 			self.timer.Stop()
 			self.draw = False
 			self.counter = 0
 			self.end = list(event.GetPositionTuple())
+			if event.ControlDown():
+				self.end = self._get_proportional(self.start, self.end)
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 			if self.do_action(event):
@@ -105,6 +119,8 @@ class AbstractController:
 	def mouse_move(self, event):
 		if self.draw:
 			self.end = list(event.GetPositionTuple())
+			if event.ControlDown():
+				self.end = self._get_proportional(self.start, self.end)
 			if self.check_snap:
 				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
 
