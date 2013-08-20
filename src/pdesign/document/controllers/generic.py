@@ -26,6 +26,7 @@ class AbstractController:
 	snap = None
 	start = []
 	end = []
+	center = []
 	start_doc = []
 	end_doc = []
 	check_snap = False
@@ -74,6 +75,7 @@ class AbstractController:
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
 		self.start = []
+		self.center = []
 		self.end = []
 		self.start_doc = []
 		self.end_doc = []
@@ -101,35 +103,53 @@ class AbstractController:
 		else: dy = delta
 		return [x0 + dx, y0 + dy]
 
+	def _get_mirror(self, center, point):
+		x0, y0 = center
+		x1, y1 = point
+		dx = x1 - x0
+		dy = y1 - y0
+		return [x0 - dx, y0 - dy]
+
+	def _calc_points(self, event):
+		self.end = list(event.GetPositionTuple())
+		ctrl = event.ControlDown()
+		shift = event.ShiftDown()
+		if shift and ctrl:
+			if not self.center: self.center = self.start
+			self.end = self._get_proportional(self.center, self.end)
+			self.start = self._get_mirror(self.center, self.end)
+		elif shift:
+			if not self.center: self.center = self.start
+			self.start = self._get_mirror(self.center, self.end)
+		elif ctrl:
+			if self.center: self.start = self.center; self.center = []
+			self.end = self._get_proportional(self.start, self.end)
+		else:
+			if self.center: self.start = self.center; self.center = []
+		if self.check_snap:
+			self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
+			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+
 	def mouse_up(self, event):
 		if self.draw:
 			self.timer.Stop()
 			self.draw = False
 			self.counter = 0
-			self.end = list(event.GetPositionTuple())
-			if event.ControlDown():
-				self.end = self._get_proportional(self.start, self.end)
-			if self.check_snap:
-				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+			self._calc_points(event)
 			if self.do_action(event):
 				self.start = []
+				self.center = []
 				self.end = []
 				self.canvas.selection_redraw()
 
 	def mouse_move(self, event):
-		if self.draw:
-			self.end = list(event.GetPositionTuple())
-			if event.ControlDown():
-				self.end = self._get_proportional(self.start, self.end)
-			if self.check_snap:
-				self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+		if self.draw: self._calc_points(event)
 
 	def on_timer(self):
 		self.canvas.selection_redraw()
 
 	def repaint(self):
-		if self.end:
-			self.canvas.renderer.draw_frame(self.start, self.end)
+		if self.end: self.canvas.renderer.draw_frame(self.start, self.end)
 
 class WaitController(AbstractController):
 
