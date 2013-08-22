@@ -20,10 +20,10 @@ import wx
 
 from uc2 import uc2const
 from uc2.formats import data
+from uc2.utils.fs import expanduser_unicode
 
 from pdesign import _
 from pdesign.widgets.const import is_mac
-from pdesign.utils.fs import expanduser_unicode
 
 def _get_open_filters():
 	wildcard = ''
