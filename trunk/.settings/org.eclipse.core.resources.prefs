@@ -69,3 +69,5 @@ encoding//src/pdesign/widgets/const.py=utf-8
 encoding//src/pdesign/widgets/gctrls.py=utf-8
 encoding//src/pdesign/widgets/generic.py=utf-8
 encoding//src/pdesign/widgets/renderer.py=utf-8
+encoding//src/pdwx-launcher.py=utf-8
+encoding//src/ui-tests/opendialog.py=utf-8
