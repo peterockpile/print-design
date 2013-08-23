@@ -20,7 +20,7 @@ import wx
 
 from uc2 import uc2const
 from uc2.formats import data
-from uc2.utils.fs import expanduser_unicode
+from uc2.utils.fs import path_system
 
 from pdesign import _
 from pdesign.widgets.const import is_mac
@@ -55,8 +55,8 @@ def _get_open_filters():
 def get_open_file_name(parent, app, start_dir):
 	ret = ''
 	msg = _('Open document')
-
-	start_dir = expanduser_unicode(start_dir)
+	
+	if start_dir=='~': start_dir = os.path.expanduser(start_dir)
 
 	dlg = wx.FileDialog(
 		parent, message=msg,
@@ -67,7 +67,7 @@ def get_open_file_name(parent, app, start_dir):
 		)
 	dlg.CenterOnParent()
 	if dlg.ShowModal() == wx.ID_OK:
-		ret = dlg.GetPath()
+		ret = path_system(dlg.GetPath())
 	dlg.Destroy()
 	return ret
 
@@ -88,8 +88,9 @@ def _get_save_fiters():
 def get_save_file_name(parent, app, path):
 	ret = ''
 	msg = _('Save document As...')
-
-	path = expanduser_unicode(path)
+	
+	if path=='~': path = os.path.expanduser(path)
+	
 	doc_folder = os.path.dirname(path)
 
 	dlg = wx.FileDialog(
@@ -101,6 +102,6 @@ def get_save_file_name(parent, app, path):
 	)
 	dlg.CenterOnParent()
 	if dlg.ShowModal() == wx.ID_OK:
-		ret = dlg.GetPath()
+		ret = path_system(dlg.GetPath())
 	dlg.Destroy()
 	return ret
