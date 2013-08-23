@@ -20,7 +20,6 @@ import os
 from uc2.uc_conf import UCConfig, UCData
 from uc2 import uc2const
 from uc2.utils import system
-from uc2.utils.fs import expanduser_unicode
 from uc2.formats.pdxf.const import DOC_STRUCTURE
 
 from pdesign import events, appconst
@@ -34,7 +33,7 @@ class AppData(UCData):
 	app_icon = None
 	doc_icon = None
 	version = "1.0"
-	app_config_dir = expanduser_unicode(os.path.join('~', '.config', 'pdesign'))
+	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
 
 	def __init__(self):
 

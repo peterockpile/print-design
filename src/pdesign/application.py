@@ -19,6 +19,7 @@ import os, sys
 import webbrowser
 
 from uc2 import uc2const
+from uc2.utils.fs import path_unicode
 from uc2.application import UCApplication
 
 from pdesign import _, config, events, app_actions, modes, dialogs
@@ -56,7 +57,7 @@ class pdApplication(Application, UCApplication):
 
 		self.appdata = AppData()
 		config.load(self.appdata.app_config)
-		config.resource_dir = os.path.join(self.path, 'share')
+		config.resource_dir = os.path.join(path_unicode(self.path), 'share')
 
 		create_artprovider()
 		self.cursors = modes.get_cursors()
