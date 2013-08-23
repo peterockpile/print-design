@@ -232,9 +232,12 @@ class pdApplication(Application, UCApplication):
 	def update_config(self):
 		config.resource_dir = ''
 		w, h = self.mw.GetSize()
+		config.mw_maximized = self.mw.IsMaximized()
+		if self.mw.IsMaximized():
+			w = config.mw_min_width
+			h = config.mw_min_height
 		config.mw_width = w
 		config.mw_height = h
-		config.mw_maximized = self.mw.IsMaximized()
 		config.save(self.appdata.app_config)
 
 	def open_url(self, url):
