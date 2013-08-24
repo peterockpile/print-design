@@ -51,7 +51,7 @@ class CairoCanvas(VPanel):
 
 	def mouse_up(self, event):
 		self.timer.Stop()
-		self.clear_frame()
+		self.clear_frame(self.start, self.end)
 		self.drawing = False
 		self.start = self.end = self.new_end = []
 		print 'up'
@@ -64,14 +64,16 @@ class CairoCanvas(VPanel):
 		if not self.drawing: return
 		if self.start and self.end:
 			if self.new_end:
-				self.clear_frame()
+				self.clear_frame(self.start, self.end)
 				self.end = self.new_end
 				self.new_end = []
-				self.render_frame()
+				self.render_frame(self.start, self.end)
+
+	# DIRECT DRAWING
 
 	def norm_rect(self, start, end):
-		x0, y0 = self.start
-		x1, y1 = self.end
+		x0, y0 = start
+		x1, y1 = end
 		x_min = min(x0, x1)
 		x_max = max(x0, x1)
 		y_min = min(y0, y1)
@@ -80,15 +82,13 @@ class CairoCanvas(VPanel):
 		h = y_max - y_min
 		return [x_min, y_min, w, h]
 
-	def render_frame(self):
-		if self.start and self.end:
-			x, y, w, h = self.norm_rect(self.start, self.end)
+	def render_frame(self, start, end):
+		if start and end:
+			x, y, w, h = self.norm_rect(start, end)
 			if not w: w = 1
 			if not h: h = 1
 			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
 			ctx = cairo.Context(temp_surface)
-#			ctx.set_source_surface(self.surface, -x, -y)
-#			ctx.paint()
 			ctx.set_antialias(cairo.ANTIALIAS_NONE)
 			ctx.set_line_width(1.0)
 			ctx.set_source_rgb(1, 1, 1)
@@ -99,7 +99,6 @@ class CairoCanvas(VPanel):
 			ctx.rectangle(1, 1, w - 1, h - 1)
 			ctx.stroke()
 			dc = wx.ClientDC(self)
-#			dc.DrawBitmap(copy_surface_to_bitmap(temp_surface), x, y)
 			rects = [[0, 0, 1, h - 1], [0, 0, w - 1, 1],
 				[w - 1, 0, 1, h - 1], [0, h - 1, w - 1, 1]]
 			for rect in rects:
@@ -112,9 +111,9 @@ class CairoCanvas(VPanel):
 				ctx.paint()
 				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0 + x, y0 + y)
 
-	def clear_frame(self):
-		if self.start and self.end:
-			x, y, w, h = self.norm_rect(self.start, self.end)
+	def clear_frame(self, start, end):
+		if start and end:
+			x, y, w, h = self.norm_rect(start, end)
 			dc = wx.ClientDC(self)
 			rects = [[x, y, 1, h], [x, y, w, 1],
 					[x + w - 1, y, 1, h], [x, y + h - 1, w, 1]]
@@ -127,6 +126,8 @@ class CairoCanvas(VPanel):
 				ctx.set_source_surface(self.surface, -x0, -y0)
 				ctx.paint()
 				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0, y0)
+
+	# DIRECT DRAWING END
 
 	def on_paint(self, event):
 		dc = wx.PaintDC(self)
