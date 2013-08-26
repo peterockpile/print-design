@@ -87,7 +87,7 @@ class AppCanvas(wx.Panel):
 		self.Bind(wx.EVT_TIMER, self._on_timer)
 
 		self.ctrls = self.init_controllers()
-		self.SetDoubleBuffered(True)
+		if const.is_msw(): self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
 		#----- Mouse binding
 		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
