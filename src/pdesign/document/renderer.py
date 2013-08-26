@@ -595,10 +595,7 @@ class PDRenderer(CairoRenderer):
 			self.cdc_draw_horizontal_line(pos, color, dash, clear)
 
 	def cdc_drag_guide(self, guide=[]):
-		if self.guide:
-			pos, orient = self.guide
-			self.cdc_draw_guide(pos, orient, True)
-			self.guide = []
+		point = orient = 0
 		if guide:
 			point, orient = guide
 			if not point:return
@@ -606,12 +603,21 @@ class PDRenderer(CairoRenderer):
 				pos = self.canvas.point_doc_to_win(point)[0]
 			else:
 				pos = self.canvas.point_doc_to_win(point)[1]
+		if self.guide:
+			pos_old, orient_old = self.guide
+			if guide:
+				if pos_old == pos and orient == orient_old: return
+			self.cdc_draw_guide(pos_old, orient_old, True)
+			self.guide = []
+		if guide:
 			self.guide = [pos, orient]
 			self.cdc_draw_guide(pos, orient)
 
 	def cdc_draw_frame(self, start, end):
 		if start and end:
-			if self.frame: self.cdc_clear_frame(*self.frame)
+			if self.frame:
+				if start == self.frame[0] and end == self.frame[1]:return
+				self.cdc_clear_frame(*self.frame)
 			self.cdc_reflect_snapping()
 			self.frame = [start, end]
 			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
@@ -682,15 +688,16 @@ class PDRenderer(CairoRenderer):
 	def cdc_draw_move_frame(self, trafo):
 		bbox = self.presenter.selection.bbox
 		if bbox:
-			self.cdc_hide_move_frame()
-			self.cdc_reflect_snapping()
 			cpath = libcairo.convert_bbox_to_cpath(bbox)
 			libcairo.apply_trafo(cpath, trafo)
 			libcairo.apply_trafo(cpath, self.canvas.trafo)
-			x0, y0, x1, y1 = libcairo.get_cpath_bbox(cpath)
-			self.frame = [[int(round(x0)), int(round(y0))],
-						[int(round(x1)), int(round(y1))]]
-			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect([x0, y0], [x1, y1]))
+			x0, y0, x1, y1 = self.cdc_to_int(*libcairo.get_cpath_bbox(cpath))
+			frame = [[x0, y0], [x1, y1]]
+			if self.frame and frame == self.frame:return
+			self.cdc_hide_move_frame()
+			self.cdc_reflect_snapping()
+			self.frame = frame
+			x, y, w, h = self.cdc_normalize_rect([x0, y0], [x1, y1])
 			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 2, h + 2)
 			ctx = cairo.Context(surface)
 			ctx.set_source_surface(self.surface, -x + 1, -y + 1)
