@@ -158,6 +158,9 @@ class PolyLineCreator(AbstractCreator):
 		if self.timer.IsRunning(): self.timer.Stop()
 		self.timer_callback = self.repaint_draw
 
+	def on_timer(self):
+		self.canvas.selection_redraw()
+
 	def set_repaint_timer(self):
 		if not self.timer.IsRunning():
 			self.timer_callback = self.repaint_draw

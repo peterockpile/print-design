@@ -92,4 +92,4 @@ class GuideController(AbstractController):
 			else:
 				p_doc = self.presenter.snap.snap_point(self.end, snap_y=False)[2]
 				orient = uc2const.VERTICAL
-		self.canvas.dragged_guide = (p_doc, orient)
+		self.canvas.renderer.cdc_drag_guide([p_doc, orient])

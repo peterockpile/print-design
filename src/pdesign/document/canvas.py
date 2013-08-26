@@ -54,7 +54,7 @@ class AppCanvas(wx.Panel):
 
 	workspace = (WORKSPACE_WIDTH, WORKSPACE_HEIGHT)
 	matrix = None
-	trafo = [1.0,0.0,0.0,1.0,0.0,0.0]
+	trafo = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
 	zoom = 1.0
 	width = 0
 	height = 0
@@ -445,6 +445,7 @@ class AppCanvas(wx.Panel):
 			self.mouse_captured = False
 
 	def capture_lost(self, event):
+		print "capture lost"
 		if self.mouse_captured:
 			self.ReleaseMouse()
 			self.mouse_captured = False
