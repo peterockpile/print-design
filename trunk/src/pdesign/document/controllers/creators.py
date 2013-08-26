@@ -42,6 +42,26 @@ class AbstractCreator(AbstractController):
 					self.canvas.resize_marker = mark
 					self.canvas.set_temp_mode(modes.RESIZE_MODE)
 
+	def _calc_points(self, event):
+		self.end = list(event.GetPositionTuple())
+		ctrl = event.ControlDown()
+		shift = event.ShiftDown()
+		if shift and ctrl:
+			if not self.center: self.center = self.start
+			self.end = self._get_proportional(self.center, self.end)
+			self.start = self._get_mirror(self.center, self.end)
+		elif shift:
+			if not self.center: self.center = self.start
+			self.start = self._get_mirror(self.center, self.end)
+		elif ctrl:
+			if self.center: self.start = self.center; self.center = []
+			self.end = self._get_proportional(self.start, self.end)
+		else:
+			if self.center: self.start = self.center; self.center = []
+		if self.check_snap:
+			self.start, self.start_doc = self.snap.snap_point(self.start)[1:]
+			self.end, self.end_doc = self.snap.snap_point(self.end)[1:]
+
 class RectangleCreator(AbstractCreator):
 
 	mode = modes.RECT_MODE

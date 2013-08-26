@@ -22,7 +22,7 @@ import cairo, math, wx
 from uc2 import uc2const
 from uc2.formats.pdxf import model, const
 from uc2.formats.pdxf.crenderer import CairoRenderer
-from uc2 import libcairo
+from uc2 import libcairo, libgeom
 
 from pdesign import config
 from pdesign.widgets import copy_surface_to_bitmap
@@ -40,6 +40,10 @@ class PDRenderer(CairoRenderer):
 	win_ctx = None
 	surface = None
 	presenter = None
+
+	frame = []
+	snap = []
+	guide = []
 
 	width = 0
 	height = 0
@@ -495,3 +499,208 @@ class PDRenderer(CairoRenderer):
 
 		self.end_soft_repaint()
 
+	#------DIRECT DRAWING
+
+	def cdc_paint_doc(self):
+		dc = wx.ClientDC(self.canvas)
+		dc.DrawBitmap(copy_surface_to_bitmap(self.surface), 0, 0, False)
+
+	def cdc_paint_selection(self):
+		dc = wx.ClientDC(self.canvas)
+		dc.DrawBitmap(copy_surface_to_bitmap(self.temp_surface), 0, 0, False)
+
+	def cdc_normalize_rect(self, start, end):
+		x0, y0 = start
+		x1, y1 = end
+		x_min = min(x0, x1)
+		x_max = max(x0, x1)
+		y_min = min(y0, y1)
+		y_max = max(y0, y1)
+		w = x_max - x_min
+		h = y_max - y_min
+		return [x_min, y_min, w, h]
+
+	def cdc_to_int(self, *args):
+		ret = []
+		for arg in args:ret.append(int(round(arg)))
+		return ret
+
+	def cdc_set_ctx(self, ctx, color=CAIRO_BLACK, dash=[]):
+		ctx.set_antialias(cairo.ANTIALIAS_NONE)
+		ctx.set_line_width(1.0)
+		ctx.set_dash(dash)
+		ctx.set_source_rgba(*color)
+
+	def cdc_draw_vertical_line(self, x, color, dash, clear=False):
+		if x is None:return
+		x = self.cdc_to_int(x)[0]
+		surface = cairo.ImageSurface(cairo.FORMAT_RGB24, 1, self.height)
+		ctx = cairo.Context(surface)
+		ctx.set_source_surface(self.surface, -x + 1, 0)
+		ctx.paint()
+		if not clear:
+			self.cdc_set_ctx(ctx, color, dash)
+			ctx.move_to(1, 0)
+			ctx.line_to(1, self.height)
+			ctx.stroke()
+		dc = wx.ClientDC(self.canvas)
+		dc.DrawBitmap(copy_surface_to_bitmap(surface), x - 1, 0)
+
+	def cdc_draw_horizontal_line(self, y, color, dash, clear=False):
+		if y is None:return
+		y = self.cdc_to_int(y)[0]
+		surface = cairo.ImageSurface(cairo.FORMAT_RGB24, self.width, 1)
+		ctx = cairo.Context(surface)
+		ctx.set_source_surface(self.surface, 0, -y + 1)
+		ctx.paint()
+		if not clear:
+			self.cdc_set_ctx(ctx, color, dash)
+			ctx.move_to(0, 1)
+			ctx.line_to(self.width, 1)
+			ctx.stroke()
+		dc = wx.ClientDC(self.canvas)
+		dc.DrawBitmap(copy_surface_to_bitmap(surface), 0, y - 1)
+
+	def cdc_draw_snap_line(self, pos, vertical=True, clear=False):
+		color = config.snap_line_color
+		dash = config.snap_line_dash
+		if vertical: self.cdc_draw_vertical_line(pos, color, dash, clear)
+		else: self.cdc_draw_horizontal_line(pos, color, dash, clear)
+
+	def cdc_reflect_snapping(self):
+		if self.canvas.show_snapping:
+			snap = self.presenter.snap.active_snap
+			if self.snap:
+				self.cdc_draw_snap_line(self.snap[0], True, True)
+				self.cdc_draw_snap_line(self.snap[1], False, True)
+				self.snap = []
+			if not snap[0] is None or not snap[1] is None:
+				self.snap = [None, None]
+				if not snap[0] is None:
+					x_win = self.canvas.point_doc_to_win([snap[0], 0])[0]
+					self.cdc_draw_snap_line(x_win)
+					self.snap[0] = x_win
+				if not snap[1] is None:
+					y_win = self.canvas.point_doc_to_win([0, snap[1]])[1]
+					self.cdc_draw_snap_line(y_win, False)
+					self.snap[1] = y_win
+				self.presenter.snap.active_snap = [None, None]
+
+	def cdc_draw_guide(self, pos, orient=uc2const.VERTICAL, clear=False):
+		color = config.guide_line_dragging_color
+		dash = config.guide_line_dash
+		if orient == uc2const.VERTICAL:
+			self.cdc_draw_vertical_line(pos, color, dash, clear)
+		else:
+			self.cdc_draw_horizontal_line(pos, color, dash, clear)
+
+	def cdc_drag_guide(self, guide=[]):
+		if self.guide:
+			pos, orient = self.guide
+			self.cdc_draw_guide(pos, orient, True)
+			self.guide = []
+		if guide:
+			point, orient = guide
+			if not point:return
+			if orient == uc2const.VERTICAL:
+				pos = self.canvas.point_doc_to_win(point)[0]
+			else:
+				pos = self.canvas.point_doc_to_win(point)[1]
+			self.guide = [pos, orient]
+			self.cdc_draw_guide(pos, orient)
+
+	def cdc_draw_frame(self, start, end):
+		if start and end:
+			if self.frame: self.cdc_clear_frame(*self.frame)
+			self.cdc_reflect_snapping()
+			self.frame = [start, end]
+			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
+			if not w: w = 1
+			if not h: h = 1
+			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 1, h + 1)
+			ctx = cairo.Context(temp_surface)
+			self.cdc_set_ctx(ctx, CAIRO_WHITE)
+			ctx.rectangle(1, 1, w , h)
+			ctx.stroke()
+			self.cdc_set_ctx(ctx, config.sel_frame_color, config.sel_frame_dash)
+			ctx.rectangle(1, 1, w, h)
+			ctx.stroke()
+			dc = wx.ClientDC(self.canvas)
+			rects = [[0, 0, 1, h], [0, 0, w, 1],
+				[w, 0, 1, h], [0, h, w, 1]]
+			for rect in rects:
+				x0, y0, w, h = rect
+				if not w: w = 1
+				if not h: h = 1
+				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+				ctx = cairo.Context(surface)
+				ctx.set_source_surface(temp_surface, -x0, -y0)
+				ctx.paint()
+				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0 + x, y0 + y)
+
+	def cdc_clear_frame(self, start, end):
+		if start and end:
+			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
+			dc = wx.ClientDC(self.canvas)
+			rects = [[x - 1, y - 1, 3, h + 2], [x - 1, y - 1, w + 2, 3],
+					[x + w - 1, y - 1, 3, h + 2], [x - 1, y + h - 1, w + 2, 3]]
+			for rect in rects:
+				x0, y0, w, h = rect
+				if not w: w = 1
+				if not h: h = 1
+				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+				ctx = cairo.Context(surface)
+				ctx.set_source_surface(self.surface, -x0, -y0)
+				ctx.paint()
+				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0, y0)
+			self.frame = []
+
+	def cdc_clear_rect(self, start, end):
+		if start and end:
+			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
+			dc = wx.ClientDC(self.canvas)
+			x -= 2;y -= 2
+			w += 4;h += 4
+			if not w: w = 1
+			if not h: h = 1
+			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+			ctx = cairo.Context(surface)
+			ctx.set_source_surface(self.surface, -x, -y)
+			ctx.paint()
+			dc.DrawBitmap(copy_surface_to_bitmap(surface), x, y)
+
+	def _cdc_draw_cpath(self, ctx, cpath):
+		self.cdc_set_ctx(ctx, CAIRO_WHITE)
+		ctx.new_path()
+		ctx.append_path(cpath)
+		ctx.stroke()
+		self.cdc_set_ctx(ctx, config.sel_frame_color, config.sel_frame_dash)
+		ctx.new_path()
+		ctx.append_path(cpath)
+		ctx.stroke()
+
+	def cdc_draw_move_frame(self, trafo):
+		bbox = self.presenter.selection.bbox
+		if bbox:
+			self.cdc_hide_move_frame()
+			self.cdc_reflect_snapping()
+			cpath = libcairo.convert_bbox_to_cpath(bbox)
+			libcairo.apply_trafo(cpath, trafo)
+			libcairo.apply_trafo(cpath, self.canvas.trafo)
+			x0, y0, x1, y1 = libcairo.get_cpath_bbox(cpath)
+			self.frame = [[int(round(x0)), int(round(y0))],
+						[int(round(x1)), int(round(y1))]]
+			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect([x0, y0], [x1, y1]))
+			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 2, h + 2)
+			ctx = cairo.Context(surface)
+			ctx.set_source_surface(self.surface, -x + 1, -y + 1)
+			ctx.paint()
+			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -x + 1, -y + 1))
+			self._cdc_draw_cpath(ctx, cpath)
+			dc = wx.ClientDC(self.canvas)
+			dc.DrawBitmap(copy_surface_to_bitmap(surface), x - 1, y - 1)
+
+	def cdc_hide_move_frame(self):
+		if self.frame:
+			self.cdc_clear_rect(*self.frame)
+			self.frame = []

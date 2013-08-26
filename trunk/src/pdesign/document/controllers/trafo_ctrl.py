@@ -43,11 +43,12 @@ class MoveController(AbstractController):
 		self.start = list(event.GetPositionTuple())
 		self.move = True
 		self.canvas.selection_repaint = False
+		self.canvas.renderer.cdc_paint_doc()
 		self.timer.Start(RENDERING_DELAY)
 
 	def repaint(self):
 		if self.end:
-			self.canvas.renderer.draw_move_frame(self.trafo)
+			self.canvas.renderer.cdc_draw_move_frame(self.trafo)
 			self.end = []
 
 	def _calc_trafo(self, point1, point2):
@@ -208,6 +209,7 @@ class TransformController(AbstractController):
 		else:
 			self.offset_start = [] + self.selection.center_offset
 			self.painter = self._draw_center
+		self.canvas.renderer.cdc_paint_doc()
 		self.timer.Start(RENDERING_DELAY)
 
 	def mouse_up(self, event):
@@ -903,7 +905,7 @@ class TransformController(AbstractController):
 
 	def _draw_frame(self, *args):
 		if self.end:
-			self.canvas.renderer.draw_move_frame(self.trafo)
+			self.canvas.renderer.cdc_draw_move_frame(self.trafo)
 			self.end = []
 		return True
 
