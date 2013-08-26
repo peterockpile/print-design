@@ -523,7 +523,7 @@ class PDRenderer(CairoRenderer):
 
 	def cdc_to_int(self, *args):
 		ret = []
-		for arg in args:ret.append(int(round(arg)))
+		for arg in args:ret.append(int(math.ceil(arg)))
 		return ret
 
 	def cdc_set_ctx(self, ctx, color=CAIRO_BLACK, dash=[]):
