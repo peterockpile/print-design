@@ -695,18 +695,23 @@ class PDRenderer(CairoRenderer):
 			x0, y0, x1, y1 = self.cdc_to_int(*libcairo.get_cpath_bbox(cpath))
 			frame = [[x0, y0], [x1, y1]]
 			if self.frame and frame == self.frame:return
-			self.cdc_hide_move_frame()
+			if not self.frame:self.frame = frame
+			x01, y01 = self.frame[0]
+			x11, y11 = self.frame[1]
+			fx0, fy0, fx1, fy1 = libgeom.sum_bbox([x0, y0, x1, y1], [x01, y01, x11, y11])
+			fx, fy, fw, fh = self.cdc_normalize_rect([fx0, fy0], [fx1, fy1])
+#			self.cdc_hide_move_frame()
 			self.cdc_reflect_snapping()
 			self.frame = frame
 			x, y, w, h = self.cdc_normalize_rect([x0, y0], [x1, y1])
-			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 2, h + 2)
+			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, fw + 2, fh + 2)
 			ctx = cairo.Context(surface)
-			ctx.set_source_surface(self.surface, -x + 1, -y + 1)
+			ctx.set_source_surface(self.surface, -fx + 1, -fy + 1)
 			ctx.paint()
-			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -x + 1, -y + 1))
+			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -fx + 1, -fy + 1))
 			self._cdc_draw_cpath(ctx, cpath)
 			dc = wx.ClientDC(self.canvas)
-			dc.DrawBitmap(copy_surface_to_bitmap(surface), x - 1, y - 1)
+			dc.DrawBitmap(copy_surface_to_bitmap(surface), fx - 1, fy - 1)
 
 	def cdc_hide_move_frame(self):
 		if self.frame:
