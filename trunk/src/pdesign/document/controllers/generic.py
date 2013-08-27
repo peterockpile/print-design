@@ -120,7 +120,6 @@ class AbstractController:
 	def mouse_up(self, event):
 		if self.draw:
 			self.timer.Stop()
-			self.canvas.renderer.cdc_hide_move_frame()
 			self.draw = False
 			self.counter = 0
 			self._calc_points(event)

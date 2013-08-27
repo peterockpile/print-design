@@ -532,6 +532,12 @@ class PDRenderer(CairoRenderer):
 		ctx.set_dash(dash)
 		ctx.set_source_rgba(*color)
 
+	def cdc_frame_to_bbox(self, frame):
+		return frame[0] + frame[1]
+
+	def cdc_bbox_to_frame(self, bbox):
+		return [bbox[:2], bbox[2:]]
+
 	def cdc_draw_vertical_line(self, x, color, dash, clear=False):
 		if x is None:return
 		x = self.cdc_to_int(x)[0]
@@ -614,54 +620,6 @@ class PDRenderer(CairoRenderer):
 			self.guide = [pos, orient]
 			self.cdc_draw_guide(pos, orient)
 
-	def cdc_draw_frame(self, start, end):
-		if start and end:
-			if self.frame:
-				if start == self.frame[0] and end == self.frame[1]:return
-				self.cdc_clear_frame(*self.frame)
-			self.cdc_reflect_snapping()
-			self.frame = [start, end]
-			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
-			if not w: w = 1
-			if not h: h = 1
-			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 1, h + 1)
-			ctx = cairo.Context(temp_surface)
-			self.cdc_set_ctx(ctx, CAIRO_WHITE)
-			ctx.rectangle(1, 1, w , h)
-			ctx.stroke()
-			self.cdc_set_ctx(ctx, config.sel_frame_color, config.sel_frame_dash)
-			ctx.rectangle(1, 1, w, h)
-			ctx.stroke()
-			dc = wx.ClientDC(self.canvas)
-			rects = [[0, 0, 1, h], [0, 0, w, 1],
-				[w, 0, 1, h], [0, h, w, 1]]
-			for rect in rects:
-				x0, y0, w, h = rect
-				if not w: w = 1
-				if not h: h = 1
-				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
-				ctx = cairo.Context(surface)
-				ctx.set_source_surface(temp_surface, -x0, -y0)
-				ctx.paint()
-				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0 + x, y0 + y)
-
-	def cdc_clear_frame(self, start, end):
-		if start and end:
-			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
-			dc = wx.ClientDC(self.canvas)
-			rects = [[x - 1, y - 1, 3, h + 2], [x - 1, y - 1, w + 2, 3],
-					[x + w - 1, y - 1, 3, h + 2], [x - 1, y + h - 1, w + 2, 3]]
-			for rect in rects:
-				x0, y0, w, h = rect
-				if not w: w = 1
-				if not h: h = 1
-				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
-				ctx = cairo.Context(surface)
-				ctx.set_source_surface(self.surface, -x0, -y0)
-				ctx.paint()
-				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0, y0)
-			self.frame = []
-
 	def cdc_clear_rect(self, start, end):
 		if start and end:
 			x, y, w, h = self.cdc_to_int(*self.cdc_normalize_rect(start, end))
@@ -692,26 +650,45 @@ class PDRenderer(CairoRenderer):
 			cpath = libcairo.convert_bbox_to_cpath(bbox)
 			libcairo.apply_trafo(cpath, trafo)
 			libcairo.apply_trafo(cpath, self.canvas.trafo)
-			x0, y0, x1, y1 = self.cdc_to_int(*libcairo.get_cpath_bbox(cpath))
-			frame = [[x0, y0], [x1, y1]]
+			bbox = self.cdc_to_int(*libcairo.get_cpath_bbox(cpath))
+			frame = self.cdc_bbox_to_frame(bbox)
 			if self.frame and frame == self.frame:return
 			if not self.frame:self.frame = frame
-			x01, y01 = self.frame[0]
-			x11, y11 = self.frame[1]
-			fx0, fy0, fx1, fy1 = libgeom.sum_bbox([x0, y0, x1, y1], [x01, y01, x11, y11])
-			fx, fy, fw, fh = self.cdc_normalize_rect([fx0, fy0], [fx1, fy1])
-#			self.cdc_hide_move_frame()
-			self.cdc_reflect_snapping()
+			bbox2 = self.cdc_frame_to_bbox(self.frame)
+			frame_sum = self.cdc_bbox_to_frame(libgeom.sum_bbox(bbox, bbox2))
+			x, y, w, h = self.cdc_normalize_rect(*frame_sum)
 			self.frame = frame
-			x, y, w, h = self.cdc_normalize_rect([x0, y0], [x1, y1])
-			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, fw + 2, fh + 2)
+			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 2, h + 2)
 			ctx = cairo.Context(surface)
-			ctx.set_source_surface(self.surface, -fx + 1, -fy + 1)
+			ctx.set_source_surface(self.surface, -x + 1, -y + 1)
 			ctx.paint()
-			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -fx + 1, -fy + 1))
+			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -x + 1, -y + 1))
 			self._cdc_draw_cpath(ctx, cpath)
 			dc = wx.ClientDC(self.canvas)
-			dc.DrawBitmap(copy_surface_to_bitmap(surface), fx - 1, fy - 1)
+			dc.DrawBitmap(copy_surface_to_bitmap(surface), x - 1, y - 1)
+			self.cdc_reflect_snapping()
+
+	def cdc_draw_frame(self, start, end):
+		if start and end:
+			if self.frame:
+				if start == self.frame[0] and end == self.frame[1]:return
+			cpath = libcairo.convert_bbox_to_cpath(start + end)
+			bbox = self.cdc_to_int(*libcairo.get_cpath_bbox(cpath))
+			frame = self.cdc_bbox_to_frame(bbox)
+			if not self.frame:self.frame = frame
+			bbox2 = self.cdc_frame_to_bbox(self.frame)
+			frame_sum = self.cdc_bbox_to_frame(libgeom.sum_bbox(bbox, bbox2))
+			x, y, w, h = self.cdc_normalize_rect(*frame_sum)
+			self.frame = frame
+			surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w + 2, h + 2)
+			ctx = cairo.Context(surface)
+			ctx.set_source_surface(self.surface, -x + 1, -y + 1)
+			ctx.paint()
+			ctx.set_matrix(cairo.Matrix(1.0, 0.0, 0.0, 1.0, -x + 1, -y + 1))
+			self._cdc_draw_cpath(ctx, cpath)
+			dc = wx.ClientDC(self.canvas)
+			dc.DrawBitmap(copy_surface_to_bitmap(surface), x - 1, y - 1)
+			self.cdc_reflect_snapping()
 
 	def cdc_hide_move_frame(self):
 		if self.frame:
