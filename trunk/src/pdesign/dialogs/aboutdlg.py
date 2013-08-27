@@ -22,6 +22,7 @@ from pdesign.resources import icons
 
 from pdesign.widgets import const, EXPAND, ALL, LEFT, CENTER
 from pdesign.widgets import HPanel, VPanel, Notebook, Label, HLine, HtmlLabel
+from pdesign.widgets import Entry
 
 from pdesign.dialogs.license import LICENSE
 from pdesign.dialogs.credits import CREDITS
@@ -67,9 +68,9 @@ class PDAboutDialog(wx.Dialog):
 		nb = Notebook(self.box)
 		nb.add_page(AboutPage(self.app, nb), _('About'))
 		nb.add_page(VPanel(nb), _('Components'))
-		nb.add_page(VPanel(nb), _('Authors'))
-		nb.add_page(VPanel(nb), _('Thanks to'))
-		nb.add_page(VPanel(nb), _('License'))
+		nb.add_page(AuthorsPage(nb), _('Authors'))
+		nb.add_page(ThanksPage(nb), _('Thanks to'))
+		nb.add_page(LicensePage(nb), _('License'))
 		self.box.add(nb, 1, ALL | EXPAND, 5)
 
 
@@ -111,7 +112,36 @@ class AboutPage(HPanel):
 		box.add(Label(box, txt))
 		box.add(HtmlLabel(box, 'http://sk1project.org'))
 
-class LicensePage(VPanel):pass
+class AuthorsPage(VPanel):
+
+	def __init__(self, parent):
+		VPanel.__init__(self, parent)
+		sep = "------------------------------\n"
+		dev = "\nIgor E. Novikov\n"
+		dev += "(PrintDesign, wxWidgets version; sK1, Tk version)\n"
+		dev += "<igor.e.novikov@gmail.com>\n\n" + sep
+		dev += 'PrintDesign is based on sK1 0.9.x and Skencil 0.6.x experience.'
+		dev += '\n' + sep
+		dev += "Bernhard Herzog (Skencil, Tk version)\n"
+		dev += "<bernhard@users.sourceforge.net>\n" + sep
+		entry = Entry(self, dev, multiline=True, editable=False)
+		self.add(entry, 1, ALL | EXPAND, 5)
+
+class ThanksPage(VPanel):
+
+	def __init__(self, parent):
+		VPanel.__init__(self, parent)
+		from pdesign.dialogs.credits import CREDITS
+		entry = Entry(self, CREDITS, multiline=True, editable=False)
+		self.add(entry, 1, ALL | EXPAND, 5)
+
+class LicensePage(VPanel):
+
+	def __init__(self, parent):
+		VPanel.__init__(self, parent)
+		from pdesign.dialogs.license import LICENSE
+		entry = Entry(self, LICENSE, multiline=True, editable=False)
+		self.add(entry, 1, ALL | EXPAND, 5)
 
 def about_dialog(app, parent):
 
