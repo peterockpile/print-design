@@ -58,6 +58,10 @@ def mix_colors(fg, bg, alpha):
 	g = int(g1 * a1 + g2 * a2)
 	return (r, g, b)
 
+def lighter_color(color, coef):
+	white = (255, 255, 255)
+	return mix_colors(color, white, coef * 255.0)
+
 def _init_gtk_colors(kw):
 	border = wx.SystemSettings_GetColour(wx.SYS_COLOUR_BTNSHADOW).Get()
 	bg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE).Get()
