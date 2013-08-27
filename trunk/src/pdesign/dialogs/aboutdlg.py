@@ -18,10 +18,67 @@
 import wx
 
 from pdesign import _
+from pdesign.resources import get_icon, icons
+
+from pdesign.widgets import BOTTOM, EXPAND, ALL, LEFT, CENTER
+from pdesign.widgets import const, HPanel, VPanel, LabeledPanel, Label
+
 from pdesign.dialogs.license import LICENSE
 from pdesign.dialogs.credits import CREDITS
 
-def about_dialog(parent):
+class PDAboutDialog(wx.Dialog):
+
+	sizer = None
+	app = None
+
+	def __init__(self, app, parent, title, size=(500, 300)):
+		self.app = app
+		wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size)
+		self.sizer = wx.BoxSizer(wx.VERTICAL)
+		self.SetSizer(self.sizer)
+
+		margin = 5
+		if not const.is_gtk(): margin = 10
+
+		self.box = VPanel(self, border=BOTTOM, space=margin)
+		self.sizer.Add(self.box, 0, ALL | EXPAND)
+
+		self.build()
+
+		self.button_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
+
+		self.close_btn = wx.Button(self, wx.ID_CLOSE, "", wx.DefaultPosition,
+							wx.DefaultSize, 0)
+		self.button_box.Add(self.close_btn, 0, wx.ALIGN_RIGHT)
+		self.Bind(wx.EVT_BUTTON, self.close_dlg, self.close_btn)
+		self.close_btn.SetDefault()
+		#self.sizer.Fit(self)
+
+	def close_dlg(self, event):
+		self.EndModal(wx.ID_OK)
+
+	def build(self):
+		panel = HPanel(self.box)
+		panel.set_bg(const.UI_COLORS['light_face'])
+		bmp = wx.ArtProvider.GetBitmap(icons.PDESIGN_ICON32, size=const.DEF_SIZE)
+		bitmap = wx.StaticBitmap(panel, -1, bmp)
+		panel.add(bitmap, 0, ALL, 5)
+
+		data = self.app.appdata
+
+		p = VPanel(panel)
+		p.set_bg(const.UI_COLORS['light_face'])
+		p.add(Label(p, data.app_name, True, 3), 0, ALL | EXPAND, 0)
+		txt = ('%s: %s %s') % (_('Version'), data.version, data.revision)
+		p.add(Label(p, txt), 0, ALL | EXPAND, 0)
+		panel.add(p, 0, LEFT | CENTER, 0)
+
+		self.box.add(panel, 0, ALL | EXPAND, 5)
+
+
+
+def about_dialog(app, parent):
 
 	info = wx.AboutDialogInfo()
 	info.Name = "PrintDesign"
@@ -42,5 +99,8 @@ def about_dialog(parent):
 #	info.Developers = [main_dev, init_dev, CREDITS]
 
 #	info.License = LICENSE
-
-	wx.AboutBox(info)
+	title = _('About') + ' ' + app.appdata.app_name
+	dlg = PDAboutDialog(app, parent, title)
+	dlg.Centre()
+	dlg.ShowModal()
+	dlg.Destroy()

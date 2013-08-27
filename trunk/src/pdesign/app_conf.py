@@ -33,6 +33,7 @@ class AppData(UCData):
 	app_icon = None
 	doc_icon = None
 	version = "1.0"
+	revision = 'rev.515'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
 
 	def __init__(self):
