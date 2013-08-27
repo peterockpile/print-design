@@ -18,10 +18,10 @@
 import wx
 
 from pdesign import _
-from pdesign.resources import get_icon, icons
+from pdesign.resources import icons
 
-from pdesign.widgets import BOTTOM, EXPAND, ALL, LEFT, CENTER
-from pdesign.widgets import const, HPanel, VPanel, LabeledPanel, Label
+from pdesign.widgets import const, EXPAND, ALL, LEFT, CENTER
+from pdesign.widgets import HPanel, VPanel, Notebook, Label, HLine, HtmlLabel
 
 from pdesign.dialogs.license import LICENSE
 from pdesign.dialogs.credits import CREDITS
@@ -40,10 +40,12 @@ class PDAboutDialog(wx.Dialog):
 		margin = 5
 		if not const.is_gtk(): margin = 10
 
-		self.box = VPanel(self, border=BOTTOM, space=margin)
-		self.sizer.Add(self.box, 0, ALL | EXPAND)
+		self.box = VPanel(self, space=margin)
+		self.sizer.Add(self.box, 1, ALL | EXPAND)
 
 		self.build()
+
+		self.box.add(HLine(self), 0, ALL | EXPAND)
 
 		self.button_box = wx.BoxSizer(wx.HORIZONTAL)
 		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
@@ -59,24 +61,57 @@ class PDAboutDialog(wx.Dialog):
 		self.EndModal(wx.ID_OK)
 
 	def build(self):
-		panel = HPanel(self.box)
-		panel.set_bg(const.UI_COLORS['light_face'])
+		header = AboutHeader(self.app, self.box)
+		self.box.add(header, 0, ALL | EXPAND, 5)
+
+		nb = Notebook(self.box)
+		nb.add_page(AboutPage(self.app, nb), _('About'))
+		nb.add_page(VPanel(nb), _('Components'))
+		nb.add_page(VPanel(nb), _('Authors'))
+		nb.add_page(VPanel(nb), _('Thanks to'))
+		nb.add_page(VPanel(nb), _('License'))
+		self.box.add(nb, 1, ALL | EXPAND, 5)
+
+
+class AboutHeader(HPanel):
+
+	def __init__(self, app, parent):
+		HPanel.__init__(self, parent)
+		self.set_bg(const.UI_COLORS['pressed_border'])
+
+		panel = HPanel(self)
+		color = const.lighter_color(const.UI_COLORS['bg'], 0.9)
+		panel.set_bg(color)
 		bmp = wx.ArtProvider.GetBitmap(icons.PDESIGN_ICON32, size=const.DEF_SIZE)
 		bitmap = wx.StaticBitmap(panel, -1, bmp)
 		panel.add(bitmap, 0, ALL, 5)
 
-		data = self.app.appdata
+		data = app.appdata
 
 		p = VPanel(panel)
-		p.set_bg(const.UI_COLORS['light_face'])
+		p.set_bg(color)
 		p.add(Label(p, data.app_name, True, 3), 0, ALL | EXPAND, 0)
 		txt = ('%s: %s %s') % (_('Version'), data.version, data.revision)
 		p.add(Label(p, txt), 0, ALL | EXPAND, 0)
 		panel.add(p, 0, LEFT | CENTER, 0)
 
-		self.box.add(panel, 0, ALL | EXPAND, 5)
+		self.add(panel, 1, ALL | EXPAND, 1)
 
+class AboutPage(HPanel):
 
+	def __init__(self, app, parent):
+		HPanel.__init__(self, parent)
+		self.add((50, 10))
+		box = VPanel(self)
+		self.add(box, 0, LEFT | CENTER, 5)
+		data = app.appdata
+		txt = data.app_name + ' - ' + _('vector graphics editor') + '\n'
+		box.add(Label(box, txt, True, 2))
+		txt = '(C) 2011-2013 sK1 Project team' + '\n'
+		box.add(Label(box, txt))
+		box.add(HtmlLabel(box, 'http://sk1project.org'))
+
+class LicensePage(VPanel):pass
 
 def about_dialog(app, parent):
 
