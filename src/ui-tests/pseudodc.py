@@ -35,6 +35,11 @@ colours = [
 
 
 class MyCanvas(wx.ScrolledWindow):
+	start = []
+	end = []
+	draw = False
+	frame = None
+
 	def __init__(self, parent, id, size=wx.DefaultSize):
 		wx.ScrolledWindow.__init__(self, parent, id, (0, 0), size=size, style=wx.SUNKEN_BORDER)
 
@@ -74,47 +79,69 @@ class MyCanvas(wx.ScrolledWindow):
 		return (event.GetX() + (xView * xDelta),
 			event.GetY() + (yView * yDelta))
 
+	def convert_coords(self, x, y):
+		xView, yView = self.GetViewStart()
+		xDelta, yDelta = self.GetScrollPixelsPerUnit()
+		return [x + (xView * xDelta), y + (yView * yDelta)]
+
 	def OffsetRect(self, r):
 		xView, yView = self.GetViewStart()
 		xDelta, yDelta = self.GetScrollPixelsPerUnit()
 		r.OffsetXY(-(xView * xDelta), -(yView * yDelta))
 
+	def draw_frame(self, start, end):pass
+
+	def hide_frame(self):pass
+
+
 	def OnMouse(self, event):
-		global hitradius
 		if event.LeftDown():
-			x, y = self.ConvertEventCoords(event)
-			#l = self.pdc.FindObjectsByBBox(x, y)
-			l = self.pdc.FindObjects(x, y, hitradius)
-			for id in l:
-				if not self.pdc.GetIdGreyedOut(id):
-					self.dragid = id
-					self.lastpos = (event.GetX(), event.GetY())
-					break
-		elif event.RightDown():
-			x, y = self.ConvertEventCoords(event)
-			#l = self.pdc.FindObjectsByBBox(x, y)
-			l = self.pdc.FindObjects(x, y, hitradius)
-			if l:
-				self.pdc.SetIdGreyedOut(l[0], not self.pdc.GetIdGreyedOut(l[0]))
-				r = self.pdc.GetIdBounds(l[0])
-				r.Inflate(4, 4)
-				self.OffsetRect(r)
-				self.RefreshRect(r, False)
-		elif event.Dragging() or event.LeftUp():
-			if self.dragid != -1:
-				x, y = self.lastpos
-				dx = event.GetX() - x
-				dy = event.GetY() - y
-				r = self.pdc.GetIdBounds(self.dragid)
-				self.pdc.TranslateId(self.dragid, dx, dy)
-				r2 = self.pdc.GetIdBounds(self.dragid)
-				r = r.Union(r2)
-				r.Inflate(4, 4)
-				self.OffsetRect(r)
-				self.RefreshRect(r, False)
-				self.lastpos = (event.GetX(), event.GetY())
-			if event.LeftUp():
-				self.dragid = -1
+			self.start = list(event.GetPositionTuple())
+			self.draw = True
+		elif event.Dragging() and self.draw:
+			end = list(event.GetPositionTuple())
+			self.draw_frame(self.start, end)
+			self.end = end
+		elif event.LeftUp() and self.draw:
+			self.draw = False
+			self.hide_frame()
+
+
+#		global hitradius
+#		if event.LeftDown():
+#			x, y = self.ConvertEventCoords(event)
+#			#l = self.pdc.FindObjectsByBBox(x, y)
+#			l = self.pdc.FindObjects(x, y, hitradius)
+#			for id in l:
+#				if not self.pdc.GetIdGreyedOut(id):
+#					self.dragid = id
+#					self.lastpos = (event.GetX(), event.GetY())
+#					break
+#		elif event.RightDown():
+#			x, y = self.ConvertEventCoords(event)
+#			#l = self.pdc.FindObjectsByBBox(x, y)
+#			l = self.pdc.FindObjects(x, y, hitradius)
+#			if l:
+#				self.pdc.SetIdGreyedOut(l[0], not self.pdc.GetIdGreyedOut(l[0]))
+#				r = self.pdc.GetIdBounds(l[0])
+#				r.Inflate(4, 4)
+#				self.OffsetRect(r)
+#				self.RefreshRect(r, False)
+#		elif event.Dragging() or event.LeftUp():
+#			if self.dragid != -1:
+#				x, y = self.lastpos
+#				dx = event.GetX() - x
+#				dy = event.GetY() - y
+#				r = self.pdc.GetIdBounds(self.dragid)
+#				self.pdc.TranslateId(self.dragid, dx, dy)
+#				r2 = self.pdc.GetIdBounds(self.dragid)
+#				r = r.Union(r2)
+#				r.Inflate(4, 4)
+#				self.OffsetRect(r)
+#				self.RefreshRect(r, False)
+#				self.lastpos = (event.GetX(), event.GetY())
+#			if event.LeftUp():
+#				self.dragid = -1
 
 	def RandomPen(self):
 		c = random.choice(colours)
@@ -183,12 +210,12 @@ class MyCanvas(wx.ScrolledWindow):
 		self.Refresh(rect=wx.Rect(x, y, w, h))
 
 	def create_bmp(self):
-		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 250, 250)
+		surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 500, 500)
 		ctx = cairo.Context(surface)
 		ctx.set_line_width(15)
-		ctx.move_to(125, 25)
-		ctx.line_to(225, 225)
-		ctx.rel_line_to(-200, 0)
+		ctx.move_to(250, 50)
+		ctx.line_to(450, 450)
+		ctx.rel_line_to(-400, 0)
 		ctx.close_path()
 		ctx.set_source_rgba(random.random(),
 						random.random(),
