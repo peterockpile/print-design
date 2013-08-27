@@ -338,8 +338,11 @@ class Combobox(wx.ComboBox, DataWidget):
 
 class Entry(wx.TextCtrl, DataWidget):
 
+	my_changes = False
+	value = ''
+
 	def __init__(self, parent, value='', size=DEF_SIZE, width=0, onchange=None,
-				multiline=False, richtext=False, onenter=None):
+				multiline=False, richtext=False, onenter=None, editable=True):
 		style = 0
 		if multiline: style |= wx.TE_MULTILINE
 		if richtext: style |= wx.TE_RICH2
@@ -348,6 +351,17 @@ class Entry(wx.TextCtrl, DataWidget):
 		wx.TextCtrl.__init__(self, parent, wx.ID_ANY, value, size=size, style=style)
 		if onchange: self.Bind(wx.EVT_TEXT, onchange, self)
 		if onenter: self.Bind(wx.EVT_TEXT_ENTER, onenter, self)
+		if not editable:
+			self.value = value
+			self.Bind(wx.EVT_TEXT, self.on_change, self)
+			self.Bind(wx.EVT_TEXT_ENTER, self.on_change, self)
+
+	def on_change(self, event):
+		if self.my_changes:
+			self.my_changes = False
+			return
+		self.my_changes = True
+		self.SetValue(self.value)
 
 
 class Spin(wx.SpinCtrl, RangeDataWidget):
