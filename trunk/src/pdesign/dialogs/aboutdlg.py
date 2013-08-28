@@ -32,7 +32,7 @@ class PDAboutDialog(wx.Dialog):
 	sizer = None
 	app = None
 
-	def __init__(self, app, parent, title, size=(500, 300)):
+	def __init__(self, app, parent, title, size=(500, 350)):
 		self.app = app
 		wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size)
 		self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -67,7 +67,7 @@ class PDAboutDialog(wx.Dialog):
 
 		nb = Notebook(self.box)
 		nb.add_page(AboutPage(self.app, nb), _('About'))
-		nb.add_page(VPanel(nb), _('Components'))
+		nb.add_page(ComponentsPage(self.app, nb), _('Components'))
 		nb.add_page(AuthorsPage(nb), _('Authors'))
 		nb.add_page(ThanksPage(nb), _('Thanks to'))
 		nb.add_page(LicensePage(nb), _('License'))
@@ -111,6 +111,18 @@ class AboutPage(HPanel):
 		txt = '(C) 2011-2013 sK1 Project team' + '\n'
 		box.add(Label(box, txt))
 		box.add(HtmlLabel(box, 'http://sk1project.org'))
+
+class ComponentsPage(VPanel):
+
+	def __init__(self, app, parent):
+		VPanel.__init__(self, parent)
+		lc = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
+		lc.InsertColumn(0, _('Library'))
+		lc.InsertColumn(1, _('Version'))
+		data = app.appdata.components
+		for item in data: lc.Append(item)
+		self.add(lc, 1, EXPAND, 5)
+		lc.SetColumnWidth(1, wx.wx.LIST_AUTOSIZE)
 
 class AuthorsPage(VPanel):
 
