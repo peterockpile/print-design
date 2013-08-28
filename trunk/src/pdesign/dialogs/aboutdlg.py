@@ -168,26 +168,6 @@ class LicensePage(VPanel):
 		self.add(entry, 1, ALL | EXPAND, 5)
 
 def about_dialog(app, parent):
-
-	info = wx.AboutDialogInfo()
-	info.Name = "PrintDesign"
-	info.Version = "1.0"
-	info.Copyright = "(C) 2013 Igor E. Novikov"
-	descr = '(rev.497 preview build)\n'
-	descr += _("Vector graphics editor based on sK1 0.9.x\n")
-	descr += _("and Skencil 0.6.x experience.")
-	info.Description = descr
-	info.WebSite = ("http://sk1project.org", "http://sk1project.org")
-
-	sep = "------------------------------\n"
-	main_dev = "\nIgor E. Novikov\n"
-	main_dev += "(PrintDesign, wxWidgets version; sK1, Tk version)\n"
-	main_dev += "<igor.e.novikov@gmail.com>\n\n" + sep
-	init_dev = "Bernhard Herzog (Skencil, Tk version)\n"
-	init_dev += "<bernhard@users.sourceforge.net>\n" + sep
-#	info.Developers = [main_dev, init_dev, CREDITS]
-
-#	info.License = LICENSE
 	title = _('About') + ' ' + app.appdata.app_name
 	dlg = PDAboutDialog(app, parent, title)
 	dlg.Centre()
