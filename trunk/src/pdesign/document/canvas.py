@@ -87,7 +87,6 @@ class AppCanvas(wx.Panel):
 		self.Bind(wx.EVT_TIMER, self._on_timer)
 
 		self.ctrls = self.init_controllers()
-		if const.is_msw(): self.SetDoubleBuffered(True)
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
 		#----- Mouse binding
 		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
@@ -401,7 +400,7 @@ class AppCanvas(wx.Panel):
 
 	def force_redraw(self, *args):
 		w, h = self.GetSize()
-		self.Refresh(rect=wx.Rect(0, 0, w, h))
+		self.Refresh(rect=wx.Rect(0, 0, w, h), eraseBackground=False)
 
 	def on_paint(self, event):
 		if self.matrix is None:
