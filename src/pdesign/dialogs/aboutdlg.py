@@ -34,6 +34,7 @@ class PDAboutDialog(wx.Dialog):
 
 	def __init__(self, app, parent, title, size=(500, 350)):
 		self.app = app
+		if const.is_mac(): size = (550, 400)
 		wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size)
 		self.sizer = wx.BoxSizer(wx.VERTICAL)
 		self.SetSizer(self.sizer)
