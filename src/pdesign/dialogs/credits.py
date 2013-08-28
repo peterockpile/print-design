@@ -2,6 +2,8 @@
 
 
 CREDITS = """
+Special thanks to Google Inc. for project support.
+
 Many thanks to all who have commented on sK1/Skencil, sent 
 suggestions and bug reports and helped in testing or 
 contributed to sK1/Skencil with code or through minipayments.
