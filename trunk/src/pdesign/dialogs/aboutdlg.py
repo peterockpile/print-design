@@ -115,13 +115,25 @@ class AboutPage(HPanel):
 class ComponentsPage(VPanel):
 
 	def __init__(self, app, parent):
+		odd_color = wx.Colour(240, 240, 240)
 		VPanel.__init__(self, parent)
 		lc = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
 		lc.InsertColumn(0, _('Library'))
 		lc.InsertColumn(1, _('Version'))
 		data = app.appdata.components
-		for item in data: lc.Append(item)
+		i = 0
+		odd = False
+		for item in data:
+			lc.Append(item)
+			if odd:
+				item = lc.GetItem(i)
+				item.SetBackgroundColour(odd_color)
+				lc.SetItem(item)
+			odd = not odd
+			i += 1
+
 		self.add(lc, 1, EXPAND, 5)
+		lc.SetColumnWidth(0, wx.wx.LIST_AUTOSIZE)
 		lc.SetColumnWidth(1, wx.wx.LIST_AUTOSIZE)
 
 class AuthorsPage(VPanel):
