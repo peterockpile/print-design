@@ -133,8 +133,8 @@ class ComponentsPage(VPanel):
 			i += 1
 
 		self.add(lc, 1, EXPAND, 5)
-		lc.SetColumnWidth(0, wx.wx.LIST_AUTOSIZE)
-		lc.SetColumnWidth(1, wx.wx.LIST_AUTOSIZE)
+		lc.SetColumnWidth(0, wx.LIST_AUTOSIZE)
+		lc.SetColumnWidth(1, 500)
 
 class AuthorsPage(VPanel):
 
