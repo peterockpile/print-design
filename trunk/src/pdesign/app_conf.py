@@ -15,8 +15,12 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import os, sys
 
+import cairo, wx
+from PIL import Image
+
+from uc2.cms import libcms
 from uc2.uc_conf import UCConfig, UCData
 from uc2 import uc2const
 from uc2.utils import system
@@ -35,6 +39,7 @@ class AppData(UCData):
 	version = "1.0"
 	revision = 'rev.515'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
+	components = []
 
 	def __init__(self):
 
@@ -48,7 +53,22 @@ class AppData(UCData):
 			path = os.path.join(self.app_clipboard_dir, item)
 			if not os.path.lexists(path):
 				os.makedirs(path)
+		self.check_components()
 
+	def seq_to_str(self, seq):
+		ret = ''
+		for item in seq: ret += str(item) + '.'
+		return ret[:-1]
+
+	def check_components(self):
+		comp = self.components
+		comp.append(['Python', sys.version])
+		comp.append(['wxWidgets', wx.version()])
+		comp.append(['UniConvertor', UCData.version + ' ' + UCData.revision])
+		comp.append(['Cairo', cairo.cairo_version_string()])
+		comp.append(['pycairo', self.seq_to_str(cairo.version_info)])
+		comp.append(['PIL', Image.VERSION])
+		comp.append(['LittleCMS', libcms.get_version()])
 
 
 class AppConfig(UCConfig):
