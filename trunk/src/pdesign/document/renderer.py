@@ -58,7 +58,6 @@ class PDRenderer(CairoRenderer):
 	def paint_document(self):
 		self.presenter = self.canvas.presenter
 		self.cms = self.presenter.cms
-#		self.win_ctx = self.canvas.window.cairo_create()
 		self.start()
 		if self.canvas.draw_page_border:
 			self.paint_page_border()
