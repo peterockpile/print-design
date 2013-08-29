@@ -15,6 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import platform
 import wx
 
 
@@ -25,6 +26,7 @@ PLATFORM = wx.Platform
 
 def is_mac(): return PLATFORM == MAC
 def is_msw(): return PLATFORM == MSW
+def is_winxp(): return platform.release() == 'XP'
 def is_gtk(): return PLATFORM == GTK
 
 TOP = wx.TOP
