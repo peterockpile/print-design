@@ -718,33 +718,6 @@ class PresenterAPI(AbstractAPI):
 			self.add_undo(transaction)
 			self.selection.update()
 
-	def select_container(self):
-		self.presenter.canvas.set_temp_mode(modes.PICK_MODE, self.set_container)
-
-	def set_container(self, obj):pass
-#		if len(obj) == 1 and obj[0].cid > model.PRIMITIVE_CLASS and not \
-#		obj[0] in self.selection.objs:
-#			self.pack_container(obj[0])
-#			return False
-#
-#		if not len(obj):
-#			first = _("There is no selected object.")
-#		elif obj[0] in self.selection.objs:
-#			first = _("Object from current selection cannot be container.")
-#		else:
-#			first = _("Selected object cannot be container.")
-#
-#		second = _('Do you want to try again?')
-#
-#		ret = dialogs.warning_dialog(self.app.mw, self.app.appdata.app_name,
-#				first, second,
-#				[(gtk.STOCK_NO, gtk.RESPONSE_CANCEL),
-#				(gtk.STOCK_YES, gtk.RESPONSE_OK)])
-#
-#		if ret == gtk.RESPONSE_OK:
-#			return True
-#		return False
-
 	def pack_container(self, container):
 		if self.selection.objs:
 			before = self._get_layers_snapshot()

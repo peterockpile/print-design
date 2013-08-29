@@ -179,6 +179,15 @@ class AppInspector:
 	def is_obj_text(self, obj):return obj.cid == model.TEXT_BLOCK
 	def is_obj_pixmap(self, obj):return obj.cid == model.PIXMAP
 
+	def is_container_selected(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			objs = doc.selection.objs
+			cid = objs[0].cid
+			if len(objs) == 1 and cid == model.CONTAINER: return True
+		return False
+
 	def can_be_combined(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
