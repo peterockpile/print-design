@@ -45,24 +45,6 @@ class PDAboutDialog(wx.Dialog):
 		self.box = VPanel(self, space=margin)
 		self.sizer.Add(self.box, 1, ALL | EXPAND)
 
-		self.build()
-
-		self.box.add(HLine(self), 0, ALL | EXPAND)
-
-		self.button_box = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer.Add(self.button_box, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
-
-		self.close_btn = wx.Button(self, wx.ID_CLOSE, "", wx.DefaultPosition,
-							wx.DefaultSize, 0)
-		self.button_box.Add(self.close_btn, 0, wx.ALIGN_RIGHT)
-		self.Bind(wx.EVT_BUTTON, self.close_dlg, self.close_btn)
-		self.close_btn.SetDefault()
-		#self.sizer.Fit(self)
-
-	def close_dlg(self, event):
-		self.EndModal(wx.ID_OK)
-
-	def build(self):
 		header = AboutHeader(self.app, self.box)
 		self.box.add(header, 0, ALL | EXPAND, 5)
 
