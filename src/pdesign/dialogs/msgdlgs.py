@@ -45,6 +45,11 @@ def error_dialog(parent, title, text):
 def stop_dialog(parent, title, text):
 	_dialog(parent, title, text, wx.ICON_STOP)
 
+def yesno_dialog(parent, title, text):
+	ret = _dialog(parent, title, text, wx.ICON_WARNING, True, False)
+	if ret == wx.ID_YES: return True
+	return False
+
 def ync_dialog(parent, title, text):
 	ret = _dialog(parent, title, text, wx.ICON_WARNING, True, True)
 	if ret == wx.ID_YES: return True
