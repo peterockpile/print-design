@@ -24,6 +24,5 @@ class AppCtxPanel(HPanel):
 	def __init__(self, app, parent):
 		self.app = app
 		border = None
-		if const.is_msw(): border = TOP
-		HPanel.__init__(self, parent, border)
+		HPanel.__init__(self, parent)
 		self.add((5, 35))

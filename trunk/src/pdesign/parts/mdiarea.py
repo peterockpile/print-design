@@ -18,7 +18,7 @@
 import wx
 
 from pdesign import events
-from pdesign.widgets import ALL, EXPAND, VPanel, HPanel
+from pdesign.widgets import const, ALL, EXPAND, VPanel, HPanel, HLine
 from pdesign.parts.ctxpanel import AppCtxPanel
 from pdesign.parts.tools import AppTools
 from pdesign.parts.doctabpanel import DocTabsPanel
@@ -39,9 +39,11 @@ class MDIArea(VPanel):
 		self.docareas = []
 		VPanel.__init__(self, parent)
 
+		if not const.is_mac(): self.add(HLine(self), 0, ALL | EXPAND)
+
 		#----- Context panel
-#		self.ctxpanel = AppCtxPanel(self.app, self)
-#		self.add(self.ctxpanel, 0, ALL | EXPAND)
+		self.ctxpanel = AppCtxPanel(self.app, self)
+		self.add(self.ctxpanel, 0, ALL | EXPAND)
 
 		#----- Doc tabs
 		self.doc_tabs = DocTabsPanel(self)
