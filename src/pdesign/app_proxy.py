@@ -15,7 +15,10 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign import dialogs
+from uc2.formats.pdxf import model
+
+from pdesign import _, dialogs, modes
+from pdesign.dialogs import yesno_dialog
 
 class AppProxy:
 
@@ -197,6 +200,31 @@ class AppProxy:
 	def ungroup_all(self):self.app.current_doc.api.ungroup_all()
 	def combine_selected(self):self.app.current_doc.api.combine_selected()
 	def break_apart_selected(self):self.app.current_doc.api.break_apart_selected()
+
+	def set_container(self):
+		doc = self.app.current_doc
+		doc.canvas.set_temp_mode(modes.PICK_MODE, self.select_container)
+
+	def select_container(self, obj):
+		selection = self.app.current_doc.selection
+		if len(obj) == 1 and obj[0].cid > model.PRIMITIVE_CLASS and not \
+		obj[0] in selection.objs:
+			self.app.current_doc.api.pack_container(obj[0])
+			return False
+
+		if not len(obj):
+			txt = _("There is no selected object.")
+		elif obj[0] in selection.objs:
+			txt = _("Object from current selection cannot be container.")
+		else:
+			txt = _("Selected object cannot be container.")
+
+		txt += '\n' + _('Do you want to try again?')
+
+		return yesno_dialog(self.app.mw, self.app.appdata.app_name, txt)
+
+
+	def unpack_container(self):self.app.current_doc.api.unpack_container()
 
 	def fill_selected(self, color):
 		if self.app.current_doc is None:

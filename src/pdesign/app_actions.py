@@ -110,8 +110,8 @@ def create_actions(app):
 (pdids.ID_UNGROUPALL, proxy.ungroup_all, sel_chnls, insp.can_be_ungrouped_all),
 (pdids.ID_TO_CURVES, proxy.convert_to_curve, sel_chnls, insp.can_be_curve),
 #------ Effects menu -------
-(pdids.ID_TO_CONTAINER, proxy.stub),
-(pdids.ID_FROM_CONTAINER, proxy.stub),
+(pdids.ID_TO_CONTAINER, proxy.set_container, sel_chnls, insp.is_selection),
+(pdids.ID_FROM_CONTAINER, proxy.unpack_container, sel_chnls, insp.is_container_selected),
 #------ Bitmaps menu -------
 #------ Text menu -------
 (pdids.ID_EDIT_TEXT, proxy.stub),
