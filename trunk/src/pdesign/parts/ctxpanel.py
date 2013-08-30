@@ -31,7 +31,9 @@ class AppCtxPanel(HPanel):
 		self.app = app
 		self.insp = app.insp
 		HPanel.__init__(self, parent)
-		self.add((5, 35))
+		spacer=(5, 35)
+		if const.is_msw():spacer=(5, 30)
+		self.add(spacer)
 
 		for item in PLUGINS:
 			plg = item(self.app, self)
