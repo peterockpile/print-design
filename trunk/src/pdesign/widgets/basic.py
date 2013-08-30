@@ -129,7 +129,7 @@ class SizedPanel(Panel):
 		self.box.Add(*args, **kw)
 
 	def remove(self, obj):
-		self.box.Remove(obj)
+		self.box.Detach(obj)
 
 
 class BorderedPanel(SizedPanel):
