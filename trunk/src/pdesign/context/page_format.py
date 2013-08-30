@@ -34,4 +34,4 @@ class PagePlugin(CtxPlugin):
 	def build(self):
 		self.formats = PAGE_FORMAT_NAMES + [_('Custom'), ]
 		self.combo = Combolist(self, items=self.formats)
-		self.add(self.combo, 0, LEFT | CENTER)
+		self.add(self.combo, 0, LEFT | CENTER, 2)
