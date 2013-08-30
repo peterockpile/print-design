@@ -15,18 +15,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from generic import CtxPlugin, PL1, PL2, PL3
-from page_format import PagePlugin
+import wx
 
-PLUGINS = [PagePlugin, PL1, PL2, PL3]
+from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
-NO_DOC = []
-DEFAULT = ['PagePlugin', 'Plugin_1', 'Plugin_2', 'Plugin_3', ]
-MULTIPLE = ['Plugin_2', 'Plugin_3', ]
-GROUP = ['Plugin_3', ]
-RECTANGLE = []
-CIRCLE = []
-POLYGON = []
-CURVE = []
-TEXT = []
-PIXMAP = []
+from pdesign import _, events
+from pdesign.widgets import Combolist, LEFT, CENTER
+from generic import CtxPlugin
+
+
+class PagePlugin(CtxPlugin):
+
+	name = 'PagePlugin'
+
+	def __init__(self, app, parent):
+		CtxPlugin.__init__(self, app, parent)
+
+	def build(self):
+		self.formats = PAGE_FORMAT_NAMES + [_('Custom'), ]
+		self.combo = Combolist(self, items=self.formats)
+		self.add(self.combo, 0, LEFT | CENTER)
