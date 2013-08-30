@@ -247,6 +247,7 @@ class SnapManager:
 		doc_point = self.canvas.point_win_to_doc(point)
 		ret = False
 		snap_dict = self.guides_grid
+		if not snap_dict: return False, None
 
 		pos = 0
 		orient = 0
