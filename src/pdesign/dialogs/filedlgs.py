@@ -92,11 +92,12 @@ def get_save_file_name(parent, app, path):
 	if path=='~': path = os.path.expanduser(path)
 	
 	doc_folder = os.path.dirname(path)
+	doc_name = os.path.basename(path)
 
 	dlg = wx.FileDialog(
 		parent, message=msg,
 		defaultDir=doc_folder,
-		defaultFile=path,
+		defaultFile=doc_name,
 		wildcard=_get_save_fiters(),
 		style=wx.SAVE | wx.CHANGE_DIR | wx.FD_OVERWRITE_PROMPT
 	)
