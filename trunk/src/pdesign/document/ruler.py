@@ -272,12 +272,13 @@ class Ruler(HPanel):
 
 	def refresh(self, x=0, y=0, w=0, h=0):
 		if not w: w, h = self.GetSize()
-		self.Refresh(rect=wx.Rect(x, y, w, h))
+		self.Refresh(rect=wx.Rect(x, y, w, h), eraseBackground=False)
 
 	def _on_paint(self, event):
 		w, h = self.panel.GetSize()
 		pdc = wx.BufferedPaintDC(self.panel)
 		pdc.BeginDrawing()
+		if self.presenter is None: return
 		shift=0
 		if is_msw():shift=1
 		if self.surface is None:
