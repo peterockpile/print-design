@@ -55,8 +55,9 @@ def _get_open_filters():
 def get_open_file_name(parent, app, start_dir):
 	ret = ''
 	msg = _('Open document')
-	
-	if start_dir=='~': start_dir = os.path.expanduser(start_dir)
+	if is_mac(): msg = ''
+
+	if start_dir == '~': start_dir = os.path.expanduser(start_dir)
 
 	dlg = wx.FileDialog(
 		parent, message=msg,
@@ -88,9 +89,10 @@ def _get_save_fiters():
 def get_save_file_name(parent, app, path):
 	ret = ''
 	msg = _('Save document As...')
-	
-	if path=='~': path = os.path.expanduser(path)
-	
+	if is_mac(): msg = ''
+
+	if path == '~': path = os.path.expanduser(path)
+
 	doc_folder = os.path.dirname(path)
 	doc_name = os.path.basename(path)
 
