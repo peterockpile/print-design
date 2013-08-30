@@ -30,7 +30,6 @@ class AppCtxPanel(HPanel):
 	def __init__(self, app, parent):
 		self.app = app
 		self.insp = app.insp
-		border = None
 		HPanel.__init__(self, parent)
 		self.add((5, 35))
 
@@ -52,9 +51,9 @@ class AppCtxPanel(HPanel):
 		if mode:
 			for item in mode:
 				self.add(self.plugins_dict[item], 0, ALL | EXPAND)
-				self.plugins.append(self.plugins_dict[item])
 				self.plugins_dict[item].show()
-			self.Layout()
+				self.plugins.append(self.plugins_dict[item])
+		self.Layout()
 
 	def get_mode(self):
 		if not self.insp.is_doc():
