@@ -32,6 +32,14 @@ class EventLoop:
 		self.DOC_MODIFIED = []
 		self.SELECTION_CHANGED = []
 		self.PAGE_CHANGED = []
+		
+	def destroy(self):
+		self.presenter = None
+		self.VIEW_CHANGED = []
+		self.SELECT_AREA = []
+		self.DOC_MODIFIED = []
+		self.SELECTION_CHANGED = []
+		self.PAGE_CHANGED = []
 
 	def connect(self, channel, receiver):
 		"""
