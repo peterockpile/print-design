@@ -317,6 +317,11 @@ class Combolist(wx.Choice, Widget):
 	def get_selection(self):
 		return self.GetSelection()
 
+	def set_active(self, index):
+		self.set_selection(index)
+
+	def get_active(self):
+		return self.get_selection()
 
 class Combobox(wx.ComboBox, DataWidget):
 
