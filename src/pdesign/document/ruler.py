@@ -68,7 +68,7 @@ class RulerCorner(HPanel):
 		self.add((size, size))
 		self.SetBackgroundColour(wx.WHITE)
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
-		self.eventloop.connect(self.eventloop.VIEW_CHANGED, self.changes)
+		self.eventloop.connect(self.eventloop.DOC_MODIFIED, self.changes)
 		self.Bind(wx.EVT_LEFT_UP, self.left_click)
 
 	def changes(self, *args):
@@ -279,14 +279,14 @@ class Ruler(HPanel):
 		pdc = wx.BufferedPaintDC(self.panel)
 		pdc.BeginDrawing()
 		if self.presenter is None: return
-		shift=0
-		if is_msw():shift=1
+		shift = 0
+		if is_msw():shift = 1
 		if self.surface is None:
-			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w-shift, h-shift)
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w - shift, h - shift)
 			self.width = w
 			self.height = h
 		elif self.width <> w or self.height <> h:
-			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w-shift, h-shift)
+			self.surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w - shift, h - shift)
 			self.width = w
 			self.height = h
 		self.ctx = cairo.Context(self.surface)
