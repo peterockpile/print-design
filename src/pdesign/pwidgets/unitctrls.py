@@ -50,10 +50,10 @@ class UnitSpin(FloatSpin):
 	app = None
 	insp = None
 	callback = None
-	point_value = 0
+	point_value = 0.0
 	units = uc2const.UNIT_MM
 
-	def __init__(self, app, parent, val, onchange=None):
+	def __init__(self, app, parent, val=0.0, onchange=None):
 		self.app = app
 		self.insp = app.insp
 		self.point_value = val
