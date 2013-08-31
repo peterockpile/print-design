@@ -259,8 +259,8 @@ class Label(wx.StaticText, Widget):
 		if fg:
 			self.SetForegroundColour(wx.Colour(*fg))
 
-	def set_text(self, txt):
-		self.SetLabel(txt)
+	def set_text(self, text):
+		self.SetLabel(text)
 
 
 class HtmlLabel(wx.HyperlinkCtrl, Widget):
