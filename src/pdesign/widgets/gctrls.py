@@ -104,8 +104,8 @@ class ImageToggleButton(GenericGWidget):
 		self.value = value
 		self.refresh()
 
-	def get_value(self):
-		return self.value
+	def get_value(self): return self.value
+	def get_active(self): return self.value
 
 	def _on_paint(self, event):
 		if self.enabled:
