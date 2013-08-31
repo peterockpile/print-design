@@ -103,8 +103,6 @@ class AbstractAPI:
 
 	def _set_page_format(self, page, page_format):
 		self.methods.set_page_format(page, page_format)
-		self.presenter.docarea.hruler.queue_draw()
-		self.presenter.docarea.vruler.queue_draw()
 
 	def _set_layer_properties(self, layer, prop):
 		layer.properties = prop
