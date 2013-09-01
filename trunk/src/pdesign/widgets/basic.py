@@ -413,6 +413,7 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 						onchange=self._check_entry,
 						onenter=self._entry_enter)
 		self.add(self.entry, 0, wx.ALL)
+		self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_enter, self.entry)
 		size = (-1, self.entry.GetSize()[1])
 		self.sb = SpinButton(self.parent, size=size, onchange=self._check_spin)
 		self.add(self.sb, 0, wx.ALL)
