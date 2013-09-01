@@ -20,7 +20,7 @@
 import wx
 
 from pdesign import init_config
-from pdesign.pwidgets.mactoolbar import MacTB_ActionNestedButtons
+#from pdesign.pwidgets.mactoolbar import MacTB_ActionNestedButtons
 init_config()
 from pdesign.widgets import const
 from pdesign.parts.artprovider import create_artprovider
@@ -188,28 +188,28 @@ class WidgetPanel(VPanel):
 		self.add(p, 0, pflags)
 
 		#---------Mac Toolbar Buttons
-		p = HPanel(self, border=BOTTOM, space=2)
-		p.add(Label(p, 'Mac Toolbar Buttons:'), 0, flags, 5)
-
-		p.add(MacTB_ActionButton(p, AppAction(wx.ID_NEW, self.repeat_test)),
-			 0, flags, 5)
-
-		action = AppAction(wx.ID_NEW, self.repeat_test)
-		action.set_enable(False)
-		p.add(MacTB_ActionButton(p, action), 0, flags, 5)
-		action.update()
-
-		actions = [AppAction(wx.ID_NEW, self.repeat_test),
-				AppAction(wx.ID_NEW, self.repeat_test),
-				AppAction(wx.ID_NEW, self.repeat_test)]
-		p.add(MacTB_ActionNestedButtons(p, actions), 0, flags, 5)
-		index = 0
-		for action in actions:
-			if index == 1:action.set_enable(False)
-			action.update()
-			index += 1
-
-		self.add(p, 0, pflags)
+# 		p = HPanel(self, border=BOTTOM, space=2)
+# 		p.add(Label(p, 'Mac Toolbar Buttons:'), 0, flags, 5)
+# 
+# 		p.add(MacTB_ActionButton(p, AppAction(wx.ID_NEW, self.repeat_test)),
+# 			 0, flags, 5)
+# 
+# 		action = AppAction(wx.ID_NEW, self.repeat_test)
+# 		action.set_enable(False)
+# 		p.add(MacTB_ActionButton(p, action), 0, flags, 5)
+# 		action.update()
+# 
+# 		actions = [AppAction(wx.ID_NEW, self.repeat_test),
+# 				AppAction(wx.ID_NEW, self.repeat_test),
+# 				AppAction(wx.ID_NEW, self.repeat_test)]
+# 		p.add(MacTB_ActionNestedButtons(p, actions), 0, flags, 5)
+# 		index = 0
+# 		for action in actions:
+# 			if index == 1:action.set_enable(False)
+# 			action.update()
+# 			index += 1
+# 
+# 		self.add(p, 0, pflags)
 
 app = Application('Graphics widgets')
 mw = MainWindow(app.app_name, (700, 500))
