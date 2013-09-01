@@ -424,9 +424,11 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 		self.flag = False
 
 	def set_enable(self, val):
-		self.Enable(val)
 		self.entry.Enable(val)
 		self.sb.Enable(val)
+
+	def get_enabled(self):
+		return self.entry.IsEnabled()
 
 	def _check_spin(self, event):
 		if self.flag:return
