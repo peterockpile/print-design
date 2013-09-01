@@ -56,9 +56,9 @@ class PagePlugin(CtxPlugin):
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
 
 		self.add(UnitLabel(self.app, self), 0, LEFT | CENTER, 2)
-		
-		native=True
-		if const.is_msw():native=False
+
+		native = True
+		if const.is_msw():native = False
 
 		self.portrait = ImageToggleButton(self, True, icons.CTX_PAGE_PORTRAIT,
 								onchange=self.portrait_toggled, native=native)
@@ -167,6 +167,10 @@ class PagePlugin(CtxPlugin):
 			self.height_spin.set_point_value(h)
 			self.update_flag = False
 			self.changes()
+		else:
+			self.update_flag = True
+			self.portrait.set_active(True)
+			self.update_flag = False
 
 	def landscape_toggled(self, *args):
 		if self.update_flag: return
@@ -179,6 +183,10 @@ class PagePlugin(CtxPlugin):
 			self.height_spin.set_point_value(h)
 			self.update_flag = False
 			self.changes()
+		else:
+			self.update_flag = True
+			self.landscape.set_active(True)
+			self.update_flag = False
 
 	def changes(self):
 		new_format = [self.formats[self.combo.get_active()], ]
