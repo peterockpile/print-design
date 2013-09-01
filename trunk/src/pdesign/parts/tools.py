@@ -42,7 +42,7 @@ class AppTools(VPanel):
 				else: but = ActionToolButton(self.panel, action)
 				self.buttons.append(but)
 				self.add(but, 0, LEFT | RIGHT, border)
-				self.add((1,1))
+				if const.is_msw(): self.add((1, 1))
 
 
 class ActionTool(ImageToggleButton):
@@ -55,11 +55,13 @@ class ActionTool(ImageToggleButton):
 		text = ''
 		tooltip = action.get_tooltip_text()
 		padding = 0
-		decoration_padding = 2
-		
-		native=True
-		if const.is_msw():native=False
-		
+		decoration_padding = 4
+		native = True
+
+		if const.is_msw():
+			decoration_padding = 2
+			native = False
+
 		ImageToggleButton.__init__(self, parent, value, art_id, art_size, text,
 								tooltip, padding, decoration_padding,
 								True, native, onchange=action.do_call)
@@ -87,11 +89,13 @@ class ActionToolButton(ImageButton):
 		text = ''
 		tooltip = action.get_tooltip_text()
 		padding = 0
-		decoration_padding = 2
-		
-		native=True
-		if const.is_msw():native=False
-		
+		decoration_padding = 4
+		native = True
+
+		if const.is_msw():
+			decoration_padding = 2
+			native = False
+
 		ImageButton.__init__(self, parent, art_id, art_size, text, tooltip,
 							padding, decoration_padding, True, native,
 							onclick=action.do_call)
