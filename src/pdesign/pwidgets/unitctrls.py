@@ -49,15 +49,16 @@ class UnitSpin(FloatSpin):
 
 	app = None
 	insp = None
-	callback = None
+	ucallback = None
 	point_value = 0.0
 	units = uc2const.UNIT_MM
+	update_flag = False
 
 	def __init__(self, app, parent, val=0.0, onchange=None):
 		self.app = app
 		self.insp = app.insp
 		self.point_value = val
-		self.callback = onchange
+		self.ucallback = onchange
 		if self.insp.is_doc(): self.units = app.current_doc.model.doc_units
 		val = self.point_value * point_dict[self.units]
 		FloatSpin.__init__(self, parent, val, (0.0, 100000.0), width=5,
@@ -66,14 +67,15 @@ class UnitSpin(FloatSpin):
 
 	def update_point_value(self, *args):
 		self.point_value = self.get_value() * unit_dict[self.units]
-		if not self.callback is None: self.callback()
+		if not self.ucallback is None: self.ucallback()
 
 	def get_point_value(self):
 		return self.point_value
 
 	def set_point_value(self, val):
-		self.point_value = val
-		self.set_value(self.point_value * point_dict[self.units])
+		if not self.point_value == val:
+			self.point_value = val
+			self.set_value(self.point_value * point_dict[self.units])
 
 	def update_units(self, *args):
 		if not self.insp.is_doc(): return
