@@ -155,7 +155,7 @@ class LabelRenderer:
 	#----- RENDERING
 	def _start(self):
 		self.size = self.widget.GetSize()
-		if is_msw():
+		if is_msw() and self.widget.IsDoubleBuffered():
 			self.widget.buffer = wx.EmptyBitmapRGBA(*self.size)
 			self.pdc = wx.BufferedPaintDC(self.widget, self.widget.buffer)
 		else:
@@ -302,9 +302,16 @@ class ButtonRenderer(LabelRenderer):
 		self.dc.DrawLine(w - 2, 4, w - 2, h - 3)
 
 		color = UI_COLORS['hover_solid_border']
-		self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
-		self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
-		self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
+		if is_msw() and self.widget.IsDoubleBuffered():
+			gc = self.dc.GetGraphicsContext()
+			gc.SetAntialiasMode(wx.ANTIALIAS_NONE)
+			self.dc.SetPen(wx.Pen(wx.Colour(*color), 1))
+			self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
+			self.dc.DrawRoundedRectangle(0, 0, w, h, 3.0)
+		else:
+			self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
+			self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
+			self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
 
 
 	def _draw_pressed(self):
@@ -320,10 +327,17 @@ class ButtonRenderer(LabelRenderer):
 		self.dc.SetBrush(wx.Brush(wx.Colour(*color)))
 		self.dc.DrawRoundedRectangle(2, 2, w - 2, h - 2, 3.0)
 
-		color = UI_COLORS['pressed_border']
-		self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
-		self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
-		self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
+		color = UI_COLORS['hover_solid_border']
+		if is_msw() and self.widget.IsDoubleBuffered():
+			gc = self.dc.GetGraphicsContext()
+			gc.SetAntialiasMode(wx.ANTIALIAS_NONE)
+			self.dc.SetPen(wx.Pen(wx.Colour(*color), 1))
+			self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
+			self.dc.DrawRoundedRectangle(0, 0, w, h, 3.0)
+		else:
+			self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
+			self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
+			self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
 
 	def _draw_pressed_disabled(self):
 		self._draw_pressed()
