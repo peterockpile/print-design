@@ -283,6 +283,15 @@ class PresenterAPI(AbstractAPI):
 		self.methods.set_doc_origin(origin)
 		self.add_undo(transaction)
 
+	def set_doc_units(self, units):
+		cur_units = self.model.doc_units
+		transaction = [
+			[[self.methods.set_doc_units, cur_units]],
+			[[self.methods.set_doc_units, units]],
+			False]
+		self.methods.set_doc_units(units)
+		self.add_undo(transaction)
+
 	def insert_object(self, obj, parent, index):
 		sel_before = [] + self.selection.objs
 		self._insert_object(obj, parent, index)
