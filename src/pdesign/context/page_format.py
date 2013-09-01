@@ -23,7 +23,7 @@ from pdesign import _, events
 from pdesign.resources import icons
 from pdesign.widgets import const
 from pdesign.widgets import Combolist, LEFT, CENTER, Label, ImageToggleButton
-from pdesign.pwidgets import UnitSpin, UnitLabel
+from pdesign.pwidgets import UnitSpin
 from generic import CtxPlugin
 
 
@@ -54,8 +54,6 @@ class PagePlugin(CtxPlugin):
 		self.height_spin = UnitSpin(self.app, self,
 							onchange=self.height_spin_changed)
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
-
-		self.add(UnitLabel(self.app, self), 0, LEFT | CENTER, 2)
 
 		native = True
 		if const.is_msw():native = False
