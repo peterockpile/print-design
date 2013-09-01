@@ -57,11 +57,11 @@ class PagePlugin(CtxPlugin):
 		self.add(UnitLabel(self.app, self), 0, LEFT | CENTER, 2)
 
 		self.portrait = ImageToggleButton(self, True, icons.CTX_PAGE_PORTRAIT,
-										onchange=self.portrait_toggled)
+								onchange=self.portrait_toggled, native=False)
 		self.add(self.portrait, 0, LEFT | CENTER, 2)
 
 		self.landscape = ImageToggleButton(self, False, icons.CTX_PAGE_LANDSCAPE,
-										onchange=self.landscape_toggled)
+								onchange=self.landscape_toggled, native=False)
 		self.add(self.landscape, 0, LEFT | CENTER, 2)
 
 		self.width_spin.set_enable(False)
