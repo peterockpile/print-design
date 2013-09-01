@@ -42,6 +42,7 @@ class PagePlugin(CtxPlugin):
 		self.combo = Combolist(self, items=self.formats,
 							onchange=self.combo_changed)
 		self.add(self.combo, 0, LEFT | CENTER, 2)
+		self.add((3, 3))
 
 		self.width_spin = UnitSpin(self.app, self,
 							onchange=self.width_spin_changed)
