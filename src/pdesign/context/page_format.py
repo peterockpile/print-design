@@ -21,6 +21,7 @@ from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
 from pdesign import _, events
 from pdesign.resources import icons
+from pdesign.widgets import const
 from pdesign.widgets import Combolist, LEFT, CENTER, Label, ImageToggleButton
 from pdesign.pwidgets import UnitSpin, UnitLabel
 from generic import CtxPlugin
@@ -55,13 +56,16 @@ class PagePlugin(CtxPlugin):
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
 
 		self.add(UnitLabel(self.app, self), 0, LEFT | CENTER, 2)
+		
+		native=True
+		if const.is_msw():native=False
 
 		self.portrait = ImageToggleButton(self, True, icons.CTX_PAGE_PORTRAIT,
-								onchange=self.portrait_toggled, native=False)
+								onchange=self.portrait_toggled, native=native)
 		self.add(self.portrait, 0, LEFT | CENTER, 2)
 
 		self.landscape = ImageToggleButton(self, False, icons.CTX_PAGE_LANDSCAPE,
-								onchange=self.landscape_toggled, native=False)
+								onchange=self.landscape_toggled, native=native)
 		self.add(self.landscape, 0, LEFT | CENTER, 2)
 
 		self.width_spin.set_enable(False)
