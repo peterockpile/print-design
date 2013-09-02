@@ -15,11 +15,14 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import wx
+
 from uc2 import uc2const
 from uc2.uc2const import point_dict, unit_dict
 
-from pdesign import events
+from pdesign import _, events
 from pdesign.widgets import Label, FloatSpin
+from pdesign.resources import icons, get_icon
 
 class UnitLabel(Label):
 
@@ -81,4 +84,34 @@ class UnitSpin(FloatSpin):
 		if self.units == self.app.current_doc.model.doc_units: return
 		self.units = self.app.current_doc.model.doc_units
 		self.set_value(self.point_value * point_dict[self.units])
+
+class RatioToggle(wx.StaticBitmap):
+
+	state = True
+	ratio = None
+	no_ratio = None
+
+	def __init__(self, parent, state=True):
+		self.ratio = get_icon(icons.CTX_RATIO)
+		self.no_ratio = get_icon(icons.CTX_NO_RATIO)
+		wx.StaticBitmap.__init__(self, parent, -1, self.ratio)
+		self.set_active(state)
+		self.Bind(wx.EVT_LEFT_UP, self.change, self)
+
+	def change(self, *args):
+		self.set_active(not self.state)
+
+	def get_active(self):
+		return self.state
+
+	def set_active(self, state):
+		self.state = state
+		bmp = self.no_ratio
+		tooltip = _("Don't keep ratio")
+		if self.state:
+			bmp = self.ratio
+			tooltip = _("Keep ratio")
+		self.SetBitmap(bmp)
+		self.SetToolTipString(tooltip)
+
 
