@@ -53,6 +53,13 @@ def get_icon(icon_id, client=wx.ART_OTHER, size=const.SIZE_16):
 	if not bmp == wx.NullBitmap: return bmp
 	return None
 
+def get_bmp(parent, icon_id, tooltip=''):
+	bmp = wx.ArtProvider.GetBitmap(icon_id, wx.ART_OTHER, const.DEF_SIZE)
+	if bmp == wx.NullBitmap: return None
+	sb = wx.StaticBitmap(parent, -1, bmp)
+	if tooltip: sb.SetToolTipString(tooltip)
+	return sb
+
 def get_art_by_id(action_id):
 	if ART_IDS.has_key(action_id):
 		return ART_IDS[action_id]
