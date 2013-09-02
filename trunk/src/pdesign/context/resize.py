@@ -19,7 +19,7 @@ import wx
 
 from pdesign import _, config, events
 from pdesign.resources import icons, get_icon
-from pdesign.widgets import LEFT, CENTER, Label
+from pdesign.widgets import const, LEFT, CENTER, Label
 from pdesign.pwidgets import UnitSpin, RatioToggle
 from generic import CtxPlugin
 
@@ -40,7 +40,9 @@ class ResizePlugin(CtxPlugin):
 							onchange=self.width_spin_changed)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
 
-		self.add(Label(self, 'х'), 0, LEFT | CENTER, 2)
+		self.add(wx.StaticBitmap(self, -1,
+				get_icon(icons.CTX_W_ON_H, size=const.DEF_SIZE)),
+				 0, LEFT | CENTER, 1)
 
 		self.height_spin = UnitSpin(self.app, self,
 							onchange=self.height_spin_changed)
