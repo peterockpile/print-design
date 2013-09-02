@@ -17,7 +17,6 @@
 
 import wx
 
-
 from pdesign import _, config, events
 from pdesign.resources import icons, get_icon
 from pdesign.widgets import LEFT, CENTER
