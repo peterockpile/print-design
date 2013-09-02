@@ -15,6 +15,7 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
 import wx
 
 from uc2 import uc2const
@@ -53,7 +54,6 @@ class UnitSpin(FloatSpin):
 	ucallback = None
 	point_value = 0.0
 	units = uc2const.UNIT_MM
-	update_flag = False
 
 	def __init__(self, app, parent, val=0.0, onchange=None):
 		self.app = app
@@ -114,4 +114,27 @@ class RatioToggle(wx.StaticBitmap):
 		self.SetBitmap(bmp)
 		self.SetToolTipString(tooltip)
 
+class AngleSpin(FloatSpin):
 
+	ucallback = None
+	angle_value = 0.0
+
+	def __init__(self, parent, val=0.0, onchange=None):
+		self.angle_value = val
+		self.ucallback = onchange
+		FloatSpin.__init__(self, parent, val, (-360.0, 360.0),
+						step=1.0, width=5,
+						onchange=self.update_angle_value,
+						check_focus=False)
+
+	def update_angle_value(self, *args):
+		self.angle_value = self.get_value() * math.pi / 180.0
+		if not self.ucallback is None: self.ucallback()
+
+	def get_angle_value(self):
+		return self.angle_value
+
+	def set_angle_value(self, val):
+		if not self.angle_value == val:
+			self.angle_value = val
+			self.set_value(round(self.angle_value * 180 / math.pi, 2))
