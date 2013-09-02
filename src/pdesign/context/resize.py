@@ -33,6 +33,8 @@ class ResizePlugin(CtxPlugin):
 		bmp = get_bmp(self, icons.CTX_OBJECT_RESIZE, _('Object size'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
+		self.add((2, 2))
+
 		self.width_spin = UnitSpin(self.app, self,
 							onchange=self.width_spin_changed)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
@@ -42,6 +44,8 @@ class ResizePlugin(CtxPlugin):
 		self.height_spin = UnitSpin(self.app, self,
 							onchange=self.height_spin_changed)
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
+
+		self.add((2, 2))
 
 		self.keep_ratio = RatioToggle(self)
 		self.add(self.keep_ratio, 0, LEFT | CENTER, 2)
