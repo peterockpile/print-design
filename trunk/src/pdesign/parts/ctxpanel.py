@@ -23,7 +23,7 @@ RECTANGLE, CIRCLE, POLYGON, CURVE, TEXT, PIXMAP
 class AppCtxPanel(HPanel):
 
 	app = None
-
+	mode = None
 	plugins_dict = {}
 	plugins = []
 
@@ -44,17 +44,19 @@ class AppCtxPanel(HPanel):
 		self.rebuild()
 
 	def rebuild(self, *args):
+		mode = self.get_mode()
+		if mode == self.mode:return
 		for item in self.plugins:
 			item.hide()
 			self.remove(item)
 		self.plugins = []
-		mode = self.get_mode()
 		if mode:
 			for item in mode:
 				self.add(self.plugins_dict[item], 0, ALL | EXPAND)
 				self.plugins_dict[item].show()
 				self.plugins.append(self.plugins_dict[item])
 		self.Layout()
+		self.mode = mode
 
 	def get_mode(self):
 		if not self.insp.is_doc():
