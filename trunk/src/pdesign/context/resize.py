@@ -28,6 +28,8 @@ class ResizePlugin(CtxPlugin):
 
 	def __init__(self, app, parent):
 		CtxPlugin.__init__(self, app, parent)
+		events.connect(events.DOC_CHANGED, self.update)
+		events.connect(events.SELECTION_CHANGED, self.update)
 
 	def build(self):
 		bmp = get_bmp(self, icons.CTX_OBJECT_RESIZE, _('Object size'))
@@ -36,13 +38,13 @@ class ResizePlugin(CtxPlugin):
 		self.add((2, 2))
 
 		self.width_spin = UnitSpin(self.app, self,
-							onchange=self.width_spin_changed)
+							onchange=self.user_changes)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
 
 		self.add(get_bmp(self, icons.CTX_W_ON_H), 0, LEFT | CENTER, 1)
 
 		self.height_spin = UnitSpin(self.app, self,
-							onchange=self.height_spin_changed)
+							onchange=self.user_changes)
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
 
 		self.add((2, 2))
@@ -50,5 +52,50 @@ class ResizePlugin(CtxPlugin):
 		self.keep_ratio = RatioToggle(self)
 		self.add(self.keep_ratio, 0, LEFT | CENTER, 2)
 
-	def width_spin_changed(self, *args):pass
-	def height_spin_changed(self, *args):pass
+	def update(self, *args):
+		if self.insp.is_selection():
+			bbox = self.app.current_doc.selection.bbox
+			w = bbox[2] - bbox[0]
+			h = bbox[3] - bbox[1]
+			self.width_spin.set_point_value(w)
+			self.height_spin.set_point_value(h)
+
+	def user_changes(self, *args):
+		if self.insp.is_selection():
+			doc = self.app.current_doc
+			bbox = doc.selection.bbox
+			w = bbox[2] - bbox[0]
+			h = bbox[3] - bbox[1]
+			center_x = bbox[0] + w / 2.0
+			center_y = bbox[1] + h / 2.0
+
+			new_w = self.width_spin.get_point_value()
+			new_h = self.height_spin.get_point_value()
+
+			if not round(w, 4) == round(new_w, 4) or not round(h, 4) == round(new_h, 4):
+				if not new_w: self.width_spin.set_point_value(w);return
+				if not new_h: self.height_spin.set_point_value(h);return
+
+				m11 = round(new_w / w, 4)
+				m22 = round(new_h / h, 4)
+
+				if m11 == m22 == 1.0:return
+
+				trafo = []
+
+				if self.keep_ratio.get_active():
+					if m11 == 1.0:
+						dx = center_x * (1 - m22)
+						dy = center_y * (1 - m22)
+						trafo = [m22, 0.0, 0.0, m22, dx, dy]
+					if m22 == 1.0:
+						dx = center_x * (1 - m11)
+						dy = center_y * (1 - m11)
+						trafo = [m11, 0.0, 0.0, m11, dx, dy]
+				else:
+					dx = center_x * (1 - m11)
+					dy = center_y * (1 - m22)
+					trafo = [m11, 0.0, 0.0, m22, dx, dy]
+
+				if trafo:
+					doc.api.transform_selected(trafo)
