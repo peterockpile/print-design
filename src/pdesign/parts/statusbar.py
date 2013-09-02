@@ -48,7 +48,7 @@ class AppStatusbar(HPanel):
 		panel1.add(self.page_info, 0, ALL | EXPAND)
 		self.page_info.hide()
 
-		bitmap = wx.StaticBitmap(panel1.panel, bitmap=get_icon(icons.PD_APP_STATUS))
+		bitmap = wx.StaticBitmap(panel1.panel, -1, bitmap=get_icon(icons.PD_APP_STATUS))
 		panel1.add(bitmap, 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
