@@ -53,6 +53,8 @@ class PagePlugin(CtxPlugin):
 							onchange=self.height_spin_changed)
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
 
+		self.add((2, 2))
+
 		native = True
 		if const.is_msw():native = False
 
