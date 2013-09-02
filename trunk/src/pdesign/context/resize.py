@@ -32,7 +32,7 @@ class ResizePlugin(CtxPlugin):
 		events.connect(events.SELECTION_CHANGED, self.update)
 
 	def build(self):
-		bmp = get_bmp(self, icons.CTX_OBJECT_RESIZE, _('Object size'))
+		bmp = get_bmp(self, icons.CTX_OBJECT_RESIZE, _('Selection size'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
 		self.add((2, 2))
@@ -57,10 +57,13 @@ class ResizePlugin(CtxPlugin):
 			bbox = self.app.current_doc.selection.bbox
 			w = bbox[2] - bbox[0]
 			h = bbox[3] - bbox[1]
+			self.update_flag = True
 			self.width_spin.set_point_value(w)
 			self.height_spin.set_point_value(h)
+			self.update_flag = False
 
 	def user_changes(self, *args):
+		if self.update_flag: return
 		if self.insp.is_selection():
 			doc = self.app.current_doc
 			bbox = doc.selection.bbox
