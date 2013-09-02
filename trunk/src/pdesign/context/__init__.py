@@ -18,11 +18,12 @@
 from generic import CtxPlugin, PL1, PL2, PL3
 from page_format import PagePlugin
 from units import UnitsPlugin
+from jump import JumpPlugin
 
-PLUGINS = [PagePlugin, UnitsPlugin, PL1, PL2, PL3]
+PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, PL1, PL2, PL3]
 
 NO_DOC = []
-DEFAULT = ['PagePlugin', 'UnitsPlugin', 'Plugin_1', ]
+DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
 MULTIPLE = ['Plugin_2', 'Plugin_3', ]
 GROUP = ['Plugin_3', ]
 RECTANGLE = []
