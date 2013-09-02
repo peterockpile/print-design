@@ -18,7 +18,7 @@
 import wx
 
 from pdesign import _, config, events
-from pdesign.resources import icons, get_icon
+from pdesign.resources import icons, get_bmp
 from pdesign.widgets import const, LEFT, CENTER, Label
 from pdesign.pwidgets import UnitSpin, RatioToggle
 from generic import CtxPlugin
@@ -32,17 +32,14 @@ class ResizePlugin(CtxPlugin):
 		CtxPlugin.__init__(self, app, parent)
 
 	def build(self):
-		bmp = wx.StaticBitmap(self, -1, get_icon(icons.CTX_OBJECT_RESIZE))
-		bmp.SetToolTipString(_('Object size'))
+		bmp = get_bmp(self, icons.CTX_OBJECT_RESIZE, _('Object size'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
 		self.width_spin = UnitSpin(self.app, self,
 							onchange=self.width_spin_changed)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
 
-		self.add(wx.StaticBitmap(self, -1,
-				get_icon(icons.CTX_W_ON_H, size=const.DEF_SIZE)),
-				 0, LEFT | CENTER, 1)
+		self.add(get_bmp(self, icons.CTX_W_ON_H), 0, LEFT | CENTER, 1)
 
 		self.height_spin = UnitSpin(self.app, self,
 							onchange=self.height_spin_changed)

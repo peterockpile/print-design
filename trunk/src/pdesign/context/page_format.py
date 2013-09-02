@@ -20,7 +20,7 @@ import wx
 from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
 from pdesign import _, events
-from pdesign.resources import icons, get_icon
+from pdesign.resources import icons, get_bmp
 from pdesign.widgets import const
 from pdesign.widgets import Combolist, LEFT, CENTER, Label, ImageToggleButton
 from pdesign.pwidgets import UnitSpin
@@ -49,9 +49,7 @@ class PagePlugin(CtxPlugin):
 							onchange=self.width_spin_changed)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
 
-		self.add(wx.StaticBitmap(self, -1,
-				get_icon(icons.CTX_W_ON_H, size=const.DEF_SIZE)),
-				 0, LEFT | CENTER, 1)
+		self.add(get_bmp(self, icons.CTX_W_ON_H), 0, LEFT | CENTER, 1)
 
 		self.height_spin = UnitSpin(self.app, self,
 							onchange=self.height_spin_changed)
