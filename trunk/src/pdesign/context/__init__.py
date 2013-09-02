@@ -19,16 +19,17 @@ from generic import CtxPlugin, PL1, PL2, PL3
 from page_format import PagePlugin
 from units import UnitsPlugin
 from jump import JumpPlugin
+from resize import ResizePlugin
 
-PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, PL1, PL2, PL3]
+PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, PL2, PL3]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
-MULTIPLE = ['Plugin_2', 'Plugin_3', ]
-GROUP = ['Plugin_3', ]
-RECTANGLE = []
-CIRCLE = []
-POLYGON = []
-CURVE = []
-TEXT = []
-PIXMAP = []
+MULTIPLE = ['ResizePlugin', 'Plugin_2', 'Plugin_3', ]
+GROUP = ['ResizePlugin', 'Plugin_3', ]
+RECTANGLE = ['ResizePlugin', ]
+CIRCLE = ['ResizePlugin', ]
+POLYGON = ['ResizePlugin', ]
+CURVE = ['ResizePlugin', ]
+TEXT = ['ResizePlugin', ]
+PIXMAP = ['ResizePlugin', ]
