@@ -18,7 +18,7 @@
 import wx
 
 from pdesign import _, config, events
-from pdesign.resources import icons, get_icon
+from pdesign.resources import icons, get_bmp
 from pdesign.widgets import LEFT, CENTER
 from pdesign.pwidgets import UnitSpin
 from generic import CtxPlugin
@@ -33,8 +33,7 @@ class JumpPlugin(CtxPlugin):
 		events.connect(events.CONFIG_MODIFIED, self.config_changed)
 
 	def build(self):
-		bmp = wx.StaticBitmap(self, -1, get_icon(icons.CTX_OBJECT_JUMP))
-		bmp.SetToolTipString(_('Default object jump'))
+		bmp = get_bmp(self, icons.CTX_OBJECT_JUMP, _('Default object jump'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
 		self.jump_spin = UnitSpin(self.app, self, onchange=self.user_changes)
