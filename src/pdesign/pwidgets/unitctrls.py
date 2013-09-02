@@ -15,13 +15,11 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
-
 from uc2 import uc2const
 from uc2.uc2const import point_dict, unit_dict
 
 from pdesign import events
-from pdesign.widgets import const, Label, FloatSpin
+from pdesign.widgets import Label, FloatSpin
 
 class UnitLabel(Label):
 
