@@ -21,7 +21,7 @@ from pdesign import _, events
 from pdesign.widgets import ALL, EXPAND, TOP, LEFT, CENTER, const
 from pdesign.widgets import HPanel, Label, VLine, ImageButton
 from pdesign.pwidgets import FillSwatch, StrokeSwatch
-from pdesign.resources import get_icon, icons
+from pdesign.resources import get_bmp, icons
 
 class AppStatusbar(HPanel):
 
@@ -48,8 +48,7 @@ class AppStatusbar(HPanel):
 		panel1.add(self.page_info, 0, ALL | EXPAND)
 		self.page_info.hide()
 
-		bitmap = wx.StaticBitmap(panel1.panel, -1, bitmap=get_icon(icons.PD_APP_STATUS))
-		panel1.add(bitmap, 0, LEFT | CENTER)
+		panel1.add(get_bmp(panel1.panel, icons.PD_APP_STATUS), 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
 		fontsize = 0
@@ -110,8 +109,7 @@ class MouseMonitor(HPanel):
 	def __init__(self, app, parent):
 		self.app = app
 		HPanel.__init__(self, parent)
-		bitmap = wx.StaticBitmap(self.panel, bitmap=get_icon(icons.PD_MOUSE_MONITOR))
-		self.add(bitmap, 0, LEFT | CENTER)
+		self.add(get_bmp(self.panel, icons.PD_MOUSE_MONITOR), 0, LEFT | CENTER)
 
 		fontsize = 0
 		width = 100
