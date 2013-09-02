@@ -18,6 +18,6 @@
 from colorswatch import ColorSwatch, FillSwatch, StrokeSwatch
 from hpalette import HPalette
 from actions import AppAction
-from unitctrls import UnitLabel, UnitSpin, RatioToggle
+from unitctrls import UnitLabel, UnitSpin, AngleSpin, RatioToggle
 from mactoolbar import MacTB_ActionButton, MacTB_ActionNestedButtons
 
