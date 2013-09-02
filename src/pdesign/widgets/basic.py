@@ -404,7 +404,8 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 	callback = None
 
 	def __init__(self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
-				digits=2, size=DEF_SIZE, width=0, onchange=None):
+				digits=2, size=DEF_SIZE, width=0, onchange=None,
+				check_focus=True):
 
 		self.callback = onchange
 
@@ -413,7 +414,8 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 						onchange=self._check_entry,
 						onenter=self._entry_enter)
 		self.add(self.entry, 0, wx.ALL)
-		self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_enter, self.entry)
+		if check_focus:
+			self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_enter, self.entry)
 		size = (-1, self.entry.GetSize()[1])
 		self.sb = SpinButton(self.parent, size=size, onchange=self._check_spin)
 		self.add(self.sb, 0, wx.ALL)
