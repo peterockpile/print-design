@@ -61,7 +61,8 @@ class UnitSpin(FloatSpin):
 		self.ucallback = onchange
 		if self.insp.is_doc(): self.units = app.current_doc.model.doc_units
 		val = self.point_value * point_dict[self.units]
-		FloatSpin.__init__(self, parent, val, (0.0, 100000.0), width=5,
+		FloatSpin.__init__(self, parent, val, (0.0, 100000.0),
+						step=1.0, width=5,
 						onchange=self.update_point_value)
 		events.connect(events.DOC_MODIFIED, self.update_units)
 
