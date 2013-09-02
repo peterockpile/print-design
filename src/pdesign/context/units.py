@@ -20,6 +20,7 @@ import wx
 from uc2.uc2const import unit_names, unit_full_names, UNIT_MM
 
 from pdesign import _, config, events
+from pdesign.resources import icons, get_icon
 from pdesign.widgets import const
 from pdesign.widgets import Combolist, LEFT, CENTER, Label
 from generic import CtxPlugin
@@ -36,7 +37,10 @@ class UnitsPlugin(CtxPlugin):
 		events.connect(events.DOC_MODIFIED, self.update)
 
 	def build(self):
-		self.add(Label(self, _('Units:')), 0, LEFT | CENTER, 2)
+		bmp = wx.StaticBitmap(self, -1, get_icon(icons.CTX_UNITS))
+		bmp.SetToolTipString(_('Document units'))
+		self.add(bmp, 0, LEFT | CENTER, 2)
+
 		names = []
 		for item in unit_names: names.append(unit_full_names[item])
 		self.combo = Combolist(self, items=names, onchange=self.changed)
