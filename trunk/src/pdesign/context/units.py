@@ -21,8 +21,7 @@ from uc2.uc2const import unit_names, unit_full_names, UNIT_MM
 
 from pdesign import _, config, events
 from pdesign.resources import icons, get_icon
-from pdesign.widgets import const
-from pdesign.widgets import Combolist, LEFT, CENTER, Label
+from pdesign.widgets import Combolist, LEFT, CENTER
 from generic import CtxPlugin
 
 class UnitsPlugin(CtxPlugin):
