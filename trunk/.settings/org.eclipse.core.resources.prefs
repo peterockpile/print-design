@@ -13,6 +13,7 @@ encoding//src/pdesign/context/generic.py=utf-8
 encoding//src/pdesign/context/jump.py=utf-8
 encoding//src/pdesign/context/page_format.py=utf-8
 encoding//src/pdesign/context/resize.py=utf-8
+encoding//src/pdesign/context/transform.py=utf-8
 encoding//src/pdesign/context/units.py=utf-8
 encoding//src/pdesign/dialogs/__init__.py=utf-8
 encoding//src/pdesign/dialogs/aboutdlg.py=utf-8
