@@ -15,11 +15,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
-
 from pdesign import _, config, events
 from pdesign.resources import icons, get_bmp
-from pdesign.widgets import const, LEFT, CENTER, Label
+from pdesign.widgets import const, LEFT, CENTER
 from pdesign.pwidgets import UnitSpin, RatioToggle
 from generic import CtxPlugin
 

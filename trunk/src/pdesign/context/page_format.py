@@ -15,14 +15,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
-
 from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
 from pdesign import _, events
 from pdesign.resources import icons, get_bmp
 from pdesign.widgets import const
-from pdesign.widgets import Combolist, LEFT, CENTER, Label, ImageToggleButton
+from pdesign.widgets import Combolist, LEFT, CENTER, ImageToggleButton
 from pdesign.pwidgets import UnitSpin
 from generic import CtxPlugin
 
