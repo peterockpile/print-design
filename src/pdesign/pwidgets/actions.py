@@ -153,6 +153,7 @@ class ActionButton(ImageButton):
 		if not const.is_gtk(): native = False
 		ImageButton.__init__(self, parent, artid, const.DEF_SIZE, text, tooltip,
 							native=native, onclick=action.do_call)
+		action.register(self)
 
 	def update(self):
 		self.set_enable(self.action.enabled)
