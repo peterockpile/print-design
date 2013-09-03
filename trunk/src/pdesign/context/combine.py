@@ -21,6 +21,20 @@ from pdesign.widgets import const, LEFT, CENTER
 from pdesign.pwidgets import ActionButton
 from generic import CtxPlugin
 
+class CombinePlugin(CtxPlugin):
+
+	name = 'CombinePlugin'
+
+	def __init__(self, app, parent):
+		CtxPlugin.__init__(self, app, parent)
+
+	def build(self):
+		btn = ActionButton(self, self.actions[pdids.ID_COMBINE])
+		self.add(btn, 0, LEFT | CENTER, 2)
+
+		btn = ActionButton(self, self.actions[pdids.ID_BREAK_APART])
+		self.add(btn, 0, LEFT | CENTER, 2)
+
 class GroupPlugin(CtxPlugin):
 
 	name = 'GroupPlugin'
