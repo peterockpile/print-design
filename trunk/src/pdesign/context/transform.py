@@ -62,4 +62,32 @@ class RotatePlugin(CtxPlugin):
 		val = self.angle_spin.get_angle_value()
 		if val <> 0.0: self.app.current_doc.api.rotate_selected(val)
 
+class MirrorPlugin(CtxPlugin):
+
+	name = 'MirrorPlugin'
+
+	def __init__(self, app, parent):
+		CtxPlugin.__init__(self, app, parent)
+
+	def build(self):
+
+		native = False
+		if const.is_gtk():native = True
+
+		mh = ImageButton(self, icons.CTX_MIRROR_H,
+							tooltip=_('Horizontal mirror'), native=native,
+							onclick=self.mirror_h)
+		self.add(mh, 0, LEFT | CENTER)
+
+		mv = ImageButton(self, icons.CTX_MIRROR_V,
+							tooltip=_('Vertical mirror'), native=native,
+							onclick=self.mirror_v)
+		self.add(mv, 0, LEFT | CENTER)
+
+	def mirror_h(self, *args):
+		self.app.current_doc.api.mirror_selected(False)
+
+	def mirror_v(self, *args):
+		self.app.current_doc.api.mirror_selected()
+
 
