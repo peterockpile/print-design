@@ -63,6 +63,8 @@ pdids.ID_ZOOM_PAGE:icons.PD_ZOOM_PAGE,
 wx.ID_ZOOM_FIT:icons.PD_ZOOM_FIT,
 wx.ID_REFRESH:icons.PD_REFRESH,
 #----- Arrange menu
+pdids.ID_COMBINE:icons.PD_COMBINE,
+pdids.ID_BREAK_APART:icons.PD_BREAK,
 pdids.ID_GROUP:icons.PD_GROUP,
 pdids.ID_UNGROUP:icons.PD_UNGROUP,
 pdids.ID_UNGROUPALL:icons.PD_UNGROUP_ALL,
