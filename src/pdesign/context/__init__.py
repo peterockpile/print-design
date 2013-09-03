@@ -21,14 +21,15 @@ from units import UnitsPlugin
 from jump import JumpPlugin
 from resize import ResizePlugin
 from transform import RotatePlugin, MirrorPlugin
+from combine import GroupPlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
-		 MirrorPlugin, PL2, PL3]
+		 MirrorPlugin, GroupPlugin, PL2, PL3]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
-MULTIPLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-GROUP = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
+MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
+GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
