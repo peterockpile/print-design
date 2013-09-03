@@ -63,6 +63,9 @@ pdids.ID_ZOOM_PAGE:icons.PD_ZOOM_PAGE,
 wx.ID_ZOOM_FIT:icons.PD_ZOOM_FIT,
 wx.ID_REFRESH:icons.PD_REFRESH,
 #----- Arrange menu
+pdids.ID_GROUP:icons.PD_GROUP,
+pdids.ID_UNGROUP:icons.PD_UNGROUP,
+pdids.ID_UNGROUPALL:icons.PD_UNGROUP_ALL,
 pdids.ID_TO_CURVES:icons.PD_TO_CURVES,
 #----- Tools menu
 pdids.ID_TOOL_PAGES:icons.PD_TOOL_PAGES,
