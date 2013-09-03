@@ -15,24 +15,24 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from generic import CtxPlugin, PL1, PL2, PL3
+from generic import CtxPlugin
 from page_format import PagePlugin
 from units import UnitsPlugin
 from jump import JumpPlugin
 from resize import ResizePlugin
 from transform import RotatePlugin, MirrorPlugin
-from combine import GroupPlugin
+from combine import GroupPlugin, CombinePlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
-		 MirrorPlugin, GroupPlugin, PL2, PL3]
+		 MirrorPlugin, GroupPlugin, CombinePlugin]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
-MULTIPLE = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
+MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-CURVE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
+CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 TEXT = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
 PIXMAP = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
