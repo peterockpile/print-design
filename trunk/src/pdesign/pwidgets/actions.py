@@ -18,7 +18,7 @@
 import wx
 
 from pdesign import events, resources
-from pdesign.widgets import const
+from pdesign.widgets import const, ImageButton
 
 class AppAction:
 
@@ -138,3 +138,21 @@ class AppAction:
 
 	def is_toggle(self):
 		return not self.checker is None
+
+class ActionButton(ImageButton):
+
+	action = None
+
+	def __init__(self, parent, action):
+		self.action = action
+		artid = action.get_artid()
+		tooltip = action.get_tooltip_text()
+		text = ''
+		if artid is None: text = tooltip
+		native = True
+		if not const.is_gtk(): native = False
+		ImageButton.__init__(self, parent, artid, const.DEF_SIZE, text, tooltip,
+							native=native, onclick=action.do_call)
+
+	def update(self):
+		self.set_enable(self.action.enabled)
