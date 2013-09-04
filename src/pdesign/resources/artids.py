@@ -62,6 +62,11 @@ wx.ID_ZOOM_OUT:icons.PD_ZOOM_OUT,
 pdids.ID_ZOOM_PAGE:icons.PD_ZOOM_PAGE,
 wx.ID_ZOOM_FIT:icons.PD_ZOOM_FIT,
 wx.ID_REFRESH:icons.PD_REFRESH,
+#----- Layout menu
+pdids.ID_GUIDES_AT_CENTER:icons.PD_GUIDES_AT_CENTER,
+pdids.ID_PAGE_FRAME:icons.PD_PAGE_FRAME,
+pdids.ID_PAGE_GUIDE_FRAME:icons.PD_PAGE_GUIDE_FRAME,
+pdids.ID_REMOVE_ALL_GUIDES:icons.PD_REMOVE_ALL_GUIDES,
 #----- Arrange menu
 pdids.ID_COMBINE:icons.PD_COMBINE,
 pdids.ID_BREAK_APART:icons.PD_BREAK,
