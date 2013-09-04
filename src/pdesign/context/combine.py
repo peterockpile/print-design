@@ -51,3 +51,14 @@ class GroupPlugin(CtxPlugin):
 
 		btn = ActionButton(self, self.actions[pdids.ID_UNGROUPALL])
 		self.add(btn, 0, LEFT | CENTER, 2)
+
+class ToCurvePlugin(CtxPlugin):
+
+	name = 'ToCurvePlugin'
+
+	def __init__(self, app, parent):
+		CtxPlugin.__init__(self, app, parent)
+
+	def build(self):
+		btn = ActionButton(self, self.actions[pdids.ID_TO_CURVES])
+		self.add(btn, 0, LEFT | CENTER, 2)
