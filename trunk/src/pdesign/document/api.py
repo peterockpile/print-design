@@ -22,7 +22,7 @@ from uc2.formats.pdxf import model
 from uc2.formats.pdxf import const
 from uc2 import libgeom, uc2const
 
-from pdesign import events
+from pdesign import events, config
 from pdesign import modes
 
 
@@ -409,7 +409,8 @@ class PresenterAPI(AbstractAPI):
 	def create_polygon(self, rect):
 		rect = self._normalize_rect(rect)
 		parent = self.presenter.active_layer
-		obj = model.Polygon(self.pdxf_cfg, parent, rect)
+		obj = model.Polygon(self.pdxf_cfg, parent, rect,
+						corners_num=config.default_polygon_num)
 		obj.style = deepcopy(self.model.styles['Default Style'])
 		obj.update()
 		self.insert_object(obj, parent, len(parent.childs))
@@ -992,6 +993,20 @@ class PresenterAPI(AbstractAPI):
 			if child.cid == model.GUIDE:
 				guides.append(child)
 		self.delete_guides(guides)
+
+	def set_polygon_corners_num(self, num):
+		sel = [] + self.selection.objs
+		obj = sel[0]
+		num_before = obj.corners_num
+		self.methods.set_polygon_corners_num(obj, num)
+		transaction = [
+			[[self.methods.set_polygon_corners_num, obj, num_before],
+			[self._set_selection, sel], ],
+			[[self.methods.set_polygon_corners_num, obj, num],
+			[self._set_selection, sel]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
 
 
 
