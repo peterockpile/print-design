@@ -15,8 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign.widgets import ALL, EXPAND, LEFT, CENTER
-from pdesign.widgets import HPanel, VLine, Label
+from pdesign.widgets import ALL, EXPAND
+from pdesign.widgets import HPanel, VLine
 
 class CtxPlugin(HPanel):
 
@@ -35,36 +35,6 @@ class CtxPlugin(HPanel):
 		self.build()
 		self.add(VLine(self), 0, ALL | EXPAND, 2)
 		self.hide()
-
-class PL1(CtxPlugin):
-
-	name = 'Plugin_1'
-
-	def __init__(self, app, parent):
-		CtxPlugin.__init__(self, app, parent)
-
-	def build(self):
-		self.add(Label(self, self.name), 0, LEFT | CENTER)
-
-class PL2(CtxPlugin):
-
-	name = 'Plugin_2'
-
-	def __init__(self, app, parent):
-		CtxPlugin.__init__(self, app, parent)
-
-	def build(self):
-		self.add(Label(self, self.name), 0, LEFT | CENTER)
-
-class PL3(CtxPlugin):
-
-	name = 'Plugin_3'
-
-	def __init__(self, app, parent):
-		CtxPlugin.__init__(self, app, parent)
-
-	def build(self):
-		self.add(Label(self, self.name), 0, LEFT | CENTER)
 
 
 
