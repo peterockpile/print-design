@@ -102,6 +102,10 @@ def create_actions(app):
 (pdids.ID_GOTO_PAGE, proxy.goto_page, page_chnls, insp.can_goto_page),
 (pdids.ID_NEXT_PAGE, proxy.next_page, page_chnls, insp.can_be_next_page),
 (pdids.ID_PREV_PAGE, proxy.previous_page, page_chnls, insp.can_be_previous_page),
+(pdids.ID_PAGE_FRAME, proxy.create_page_border, doc_chnls, insp.is_doc),
+(pdids.ID_PAGE_GUIDE_FRAME, proxy.create_guide_border, doc_chnls, insp.is_doc),
+(pdids.ID_GUIDES_AT_CENTER, proxy.create_guides_at_center, doc_chnls, insp.is_doc),
+(pdids.ID_REMOVE_ALL_GUIDES, proxy.remove_all_guides, doc_chnls, insp.is_doc),
 #------ Arrange menu -------
 (pdids.ID_COMBINE, proxy.combine_selected, sel_chnls, insp.can_be_combined),
 (pdids.ID_BREAK_APART, proxy.break_apart_selected, sel_chnls, insp.can_be_breaked),
