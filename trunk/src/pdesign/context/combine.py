@@ -15,9 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 from pdesign.resources import pdids
-from pdesign.widgets import const, LEFT, CENTER
+from pdesign.widgets import LEFT, CENTER
 from pdesign.pwidgets import ActionButton
 from generic import CtxPlugin
 
