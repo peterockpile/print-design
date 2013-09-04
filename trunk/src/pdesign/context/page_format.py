@@ -18,10 +18,10 @@
 from uc2.uc2const import PAGE_FORMATS, PAGE_FORMAT_NAMES, PORTRAIT, LANDSCAPE
 
 from pdesign import _, events
-from pdesign.resources import icons, get_bmp
+from pdesign.resources import icons, get_bmp, pdids
 from pdesign.widgets import const
 from pdesign.widgets import Combolist, LEFT, CENTER, ImageToggleButton
-from pdesign.pwidgets import UnitSpin
+from pdesign.pwidgets import UnitSpin, ActionButton
 from generic import CtxPlugin
 
 
@@ -197,3 +197,24 @@ class PagePlugin(CtxPlugin):
 		else:
 			new_format += [LANDSCAPE, ]
 		self.app.current_doc.api.set_page_format(new_format)
+
+
+class PageBorderPlugin(CtxPlugin):
+
+	name = 'PageBorderPlugin'
+
+	def __init__(self, app, parent):
+		CtxPlugin.__init__(self, app, parent)
+
+	def build(self):
+		btn = ActionButton(self, self.actions[pdids.ID_PAGE_FRAME])
+		self.add(btn, 0, LEFT | CENTER, 2)
+
+		btn = ActionButton(self, self.actions[pdids.ID_PAGE_GUIDE_FRAME])
+		self.add(btn, 0, LEFT | CENTER, 2)
+
+		btn = ActionButton(self, self.actions[pdids.ID_GUIDES_AT_CENTER])
+		self.add(btn, 0, LEFT | CENTER, 2)
+
+		btn = ActionButton(self, self.actions[pdids.ID_REMOVE_ALL_GUIDES])
+		self.add(btn, 0, LEFT | CENTER, 2)
