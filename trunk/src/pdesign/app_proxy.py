@@ -15,6 +15,7 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from uc2 import uc2const
 from uc2.formats.pdxf import model
 
 from pdesign import _, dialogs, modes
@@ -193,6 +194,28 @@ class AppProxy:
 			if index is None:return
 		if index >= 0:
 			self.app.current_doc.goto_page(index)
+
+	def create_page_border(self):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_rectangle([-w / 2.0, -h / 2.0, w / 2.0, h / 2.0])
+
+	def create_guide_border(self):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_guides([[-w / 2.0, uc2const.VERTICAL],
+						[ -h / 2.0, uc2const.HORIZONTAL],
+						[ w / 2.0, uc2const.VERTICAL],
+						[h / 2.0, uc2const.HORIZONTAL]])
+
+	def create_guides_at_center(self):
+		api = self.app.current_doc.api
+		w, h = self.app.current_doc.get_page_size()
+		api.create_guides([[0, uc2const.VERTICAL],
+						[ 0, uc2const.HORIZONTAL]])
+
+	def remove_all_guides(self, *args):
+		self.app.current_doc.api.delete_all_guides()
 
 	def convert_to_curve(self):self.app.current_doc.api.convert_to_curve_selected()
 	def group(self):self.app.current_doc.api.group_selected()
