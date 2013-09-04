@@ -113,6 +113,8 @@ class AppConfig(UCConfig):
 	toolbar_icon_size = (24, 24)
 	set_doc_icon = True
 
+	default_polygon_num = 5
+
 	#============== RULER OPTIONS ================
 	ruler_size = 20
 	ruler_style = 0
