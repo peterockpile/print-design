@@ -16,7 +16,7 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from generic import CtxPlugin
-from page_format import PagePlugin
+from page_format import PagePlugin, PageBorderPlugin
 from units import UnitsPlugin
 from jump import JumpPlugin
 from resize import ResizePlugin
@@ -26,10 +26,10 @@ from polygon import PolygonPlugin, PolygonCfgPlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
 		 MirrorPlugin, GroupPlugin, CombinePlugin, ToCurvePlugin, PolygonPlugin,
-		 PolygonCfgPlugin]
+		 PolygonCfgPlugin, PageBorderPlugin]
 
 NO_DOC = []
-DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
+DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', 'PageBorderPlugin']
 MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
