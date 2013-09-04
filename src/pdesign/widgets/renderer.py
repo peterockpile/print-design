@@ -155,7 +155,9 @@ class LabelRenderer:
 	#----- RENDERING
 	def _start(self):
 		self.size = self.widget.GetSize()
-		if is_msw() and self.widget.IsDoubleBuffered():
+		if not self.size[0] or not self.size[1]:
+			self.pdc = wx.PaintDC(self.widget)
+		elif is_msw() and self.widget.IsDoubleBuffered():
 			self.widget.buffer = wx.EmptyBitmapRGBA(*self.size)
 			self.pdc = wx.BufferedPaintDC(self.widget, self.widget.buffer)
 		else:
