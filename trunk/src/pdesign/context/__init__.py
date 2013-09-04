@@ -21,18 +21,20 @@ from units import UnitsPlugin
 from jump import JumpPlugin
 from resize import ResizePlugin
 from transform import RotatePlugin, MirrorPlugin
-from combine import GroupPlugin, CombinePlugin
+from combine import GroupPlugin, CombinePlugin, ToCurvePlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
-		 MirrorPlugin, GroupPlugin, CombinePlugin]
+		 MirrorPlugin, GroupPlugin, CombinePlugin, ToCurvePlugin]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', ]
-MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
-GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', ]
-RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
+MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin',
+		'MirrorPlugin', 'ToCurvePlugin']
+GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin',
+		'ToCurvePlugin']
+RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
+CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
+POLYGON = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-TEXT = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
+TEXT = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 PIXMAP = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
