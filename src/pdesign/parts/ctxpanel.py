@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign import events
+from pdesign import events, modes
 from pdesign.widgets import const, ALL, EXPAND, HPanel
 from pdesign.context import PLUGINS, NO_DOC, DEFAULT, MULTIPLE, GROUP, \
 RECTANGLE, CIRCLE, POLYGON, CURVE, TEXT, PIXMAP
@@ -41,6 +41,7 @@ class AppCtxPanel(HPanel):
 		events.connect(events.NO_DOCS, self.rebuild)
 		events.connect(events.DOC_CHANGED, self.rebuild)
 		events.connect(events.SELECTION_CHANGED, self.rebuild)
+		events.connect(events.MODE_CHANGED, self.rebuild)
 		self.rebuild()
 
 	def rebuild(self, *args):
@@ -59,24 +60,28 @@ class AppCtxPanel(HPanel):
 		self.mode = mode
 
 	def get_mode(self):
+		ret = []
 		if not self.insp.is_doc():
 			return NO_DOC
 		if not self.insp.is_selection():
-			return DEFAULT
+			ret = DEFAULT
 		else:
 			doc = self.app.current_doc
 			sel = doc.selection.objs
 			if len(sel) > 1:
-				return MULTIPLE
+				ret = MULTIPLE
 			elif self.insp.is_obj_rect(sel[0]):
-				return RECTANGLE
+				ret = RECTANGLE
 			elif self.insp.is_obj_circle(sel[0]):
-				return CIRCLE
+				ret = CIRCLE
 			elif self.insp.is_obj_polygon(sel[0]):
-				return POLYGON
+				ret = POLYGON
 			elif self.insp.is_obj_curve(sel[0]):
-				return CURVE
+				ret = CURVE
 			elif self.insp.can_be_ungrouped():
-				return GROUP
+				ret = GROUP
 			else:
-				return DEFAULT
+				ret = DEFAULT
+		if self.insp.is_mode(modes.POLYGON_MODE):
+			ret = ['PolygonCfgPlugin'] + ret
+		return ret
