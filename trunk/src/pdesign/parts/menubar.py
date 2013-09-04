@@ -59,7 +59,9 @@ class AppMenuBar(wx.MenuBar):
 
 		#---Layout menu
 		sub = (pdids.ID_INSERT_PAGE, pdids.ID_DELETE_PAGE, pdids.ID_GOTO_PAGE,
-			None, pdids.ID_NEXT_PAGE, pdids.ID_PREV_PAGE)
+			None, pdids.ID_NEXT_PAGE, pdids.ID_PREV_PAGE, None,
+			pdids.ID_PAGE_FRAME, pdids.ID_PAGE_GUIDE_FRAME,
+			pdids.ID_GUIDES_AT_CENTER, pdids.ID_REMOVE_ALL_GUIDES,)
 		entry = (_("&Layout"), sub)
 		self.entries.append(entry)
 
