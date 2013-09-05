@@ -16,8 +16,8 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from pdesign import modes
-from pdesign.appconst import RENDERING_DELAY
+from pdesign import modes, config
+from pdesign.appconst import RENDERING_DELAY, ZOOM_IN, ZOOM_OUT
 
 class AbstractController:
 
@@ -70,7 +70,18 @@ class AbstractController:
 		self.canvas.capture_mouse()
 		self.canvas.set_temp_mode(modes.TEMP_FLEUR_MODE)
 	def mouse_middle_up(self, event):pass
-	def wheel(self, event):pass
+	def wheel(self, event):
+		point = list(event.GetPositionTuple())
+		val = event.GetWheelRotation() / config.mouse_scroll_sensitivity
+		if event.ControlDown():
+			self.canvas.scroll(val, 0)
+		elif event.ShiftDown():
+			if val < 0:
+				self.canvas.zoom_at_point(point, ZOOM_OUT)
+			else:
+				self.canvas.zoom_at_point(point, ZOOM_IN)
+		else:
+			self.canvas.scroll(0, val)
 
 	def mouse_down(self, event):
 		self.snap = self.presenter.snap
