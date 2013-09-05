@@ -115,6 +115,9 @@ class AppConfig(UCConfig):
 
 	default_polygon_num = 5
 
+	#============== MOUSE OPTIONS ================
+	mouse_scroll_sensitivity = 3.0
+
 	#============== RULER OPTIONS ================
 	ruler_size = 20
 	ruler_style = 0
