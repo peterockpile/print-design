@@ -344,8 +344,16 @@ class AppCanvas(wx.Panel):
 		self._zoom(1.0 / self.zoom)
 
 	def zoom_at_point(self, point, zoom):
-		self._set_center(point)
-		self._zoom(zoom)
+		x, y = point
+		m11, m12, m21, m22, dx, dy = self.trafo
+		m11 *= zoom
+		dx = dx * zoom - x * zoom + x
+		dy = dy * zoom - y * zoom + y
+		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.matrix = cairo.Matrix(*self.trafo)
+		self.zoom = m11
+		self.update_scrolls()
+		self.force_redraw()
 
 	def zoom_to_rectangle(self, start, end):
 		w, h = self.GetSize()
@@ -440,7 +448,6 @@ class AppCanvas(wx.Panel):
 			self.mouse_captured = False
 
 	def capture_lost(self, event):
-		print "capture lost"
 		if self.mouse_captured:
 			self.ReleaseMouse()
 			self.mouse_captured = False
