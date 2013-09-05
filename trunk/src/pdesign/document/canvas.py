@@ -19,18 +19,14 @@ import wx, cairo
 
 from uc2.uc2const import mm_to_pt, point_dict
 from uc2.libcairo import normalize_bbox
-from uc2.formats.pdxf.const import DOC_ORIGIN_CENTER, DOC_ORIGIN_LL, \
-DOC_ORIGIN_LU, ORIGINS
+from uc2.formats.pdxf.const import DOC_ORIGIN_LL, DOC_ORIGIN_LU
 
 from pdesign import events, modes, config
+from pdesign.appconst import PAGEFIT, ZOOM_IN, ZOOM_OUT
 from pdesign.widgets import const
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
 from uc2 import uc2const
-
-PAGEFIT = 0.9
-ZOOM_IN = 1.25
-ZOOM_OUT = 0.8
 
 
 WORKSPACE_HEIGHT = 2000 * mm_to_pt
