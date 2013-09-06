@@ -439,7 +439,7 @@ class AppCanvas(wx.Panel):
 #==============EVENT CONTROLLING==========================
 
 	def mouse_enter(self, enent):
-		self.SetFocus()
+		if const.is_msw(): self.SetFocus()
 
 	def capture_mouse(self):
 		if const.is_msw():
