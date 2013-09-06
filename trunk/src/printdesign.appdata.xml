@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+<id type="desktop">printdesign.desktop</id>
+<licence>GPL 3.0</licence>
+<description>
+	<p>
+	PrintDesign is an open-source illustration program that can substitute 
+	professional proprietary software like Corel Draw or Adobe Illustrator*. 
+	The application is developed simultaneously on GNU/Linux, MS Windows and 
+	MacOS X platforms. PrintDesign supports professional publishing features, 
+	such as multiple page document, CMYK color, separations, ICC color 
+	management and press-ready PDF output.
+	</p>
+</description>
+<url type="homepage">http://sk1project.org/</url>
+<screenshots>
+<screenshot type="default">http://sk1project.org/images/index/printdesign.png</screenshot>
+</screenshots>
+<updatecontact>igor.e.novikov@gmail.com</updatecontact>
+</application>
