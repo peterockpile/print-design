@@ -29,6 +29,7 @@ class CtxPlugin(HPanel):
 
 	def __init__(self, app, parent):
 		self.app = app
+		self.parent = parent
 		self.insp = self.app.insp
 		self.actions = self.app.actions
 		HPanel.__init__(self, parent)
