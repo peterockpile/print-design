@@ -84,6 +84,7 @@ class AppCanvas(wx.Panel):
 
 		self.ctrls = self.init_controllers()
 		self.Bind(wx.EVT_PAINT, self.on_paint, self)
+		self.Bind(wx.EVT_ENTER_WINDOW, self.mouse_enter, self)
 		#----- Mouse binding
 		self.Bind(wx.EVT_LEFT_DOWN, self.mouse_left_down)
 		self.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
@@ -437,6 +438,9 @@ class AppCanvas(wx.Panel):
 
 #==============EVENT CONTROLLING==========================
 
+	def mouse_enter(self, enent):
+		self.SetFocus()
+
 	def capture_mouse(self):
 		if const.is_msw():
 			self.CaptureMouse()
@@ -459,6 +463,7 @@ class AppCanvas(wx.Panel):
 		self.capture_mouse()
 		self.controller.set_cursor()
 		self.controller.mouse_down(event)
+		event.Skip()
 
 	def mouse_left_up(self, event):
 		self.controller.mouse_up(event)
