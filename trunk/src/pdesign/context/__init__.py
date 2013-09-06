@@ -22,17 +22,18 @@ from jump import JumpPlugin
 from resize import ResizePlugin
 from transform import RotatePlugin, MirrorPlugin
 from combine import GroupPlugin, CombinePlugin, ToCurvePlugin
+from rect import RectanglePlugin
 from polygon import PolygonPlugin, PolygonCfgPlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
 		 MirrorPlugin, GroupPlugin, CombinePlugin, ToCurvePlugin, PolygonPlugin,
-		 PolygonCfgPlugin, PageBorderPlugin]
+		 PolygonCfgPlugin, PageBorderPlugin, RectanglePlugin]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', 'PageBorderPlugin']
 MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
-RECTANGLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
+RECTANGLE = ['ResizePlugin', 'RectanglePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
 CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 POLYGON = ['ResizePlugin', 'PolygonPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
 CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', ]
