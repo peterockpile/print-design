@@ -346,12 +346,11 @@ class AppCanvas(wx.Panel):
 	def zoom_at_point(self, point, zoom):
 		x, y = point
 		m11, m12, m21, m22, dx, dy = self.trafo
-		m11 *= zoom
 		dx = dx * zoom - x * zoom + x
 		dy = dy * zoom - y * zoom + y
-		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.trafo = [m11 * zoom, m12, m21, m22 * zoom, dx, dy]
 		self.matrix = cairo.Matrix(*self.trafo)
-		self.zoom = m11
+		self.zoom = m11 * zoom
 		self.update_scrolls()
 		self.force_redraw()
 
