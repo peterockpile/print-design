@@ -994,6 +994,21 @@ class PresenterAPI(AbstractAPI):
 				guides.append(child)
 		self.delete_guides(guides)
 
+	def set_rect_corners(self, corners):
+		sel = [] + self.selection.objs
+		obj = sel[0]
+		corners_before = obj.corners
+		self.methods.set_rect_corners(obj, corners)
+		transaction = [
+			[[self.methods.set_rect_corners, obj, corners_before],
+			[self._set_selection, sel], ],
+			[[self.methods.set_rect_corners, obj, corners],
+			[self._set_selection, sel]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+
 	def set_polygon_corners_num(self, num):
 		sel = [] + self.selection.objs
 		obj = sel[0]
