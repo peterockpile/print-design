@@ -238,7 +238,8 @@ class AppCanvas(wx.Panel):
 
 	def doc_to_win(self, point=[0.0, 0.0]):
 		x, y = point
-		m11, m12, m21, m22, dx, dy = self.trafo
+		m11 = self.trafo[0]
+		m22, dx, dy = self.trafo[3:]
 		x_new = m11 * x + dx
 		y_new = m22 * y + dy
 		return [x_new, y_new]
@@ -256,7 +257,8 @@ class AppCanvas(wx.Panel):
 		x, y = point
 		x = float(x)
 		y = float(y)
-		m11, m12, m21, m22, dx, dy = self.trafo
+		m11 = self.trafo[0]
+		m22, dx, dy = self.trafo[3:]
 		x_new = (x - dx) / m11
 		y_new = (y - dy) / m22
 		return [x_new, y_new]
@@ -295,7 +297,7 @@ class AppCanvas(wx.Panel):
 		m11, m12, m21, m22, dx, dy = self.trafo
 		dx += cdx
 		dy += cdy
-		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.trafo = [m11, m12, m21, m22, dx, dy]
 		self.matrix = cairo.Matrix(*self.trafo)
 		self.update_scrolls()
 		self.force_redraw()
@@ -328,9 +330,9 @@ class AppCanvas(wx.Panel):
 		_dy = (self.height * dzoom - self.height) / 2.0
 		dx = dx * dzoom - _dx
 		dy = dy * dzoom - _dy
-		self.trafo = [m11, m12, m21, -m11, dx, dy]
+		self.trafo = [m11 * dzoom, m12, m21, m22 * dzoom, dx, dy]
 		self.matrix = cairo.Matrix(*self.trafo)
-		self.zoom = m11
+		self.zoom = m11 * dzoom
 		self.update_scrolls()
 		self.force_redraw()
 
