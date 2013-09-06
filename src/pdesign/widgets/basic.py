@@ -440,10 +440,12 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 		if not self.value == self._calc_entry():
 			self._set_value(self._calc_entry())
 		self.SetValue(dval * self.step + self.value)
+		event.Skip()
 
 	def _entry_enter(self, event):
 		if self.flag:return
 		self.SetValue(self._calc_entry())
+		event.Skip()
 
 	def _check_entry(self, event):
 		if self.flag:return
@@ -458,6 +460,7 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 			self.flag = True
 			self.entry.set_value(res)
 			self.flag = False
+		event.Skip()
 
 	def _calc_entry(self):
 		txt = self.entry.get_value()
