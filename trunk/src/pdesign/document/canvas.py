@@ -325,7 +325,6 @@ class AppCanvas(wx.Panel):
 
 	def _zoom(self, dzoom=1.0):
 		m11, m12, m21, m22, dx, dy = self.trafo
-		m11 *= dzoom
 		_dx = (self.width * dzoom - self.width) / 2.0
 		_dy = (self.height * dzoom - self.height) / 2.0
 		dx = dx * dzoom - _dx
