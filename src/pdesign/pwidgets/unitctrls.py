@@ -90,8 +90,10 @@ class RatioToggle(wx.StaticBitmap):
 	state = True
 	ratio = None
 	no_ratio = None
+	onchange = None
 
-	def __init__(self, parent, state=True):
+	def __init__(self, parent, state=True, onchange=None):
+		self.onchange = onchange
 		self.ratio = get_icon(icons.CTX_RATIO)
 		self.no_ratio = get_icon(icons.CTX_NO_RATIO)
 		wx.StaticBitmap.__init__(self, parent, -1, self.ratio)
@@ -100,6 +102,7 @@ class RatioToggle(wx.StaticBitmap):
 
 	def change(self, *args):
 		self.set_active(not self.state)
+		if not self.onchange is None: self.onchange()
 
 	def get_active(self):
 		return self.state
