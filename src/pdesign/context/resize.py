@@ -38,13 +38,13 @@ class ResizePlugin(CtxPlugin):
 		self.add((2, 2))
 
 		self.width_spin = UnitSpin(self.app, self,
-							onchange=self.user_changes)
+							onchange=self.w_changes)
 		self.add(self.width_spin, 0, LEFT | CENTER, 2)
 
 		self.add(get_bmp(self, icons.CTX_W_ON_H), 0, LEFT | CENTER, 1)
 
 		self.height_spin = UnitSpin(self.app, self,
-							onchange=self.user_changes)
+							onchange=self.h_changes)
 		self.add(self.height_spin, 0, LEFT | CENTER, 2)
 
 		self.add((2, 2))
@@ -62,7 +62,15 @@ class ResizePlugin(CtxPlugin):
 			self.height_spin.set_point_value(h)
 			self.update_flag = False
 
-	def user_changes(self, *args):
+	def w_changes(self, *args):
+		if self.update_flag: return
+		self.user_changes(True)
+
+	def h_changes(self, *args):
+		if self.update_flag: return
+		self.user_changes(False)
+
+	def user_changes(self, hr=True):
 		if self.update_flag: return
 		if self.insp.is_selection():
 			doc = self.app.current_doc
@@ -75,30 +83,29 @@ class ResizePlugin(CtxPlugin):
 			new_w = self.width_spin.get_point_value()
 			new_h = self.height_spin.get_point_value()
 
-			if not round(w, 4) == round(new_w, 4) or not round(h, 4) == round(new_h, 4):
+			if not w == new_w or not h == new_h:
 				if not new_w: self.width_spin.set_point_value(w);return
 				if not new_h: self.height_spin.set_point_value(h);return
 
-				m11 = round(new_w / w, 4)
-				m22 = round(new_h / h, 4)
+				m11 = new_w / w
+				m22 = new_h / h
 
 				if m11 == m22 == 1.0:return
 
 				trafo = []
 
 				if self.keep_ratio.get_active():
-					if m11 == 1.0:
-						dx = center_x * (1 - m22)
-						dy = center_y * (1 - m22)
-						trafo = [m22, 0.0, 0.0, m22, dx, dy]
-					if m22 == 1.0:
+					if hr:
 						dx = center_x * (1 - m11)
 						dy = center_y * (1 - m11)
 						trafo = [m11, 0.0, 0.0, m11, dx, dy]
+					else:
+						dx = center_x * (1 - m22)
+						dy = center_y * (1 - m22)
+						trafo = [m22, 0.0, 0.0, m22, dx, dy]
 				else:
 					dx = center_x * (1 - m11)
 					dy = center_y * (1 - m22)
 					trafo = [m11, 0.0, 0.0, m22, dx, dy]
 
-				if trafo:
-					doc.api.transform_selected(trafo)
+				if trafo: doc.api.transform_selected(trafo)
