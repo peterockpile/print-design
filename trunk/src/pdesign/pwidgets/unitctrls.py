@@ -86,19 +86,21 @@ class UnitSpin(FloatSpin):
 		self._set_digits(unit_accuracy[self.units])
 		self.set_value(self.point_value * point_dict[self.units])
 
-class RatioToggle(wx.StaticBitmap):
+class BitmapToggle(wx.StaticBitmap):
 
-	state = True
-	ratio = None
-	no_ratio = None
 	onchange = None
+	state = True
+	icons_dict = {}
 
-	def __init__(self, parent, state=True, onchange=None):
-		self.onchange = onchange
-		self.ratio = get_icon(icons.CTX_RATIO)
-		self.no_ratio = get_icon(icons.CTX_NO_RATIO)
-		wx.StaticBitmap.__init__(self, parent, -1, self.ratio)
-		self.set_active(state)
+	def __init__(self, parent, state=True, icons_dict={}, onchange=None):
+		self.state = state
+		if icons_dict:
+			self.icons_dict = icons_dict
+		else:
+			self.icons_dict = { True:[icons.CTX_RATIO, _("Keep ratio")],
+					False:[icons.CTX_NO_RATIO, _("Don't keep ratio")]}
+		self.update_icons()
+		wx.StaticBitmap.__init__(self, parent, -1, self.icons_dict[self.state][0])
 		self.Bind(wx.EVT_LEFT_UP, self.change, self)
 
 	def change(self, *args):
@@ -110,13 +112,26 @@ class RatioToggle(wx.StaticBitmap):
 
 	def set_active(self, state):
 		self.state = state
-		bmp = self.no_ratio
-		tooltip = _("Don't keep ratio")
-		if self.state:
-			bmp = self.ratio
-			tooltip = _("Keep ratio")
-		self.SetBitmap(bmp)
-		self.SetToolTipString(tooltip)
+		self.SetBitmap(self.icons_dict[self.state][0])
+		self.SetToolTipString(self.icons_dict[self.state][1])
+
+	def update_icons(self):
+		self.icons_dict[True] = [get_icon(self.icons_dict[True][0]),
+							self.icons_dict[True][1]]
+		self.icons_dict[False] = [get_icon(self.icons_dict[False][0]),
+							self.icons_dict[False][1]]
+
+	def set_icons_dict(self, icons_dict):
+		self.icons_dict = icons_dict
+		self.update_icons()
+		self.set_active(self.state)
+
+
+class RatioToggle(BitmapToggle):
+
+	def __init__(self, parent, state=True, onchange=None):
+		BitmapToggle.__init__(self, parent, state, {}, onchange)
+
 
 class AngleSpin(FloatSpin):
 
