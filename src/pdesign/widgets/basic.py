@@ -494,9 +494,10 @@ class FloatSpin(SizedPanel, RangeDataWidget):
 	#----- Native API emulation
 	def SetValue(self, val):
 		self.flag = True
+		old_value = self.value
 		self._set_value(val)
 		self.flag = False
-		if not self.callback is None:
+		if not self.callback is None and not self.value == old_value:
 			self.callback(None)
 
 	def GetValue(self):
