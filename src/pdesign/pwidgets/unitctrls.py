@@ -19,7 +19,7 @@ import math
 import wx
 
 from uc2 import uc2const
-from uc2.uc2const import point_dict, unit_dict
+from uc2.uc2const import point_dict, unit_dict, unit_accuracy
 
 from pdesign import _, events
 from pdesign.widgets import Label, FloatSpin
@@ -83,6 +83,7 @@ class UnitSpin(FloatSpin):
 		if not self.insp.is_doc(): return
 		if self.units == self.app.current_doc.model.doc_units: return
 		self.units = self.app.current_doc.model.doc_units
+		self._set_digits(unit_accuracy[self.units])
 		self.set_value(self.point_value * point_dict[self.units])
 
 class RatioToggle(wx.StaticBitmap):
