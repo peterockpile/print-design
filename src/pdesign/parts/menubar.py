@@ -66,7 +66,11 @@ class AppMenuBar(wx.MenuBar):
 		self.entries.append(entry)
 
 		#---Arrange menu
-		sub = (pdids.ID_COMBINE, pdids.ID_BREAK_APART, None, pdids.ID_GROUP,
+		sub = (
+			(_("&Transform"), (pdids.ID_ROTATE_LEFT, pdids.ID_ROTATE_RIGHT,
+				None, pdids.ID_MIRROR_H, pdids.ID_MIRROR_V)),
+			None,
+			pdids.ID_COMBINE, pdids.ID_BREAK_APART, None, pdids.ID_GROUP,
 			pdids.ID_UNGROUP, pdids.ID_UNGROUPALL, None, pdids.ID_TO_CURVES,)
 		entry = (_("&Arrange"), sub)
 		self.entries.append(entry)
