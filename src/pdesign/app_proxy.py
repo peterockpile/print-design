@@ -15,6 +15,8 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 from uc2 import uc2const
 from uc2.formats.pdxf import model
 
@@ -216,6 +218,11 @@ class AppProxy:
 
 	def remove_all_guides(self, *args):
 		self.app.current_doc.api.delete_all_guides()
+
+	def rotate_left(self):self.app.current_doc.api.rotate_selected(math.pi / 2.0)
+	def rotate_right(self):self.app.current_doc.api.rotate_selected(-math.pi / 2.0)
+	def mirror_h(self):self.app.current_doc.api.mirror_selected(False)
+	def mirror_v(self):self.app.current_doc.api.mirror_selected()
 
 	def convert_to_curve(self):self.app.current_doc.api.convert_to_curve_selected()
 	def group(self):self.app.current_doc.api.group_selected()
