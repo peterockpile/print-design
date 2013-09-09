@@ -41,6 +41,10 @@ class Widget:
 		self.enabled = value
 		self.Enable(value)
 
+	def set_visible(self, value):
+		if value: self.show()
+		else: self.hide()
+
 	def get_enabled(self):
 		return self.IsEnabled()
 
