@@ -97,6 +97,7 @@ scripts = ['src/printdesign', ]
 data_files = [
 ('/usr/share/applications', ['src/printdesign.desktop', ]),
 ('/usr/share/pixmaps/', ['src/printdesign.png', 'src/printdesign.xpm' ]),
+('/usr/share/appdata', ['src/printdesign.appdata.xml', ]),
 ]
 deb_depends = 'python (>=2.4), python (<<3.0), python-wxgtk2.8, '
 deb_depends += 'python-uniconvertor (>=2.0)'
