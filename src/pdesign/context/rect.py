@@ -28,6 +28,7 @@ class RectanglePlugin(CtxPlugin):
 	name = 'RectanglePlugin'
 	corners = [0, 0, 0, 0]
 	update_flag = False
+	active_corner = 0
 
 	def __init__(self, app, parent):
 		CtxPlugin.__init__(self, app, parent)
@@ -45,11 +46,26 @@ class RectanglePlugin(CtxPlugin):
 							width=3, onchange=self.changes)
 		self.add(self.num_spin, 0, LEFT | CENTER, 2)
 
-		self.switch = AngleSwitch(self)
+		self.switch = AngleSwitch(self, onchange=self.switch_changed)
 		self.add(self.switch, 0, LEFT | CENTER, 3)
+		self.switch.hide()
 
-		self.keep_ratio = RatioToggle(self)
+		self.keep_ratio = RatioToggle(self, onchange=self.lock_changed)
 		self.add(self.keep_ratio, 0, LEFT | CENTER, 3)
+
+	def lock_changed(self, *args):
+		self.switch.set_visible(not self.keep_ratio.get_active())
+		self.parent.Layout()
+		if self.keep_ratio.get_active():
+			val = self.corners[self.active_corner]
+			self.active_corner = 0
+			self.switch.set_index(0)
+			if not self.update_flag: self.apply_changes(val)
+		self.update_vals()
+
+	def switch_changed(self):
+		self.active_corner = self.switch.get_index()
+		self.update_vals()
 
 	def slider_changes(self, *args):
 		if self.update_flag: return
@@ -63,19 +79,32 @@ class RectanglePlugin(CtxPlugin):
 		if self.insp.is_selection():
 			selection = self.app.current_doc.selection
 			if self.insp.is_obj_rect(selection.objs[0]):
-				if not val == self.corners[0]:
-					corners = [val, val, val, val]
-					self.app.current_doc.api.set_rect_corners(corners)
+				if self.keep_ratio.get_active():
+					self.corners = [val, val, val, val]
+				else:
+					self.corners[self.active_corner] = val
+				self.app.current_doc.api.set_rect_corners(self.corners)
+
+	def update_vals(self):
+		self.update_flag = True
+		self.slider.set_value(int(self.corners[self.active_corner] * 100))
+		self.num_spin.set_value(self.corners[self.active_corner] * 100.0)
+		self.update_flag = False
 
 	def update(self, *args):
 		if self.insp.is_selection():
 			selection = self.app.current_doc.selection
 			if self.insp.is_obj_rect(selection.objs[0]):
-				self.update_flag = True
-				self.corners = [] + selection.objs[0].corners
-				self.slider.set_value(int(self.corners[0] * 100))
-				self.num_spin.set_value(self.corners[0] * 100.0)
-				self.update_flag = False
+				corners = [] + selection.objs[0].corners
+				if self.corners == corners:
+					self.update_vals()
+				else:
+					self.corners = corners
+					self.update_flag = True
+					state = (corners[0] == corners[1] == corners[2] == corners[3])
+					self.keep_ratio.set_active(state)
+					self.lock_changed()
+
 
 class AngleSwitch(VPanel):
 
@@ -120,13 +149,14 @@ class AngleSwitch(VPanel):
 
 
 	def changed(self, *args):
-		print 'changed'
 		old_active = self.active
 		self.toggles[self.active].set_active(False)
 		for item in self.toggles:
 			if item.get_active():self.active = self.toggles.index(item)
 		if old_active == self.active:
 			self.toggles[self.active].set_active(True)
+		else:
+			if not self.onchange is None: self.onchange()
 
 
 	def get_index(self):
