@@ -22,7 +22,7 @@ from uc2 import uc2const
 from uc2.uc2const import point_dict, unit_dict, unit_accuracy
 
 from pdesign import _, events
-from pdesign.widgets import Label, FloatSpin
+from pdesign.widgets import Label, FloatSpin, const
 from pdesign.resources import icons, get_icon
 
 class UnitLabel(Label):
@@ -94,6 +94,7 @@ class BitmapToggle(wx.StaticBitmap):
 
 	def __init__(self, parent, state=True, icons_dict={}, onchange=None):
 		self.state = state
+		self.onchange = onchange
 		if icons_dict:
 			self.icons_dict = icons_dict
 		else:
@@ -116,9 +117,11 @@ class BitmapToggle(wx.StaticBitmap):
 		self.SetToolTipString(self.icons_dict[self.state][1])
 
 	def update_icons(self):
-		self.icons_dict[True] = [get_icon(self.icons_dict[True][0]),
+		self.icons_dict[True] = [get_icon(self.icons_dict[True][0],
+										size=const.DEF_SIZE),
 							self.icons_dict[True][1]]
-		self.icons_dict[False] = [get_icon(self.icons_dict[False][0]),
+		self.icons_dict[False] = [get_icon(self.icons_dict[False][0],
+										size=const.DEF_SIZE),
 							self.icons_dict[False][1]]
 
 	def set_icons_dict(self, icons_dict):
