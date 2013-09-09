@@ -15,9 +15,12 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import wx
+
 from pdesign import _, events
 from pdesign.resources import icons, get_bmp
-from pdesign.widgets import LEFT, CENTER, FloatSpin, Slider
+from pdesign.widgets import LEFT, CENTER, FloatSpin, Slider, VPanel, HORIZONTAL
+from pdesign.pwidgets import RatioToggle, BitmapToggle
 from generic import CtxPlugin
 
 class RectanglePlugin(CtxPlugin):
@@ -41,6 +44,12 @@ class RectanglePlugin(CtxPlugin):
 		self.num_spin = FloatSpin(self, 0, (0.0, 100.0), 1.0, 0,
 							width=3, onchange=self.changes)
 		self.add(self.num_spin, 0, LEFT | CENTER, 2)
+
+		self.switch = AngleSwitch(self)
+		self.add(self.switch, 0, LEFT | CENTER, 3)
+
+		self.keep_ratio = RatioToggle(self)
+		self.add(self.keep_ratio, 0, LEFT | CENTER, 3)
 
 	def slider_changes(self, *args):
 		if self.update_flag: return
@@ -67,3 +76,66 @@ class RectanglePlugin(CtxPlugin):
 				self.slider.set_value(int(self.corners[0] * 100))
 				self.num_spin.set_value(self.corners[0] * 100.0)
 				self.update_flag = False
+
+class AngleSwitch(VPanel):
+
+	active = 0
+	toggles = []
+	onchange = None
+
+	def __init__(self, parent, active=0, onchange=None):
+		self.active = active
+		self.toggles = [None, None, None, None]
+		self.onchange = onchange
+		VPanel.__init__(self, parent)
+		row1 = wx.BoxSizer(HORIZONTAL)
+		self.box.Add(row1)
+
+		icons_dict = {True:[icons.CTX_ROUNDED_RECT2_ON, '', ],
+				False:[icons.CTX_ROUNDED_RECT2_OFF, '', ], }
+		tgl = BitmapToggle(self, False, icons_dict, self.changed)
+		self.toggles[1] = tgl
+		row1.Add(tgl)
+		icons_dict = {True:[icons.CTX_ROUNDED_RECT3_ON, '', ],
+				False:[icons.CTX_ROUNDED_RECT3_OFF, '', ], }
+		tgl = BitmapToggle(self, False, icons_dict, self.changed)
+		self.toggles[2] = tgl
+		row1.Add(tgl)
+
+		row2 = wx.BoxSizer(HORIZONTAL)
+		self.box.Add(row2, 0)
+
+		icons_dict = {True:[icons.CTX_ROUNDED_RECT1_ON, '', ],
+				False:[icons.CTX_ROUNDED_RECT1_OFF, '', ], }
+		tgl = BitmapToggle(self, False, icons_dict, self.changed)
+		self.toggles[0] = tgl
+		row2.Add(tgl)
+		icons_dict = {True:[icons.CTX_ROUNDED_RECT4_ON, '', ],
+				False:[icons.CTX_ROUNDED_RECT4_OFF, '', ], }
+		tgl = BitmapToggle(self, False, icons_dict, self.changed)
+		self.toggles[3] = tgl
+		row2.Add(tgl)
+
+		self.toggles[self.active].set_active(True)
+
+
+	def changed(self, *args):
+		print 'changed'
+		old_active = self.active
+		self.toggles[self.active].set_active(False)
+		for item in self.toggles:
+			if item.get_active():self.active = self.toggles.index(item)
+		if old_active == self.active:
+			self.toggles[self.active].set_active(True)
+
+
+	def get_index(self):
+		return self.active
+
+	def set_index(self, index):
+		self.toggles[self.active].set_active(False)
+		self.active = index
+		self.toggles[self.active].set_active(True)
+
+
+
