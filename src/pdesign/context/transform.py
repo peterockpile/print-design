@@ -15,12 +15,10 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
-
 from pdesign import _
-from pdesign.resources import icons, get_bmp
-from pdesign.widgets import const, ImageButton, LEFT, CENTER
-from pdesign.pwidgets import AngleSpin
+from pdesign.resources import icons, get_bmp, pdids
+from pdesign.widgets import LEFT, CENTER
+from pdesign.pwidgets import AngleSpin, ActionButton
 from generic import CtxPlugin
 
 class RotatePlugin(CtxPlugin):
@@ -39,24 +37,11 @@ class RotatePlugin(CtxPlugin):
 
 		self.add((2, 2))
 
-		native = False
-		if const.is_gtk():native = True
-
-		rot_left = ImageButton(self, icons.CTX_ROTATE_LEFT,
-							tooltip=_('Rotate left 90°'), native=native,
-							onclick=self.rotate_left)
+		rot_left = ActionButton(self, self.actions[pdids.ID_ROTATE_LEFT])
 		self.add(rot_left, 0, LEFT | CENTER)
 
-		rot_right = ImageButton(self, icons.CTX_ROTATE_RIGHT,
-							tooltip=_('Rotate right 90°'), native=native,
-							onclick=self.rotate_right)
+		rot_right = ActionButton(self, self.actions[pdids.ID_ROTATE_RIGHT])
 		self.add(rot_right, 0, LEFT | CENTER)
-
-	def rotate_left(self, *args):
-		self.app.current_doc.api.rotate_selected(math.pi / 2.0)
-
-	def rotate_right(self, *args):
-		self.app.current_doc.api.rotate_selected(-math.pi / 2.0)
 
 	def apply_changes(self, *args):
 		val = self.angle_spin.get_angle_value()
@@ -71,23 +56,11 @@ class MirrorPlugin(CtxPlugin):
 
 	def build(self):
 
-		native = False
-		if const.is_gtk():native = True
-
-		mh = ImageButton(self, icons.CTX_MIRROR_H,
-							tooltip=_('Horizontal mirror'), native=native,
-							onclick=self.mirror_h)
+		mh = ActionButton(self, self.actions[pdids.ID_MIRROR_H])
 		self.add(mh, 0, LEFT | CENTER)
 
-		mv = ImageButton(self, icons.CTX_MIRROR_V,
-							tooltip=_('Vertical mirror'), native=native,
-							onclick=self.mirror_v)
+		mv = ActionButton(self, self.actions[pdids.ID_MIRROR_V])
 		self.add(mv, 0, LEFT | CENTER)
 
-	def mirror_h(self, *args):
-		self.app.current_doc.api.mirror_selected(False)
-
-	def mirror_v(self, *args):
-		self.app.current_doc.api.mirror_selected()
 
 
