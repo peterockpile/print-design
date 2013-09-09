@@ -107,6 +107,10 @@ def create_actions(app):
 (pdids.ID_GUIDES_AT_CENTER, proxy.create_guides_at_center, doc_chnls, insp.is_doc),
 (pdids.ID_REMOVE_ALL_GUIDES, proxy.remove_all_guides, doc_chnls, insp.is_doc),
 #------ Arrange menu -------
+(pdids.ID_ROTATE_LEFT, proxy.rotate_left, sel_chnls, insp.is_selection),
+(pdids.ID_ROTATE_RIGHT, proxy.rotate_right, sel_chnls, insp.is_selection),
+(pdids.ID_MIRROR_H, proxy.mirror_h, sel_chnls, insp.is_selection),
+(pdids.ID_MIRROR_V, proxy.mirror_v, sel_chnls, insp.is_selection),
 (pdids.ID_COMBINE, proxy.combine_selected, sel_chnls, insp.can_be_combined),
 (pdids.ID_BREAK_APART, proxy.break_apart_selected, sel_chnls, insp.can_be_breaked),
 (pdids.ID_GROUP, proxy.group, sel_chnls, insp.can_be_grouped),
