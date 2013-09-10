@@ -263,3 +263,25 @@ class AppInspector:
 			return result
 		else:
 			return False
+
+	def can_be_lower(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			objs = doc.selection.objs
+			if len(objs) == 1:
+				if objs[0].parent.childs.index(objs[0]):
+					return True
+		return False
+
+	def can_be_raised(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			objs = doc.selection.objs
+			if len(objs) == 1:
+				obj = objs[0]
+				parent = objs[0].parent
+				if parent.childs.index(obj) < len(parent.childs) - 1:
+					return True
+		return False
