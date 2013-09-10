@@ -24,18 +24,19 @@ from transform import RotatePlugin, MirrorPlugin
 from combine import GroupPlugin, CombinePlugin, ToCurvePlugin
 from rect import RectanglePlugin
 from polygon import PolygonPlugin, PolygonCfgPlugin
+from order import OrderPlugin
 
 PLUGINS = [PagePlugin, UnitsPlugin, JumpPlugin, ResizePlugin, RotatePlugin,
 		 MirrorPlugin, GroupPlugin, CombinePlugin, ToCurvePlugin, PolygonPlugin,
-		 PolygonCfgPlugin, PageBorderPlugin, RectanglePlugin]
+		 PolygonCfgPlugin, PageBorderPlugin, RectanglePlugin, OrderPlugin]
 
 NO_DOC = []
 DEFAULT = ['PagePlugin', 'UnitsPlugin', 'JumpPlugin', 'PageBorderPlugin']
 MULTIPLE = ['ResizePlugin', 'CombinePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
-GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
-RECTANGLE = ['ResizePlugin', 'RectanglePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin']
-CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
-POLYGON = ['ResizePlugin', 'PolygonPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
-CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', ]
-TEXT = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' ]
-PIXMAP = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', ]
+GROUP = ['ResizePlugin', 'GroupPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin', 'OrderPlugin']
+RECTANGLE = ['ResizePlugin', 'RectanglePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin', 'OrderPlugin']
+CIRCLE = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin', 'OrderPlugin' ]
+POLYGON = ['ResizePlugin', 'PolygonPlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin' , 'OrderPlugin']
+CURVE = ['ResizePlugin', 'CombinePlugin', 'RotatePlugin', 'MirrorPlugin', 'OrderPlugin' ]
+TEXT = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'ToCurvePlugin', 'OrderPlugin' ]
+PIXMAP = ['ResizePlugin', 'RotatePlugin', 'MirrorPlugin', 'OrderPlugin' ]
