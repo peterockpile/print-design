@@ -532,5 +532,5 @@ class Slider(wx.Slider, RangeDataWidget):
 		wx.Slider.__init__(self, parent, wx.ID_ANY, value, start,
 						end, size=size, style=style)
 		if onchange:
-			self.Bind(wx.EVT_SCROLL_CHANGED, onchange, self)
+			self.Bind(wx.EVT_SCROLL, onchange, self)
 
