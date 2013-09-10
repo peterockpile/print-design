@@ -231,10 +231,10 @@ class AppProxy:
 	def combine_selected(self):self.app.current_doc.api.combine_selected()
 	def break_apart_selected(self):self.app.current_doc.api.break_apart_selected()
 
-	def raise_to_top(self):pass
-	def raise_obj(self):pass
-	def lower_obj(self):pass
-	def lower_to_bottom(self):pass
+	def raise_to_top(self):self.app.current_doc.api.raise_to_top()
+	def raise_obj(self):self.app.current_doc.api.raise_obj()
+	def lower_obj(self):self.app.current_doc.api.lower_obj()
+	def lower_to_bottom(self):self.app.current_doc.api.lower_to_bottom()
 
 	def set_container(self):
 		doc = self.app.current_doc
