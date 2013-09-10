@@ -52,12 +52,10 @@ pdids.ID_PREV_PAGE:(wx.ACCEL_NORMAL, wx.WXK_PAGEUP),
 #----- Arrange menu
 pdids.ID_COMBINE:(wx.ACCEL_CTRL, ord('L')),
 pdids.ID_BREAK_APART:(wx.ACCEL_CTRL, ord('K')),
-
 pdids.ID_RAISE_TO_TOP:(wx.ACCEL_CTRL | wx.ACCEL_SHIFT, wx.WXK_PAGEUP),
 pdids.ID_RAISE:(wx.ACCEL_CTRL, wx.WXK_PAGEUP),
 pdids.ID_LOWER:(wx.ACCEL_CTRL, wx.WXK_PAGEDOWN),
 pdids.ID_LOWER_TO_BOTTOM:(wx.ACCEL_CTRL | wx.ACCEL_SHIFT, wx.WXK_PAGEDOWN),
-
 pdids.ID_GROUP:(wx.ACCEL_CTRL, ord('G')),
 pdids.ID_UNGROUP:(wx.ACCEL_CTRL, ord('U')),
 pdids.ID_UNGROUPALL:(wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord('U')),
