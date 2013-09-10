@@ -22,6 +22,10 @@ from pdesign.resources import pdids
 
 EDIT = [wx.ID_UNDO, wx.ID_REDO, None, wx.ID_CUT, wx.ID_COPY, wx.ID_PASTE,
 	wx.ID_DELETE, None, wx.ID_SELECTALL]
+DEFAULT = [None, wx.ID_PROPERTIES]
+MULTIPLE = [None, pdids.ID_COMBINE, pdids.ID_BREAK_APART, ]
+PRIMITIVE = [None, pdids.ID_TO_CURVES]
+GROUP = [None, pdids.ID_GROUP, pdids.ID_UNGROUP, pdids.ID_UNGROUPALL, ]
 
 class ContextMenu(wx.Menu):
 
@@ -46,6 +50,7 @@ class ContextMenu(wx.Menu):
 	def rebuild(self):
 		for item in self.persistent_items:
 			if not item.IsSeparator(): item.update()
+		self.build_menu(self.get_entries())
 
 	def build_menu(self, entries):
 		for item in self.items: self.RemoveItem(item)
@@ -59,6 +64,29 @@ class ContextMenu(wx.Menu):
 				self.AppendItem(menuitem)
 				menuitem.update()
 				self.items.append(menuitem)
+
+	def get_entries(self):
+		ret = []
+		if not self.insp.is_selection():
+			ret = DEFAULT
+		else:
+			doc = self.app.current_doc
+			sel = doc.selection.objs
+			if len(sel) > 1:
+				ret = MULTIPLE + GROUP + PRIMITIVE
+			elif self.insp.is_obj_rect(sel[0]):
+				ret = PRIMITIVE + DEFAULT
+			elif self.insp.is_obj_circle(sel[0]):
+				ret = PRIMITIVE + DEFAULT
+			elif self.insp.is_obj_polygon(sel[0]):
+				ret = PRIMITIVE + DEFAULT
+			elif self.insp.is_obj_curve(sel[0]):
+				ret = DEFAULT
+			elif self.insp.can_be_ungrouped():
+				ret = GROUP + DEFAULT
+			else:
+				ret = DEFAULT
+		return ret
 
 class CtxActionMenuItem(wx.MenuItem):
 
