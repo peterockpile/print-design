@@ -231,6 +231,11 @@ class AppProxy:
 	def combine_selected(self):self.app.current_doc.api.combine_selected()
 	def break_apart_selected(self):self.app.current_doc.api.break_apart_selected()
 
+	def raise_to_top(self):pass
+	def raise_obj(self):pass
+	def lower_obj(self):pass
+	def lower_to_bottom(self):pass
+
 	def set_container(self):
 		doc = self.app.current_doc
 		doc.canvas.set_temp_mode(modes.PICK_MODE, self.select_container)
