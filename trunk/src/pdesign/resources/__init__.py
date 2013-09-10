@@ -40,12 +40,12 @@ else:
 
 def get_acc_by_id(action_id):
 	if ACC_KEYS.has_key(action_id):
-		return ACC_KEYS[action_id]
+		return ACC_KEYS[action_id] + (action_id,)
 	return None
 
 def get_accentry_by_id(action_id):
 	if ACC_KEYS.has_key(action_id):
-		return wx.AcceleratorEntry(*ACC_KEYS[action_id])
+		return wx.AcceleratorEntry(*(ACC_KEYS[action_id] + (action_id,)))
 	return None
 
 def get_icon(icon_id, client=wx.ART_OTHER, size=const.SIZE_16):
