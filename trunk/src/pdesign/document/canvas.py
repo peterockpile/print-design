@@ -28,7 +28,7 @@ from pdesign.widgets import const
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
 
-from ctx_menu import CtxMenuBuilder
+from ctx_menu import ContextMenu
 
 
 WORKSPACE_HEIGHT = 2000 * mm_to_pt
@@ -43,7 +43,7 @@ class AppCanvas(wx.Panel):
 	hscroll = None
 	vscroll = None
 	timer = None
-	menu_builder = None
+	ctx_menu = None
 
 	mode = None
 	previous_mode = None
@@ -82,7 +82,7 @@ class AppCanvas(wx.Panel):
 		wx.Panel.__init__(self, parent, style=wx.FULL_REPAINT_ON_RESIZE)
 		self.SetBackgroundColour(wx.Colour(255, 255, 255))
 
-		self.menu_builder = CtxMenuBuilder(self.app, self)
+		self.ctx_menu = ContextMenu(self.app, self)
 
 		self.timer = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self._on_timer)
@@ -209,7 +209,8 @@ class AppCanvas(wx.Panel):
 			self.orig_cursor = None
 
 	def show_context_menu(self, event):
-		self.PopupMenu(self.menu_builder.build_menu())
+		self.ctx_menu.rebuild()
+		self.PopupMenu(self.ctx_menu)
 
 	#----- CANVAS MATH
 

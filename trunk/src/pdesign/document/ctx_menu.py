@@ -20,15 +20,17 @@ import wx
 from pdesign import events, modes, config
 from pdesign.resources import pdids
 
-EDIT = [wx.ID_CUT, wx.ID_COPY, wx.ID_PASTE, wx.ID_DELETE, None, wx.ID_SELECTALL]
+EDIT = [wx.ID_UNDO, wx.ID_REDO, None, wx.ID_CUT, wx.ID_COPY, wx.ID_PASTE,
+	wx.ID_DELETE, None, wx.ID_SELECTALL]
 
-class CtxMenuBuilder:
+class ContextMenu(wx.Menu):
 
 	app = None
 	mw = None
 	insp = None
 	actions = None
 	items = []
+	persistent_items = []
 
 	def __init__(self, app, parent):
 		self.app = app
@@ -36,23 +38,27 @@ class CtxMenuBuilder:
 		self.parent = parent
 		self.insp = self.app.insp
 		self.actions = self.app.actions
-		self.menu = wx.Menu()
-
-	def build_menu(self):
-		for item in self.items: self.menu.RemoveItem(item)
+		wx.Menu.__init__(self)
+		self.build_menu(EDIT)
+		self.persistent_items = self.items
 		self.items = []
 
-		entries = EDIT
+	def rebuild(self):
+		for item in self.persistent_items:
+			if not item.IsSeparator(): item.update()
+
+	def build_menu(self, entries):
+		for item in self.items: self.RemoveItem(item)
+		self.items = []
 		for item in entries:
 			if item is None:
-				self.items.append(self.menu.AppendSeparator())
+				self.items.append(self.AppendSeparator())
 			else:
 				action = self.app.actions[item]
-				menuitem = CtxActionMenuItem(self.parent, self.menu, action)
-				self.menu.AppendItem(menuitem)
+				menuitem = CtxActionMenuItem(self.parent, self, action)
+				self.AppendItem(menuitem)
 				menuitem.update()
 				self.items.append(menuitem)
-		return self.menu
 
 class CtxActionMenuItem(wx.MenuItem):
 
