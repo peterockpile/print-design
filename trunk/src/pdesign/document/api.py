@@ -1008,7 +1008,6 @@ class PresenterAPI(AbstractAPI):
 		self.add_undo(transaction)
 		self.selection.update()
 
-
 	def set_polygon_corners_num(self, num):
 		sel = [] + self.selection.objs
 		obj = sel[0]
@@ -1019,6 +1018,84 @@ class PresenterAPI(AbstractAPI):
 			[self._set_selection, sel], ],
 			[[self.methods.set_polygon_corners_num, obj, num],
 			[self._set_selection, sel]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+	def raise_to_top(self):
+		before = self._get_layers_snapshot()
+		sel_before = [] + self.selection.objs
+		obj = sel_before[0]
+		childs = obj.parent.childs
+		index = childs.index(obj)
+		new_childs = childs[:index] + childs[index + 1:] + [obj, ]
+		obj.parent.childs = new_childs
+		after = self._get_layers_snapshot()
+		transaction = [
+			[[self._set_layers_snapshot, before],
+			[self._set_selection, sel_before]],
+			[[self._set_layers_snapshot, after],
+			[self._set_selection, sel_before]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+	def raise_obj(self):
+		before = self._get_layers_snapshot()
+		sel_before = [] + self.selection.objs
+		obj = sel_before[0]
+		childs = obj.parent.childs
+		index = childs.index(obj)
+
+		new_childs = childs[:index] + [childs[index + 1], obj]
+		new_childs += childs[index + 2:]
+
+		obj.parent.childs = new_childs
+		after = self._get_layers_snapshot()
+		transaction = [
+			[[self._set_layers_snapshot, before],
+			[self._set_selection, sel_before]],
+			[[self._set_layers_snapshot, after],
+			[self._set_selection, sel_before]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+	def lower_obj(self):
+		before = self._get_layers_snapshot()
+		sel_before = [] + self.selection.objs
+		obj = sel_before[0]
+		childs = obj.parent.childs
+		index = childs.index(obj)
+
+		new_childs = childs[:index - 1] + [obj, childs[index - 1]]
+		new_childs += childs[index + 1:]
+
+		obj.parent.childs = new_childs
+		after = self._get_layers_snapshot()
+		transaction = [
+			[[self._set_layers_snapshot, before],
+			[self._set_selection, sel_before]],
+			[[self._set_layers_snapshot, after],
+			[self._set_selection, sel_before]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
+	def lower_to_bottom(self):
+		before = self._get_layers_snapshot()
+		sel_before = [] + self.selection.objs
+		obj = sel_before[0]
+		childs = obj.parent.childs
+		index = childs.index(obj)
+		new_childs = [obj, ] + childs[:index] + childs[index + 1:]
+		obj.parent.childs = new_childs
+		after = self._get_layers_snapshot()
+		transaction = [
+			[[self._set_layers_snapshot, before],
+			[self._set_selection, sel_before]],
+			[[self._set_layers_snapshot, after],
+			[self._set_selection, sel_before]],
 			False]
 		self.add_undo(transaction)
 		self.selection.update()
