@@ -118,6 +118,8 @@ class MoveController(AbstractController):
 			self.copy = True
 			cursor = self.app.cursors[modes.COPY_MODE]
 			self.canvas.set_temp_cursor(cursor)
+		else:
+			AbstractController.mouse_right_up(self, event)
 
 	def _snap(self, bbox, trafo):
 		result = [] + trafo
@@ -240,6 +242,8 @@ class TransformController(AbstractController):
 		if self.moved:
 			self.copy = True
 			self.set_cursor()
+		else:
+			AbstractController.mouse_right_up(self, event)
 
 	def set_cursor(self):
 		mark = self.canvas.resize_marker
