@@ -150,7 +150,6 @@ class ActionMenuItem(wx.MenuItem):
 		if self.action.is_toggle():
 			self.set_active(self.action.active)
 
-
 	def set_enable(self, enabled):
 		self.Enable(enabled)
 
