@@ -17,6 +17,7 @@
 
 import wx, cairo
 
+from uc2 import uc2const
 from uc2.uc2const import mm_to_pt, point_dict
 from uc2.libcairo import normalize_bbox
 from uc2.formats.pdxf.const import DOC_ORIGIN_LL, DOC_ORIGIN_LU
@@ -26,7 +27,8 @@ from pdesign.appconst import PAGEFIT, ZOOM_IN, ZOOM_OUT
 from pdesign.widgets import const
 from pdesign.document.renderer import PDRenderer
 from pdesign.document import controllers
-from uc2 import uc2const
+
+from ctx_menu import CtxMenuBuilder
 
 
 WORKSPACE_HEIGHT = 2000 * mm_to_pt
@@ -41,6 +43,7 @@ class AppCanvas(wx.Panel):
 	hscroll = None
 	vscroll = None
 	timer = None
+	menu_builder = None
 
 	mode = None
 	previous_mode = None
@@ -78,6 +81,8 @@ class AppCanvas(wx.Panel):
 		self.renderer = PDRenderer(self)
 		wx.Panel.__init__(self, parent, style=wx.FULL_REPAINT_ON_RESIZE)
 		self.SetBackgroundColour(wx.Colour(255, 255, 255))
+
+		self.menu_builder = CtxMenuBuilder(self.app, self)
 
 		self.timer = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self._on_timer)
@@ -202,6 +207,9 @@ class AppCanvas(wx.Panel):
 			self.SetCursor(self.orig_cursor)
 			self.current_cursor = self.orig_cursor
 			self.orig_cursor = None
+
+	def show_context_menu(self, event):
+		self.PopupMenu(self.menu_builder.build_menu())
 
 	#----- CANVAS MATH
 
