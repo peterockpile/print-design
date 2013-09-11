@@ -43,6 +43,7 @@ ID_SAVEALL = wx.NewId()
 #----- Edit menu
 ID_CLEAR_UNDO = wx.NewId()
 ID_DESELECT = wx.NewId()
+ID_DUPLICATE = wx.NewId()
 #----- View menu
 ID_STROKE_VIEW = wx.NewId()
 ID_DRAFT_VIEW = wx.NewId()
