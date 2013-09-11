@@ -67,6 +67,7 @@ ID_PAGE_FRAME = wx.NewId()
 ID_PAGE_GUIDE_FRAME = wx.NewId()
 ID_REMOVE_ALL_GUIDES = wx.NewId()
 #----- Arrange menu
+ID_CLEAR_TRANSFORM = wx.NewId()
 ID_ROTATE_LEFT = wx.NewId()
 ID_ROTATE_RIGHT = wx.NewId()
 ID_MIRROR_H = wx.NewId()
