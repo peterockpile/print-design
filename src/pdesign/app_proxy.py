@@ -212,10 +212,8 @@ class AppProxy:
 						[h / 2.0, uc2const.HORIZONTAL]])
 
 	def create_guides_at_center(self):
-		api = self.app.current_doc.api
-		w, h = self.app.current_doc.get_page_size()
-		api.create_guides([[0, uc2const.VERTICAL],
-						[ 0, uc2const.HORIZONTAL]])
+		self.app.current_doc.api.create_guides([[0, uc2const.VERTICAL],
+											[ 0, uc2const.HORIZONTAL]])
 
 	def remove_all_guides(self, *args):
 		self.app.current_doc.api.delete_all_guides()
