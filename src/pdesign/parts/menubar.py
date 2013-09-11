@@ -37,8 +37,9 @@ class AppMenuBar(wx.MenuBar):
 
 		#---Edit menu
 		sub = (wx.ID_UNDO, wx.ID_REDO, pdids.ID_CLEAR_UNDO, None, wx.ID_CUT,
-				wx.ID_COPY, wx.ID_PASTE, wx.ID_DELETE, None, wx.ID_SELECTALL,
-				pdids.ID_DESELECT, None, wx.ID_PROPERTIES, wx.ID_PREFERENCES,)
+				wx.ID_COPY, wx.ID_PASTE, wx.ID_DELETE, pdids.ID_DUPLICATE,
+				None, wx.ID_SELECTALL, pdids.ID_DESELECT, None,
+				wx.ID_PROPERTIES, wx.ID_PREFERENCES,)
 		entry = (_("&Edit"), sub)
 		self.entries.append(entry)
 
