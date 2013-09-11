@@ -33,9 +33,10 @@ wx.ID_CUT:(wx.ACCEL_CTRL, ord('X')),
 wx.ID_COPY:(wx.ACCEL_CTRL, ord('C')),
 wx.ID_PASTE:(wx.ACCEL_CTRL, ord('V')),
 wx.ID_DELETE:(wx.ACCEL_NORMAL, wx.WXK_DELETE),
+pdids.ID_DUPLICATE:(wx.ACCEL_CTRL, ord('D')),
 wx.ID_SELECTALL:(wx.ACCEL_CTRL, ord('A')),
-#----- View menu
 pdids.ID_DESELECT:(wx.ACCEL_SHIFT | wx.ACCEL_CTRL, ord('A')),
+#----- View menu
 pdids.ID_STROKE_VIEW:(wx.ACCEL_SHIFT, wx.WXK_F9),
 wx.ID_ZOOM_IN:(wx.ACCEL_CTRL, ord('=')),
 wx.ID_ZOOM_OUT:(wx.ACCEL_CTRL, ord('-')),
