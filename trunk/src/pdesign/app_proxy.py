@@ -220,6 +220,7 @@ class AppProxy:
 	def remove_all_guides(self, *args):
 		self.app.current_doc.api.delete_all_guides()
 
+	def clear_trafo(self):self.app.current_doc.api.clear_trafo()
 	def rotate_left(self):self.app.current_doc.api.rotate_selected(math.pi / 2.0)
 	def rotate_right(self):self.app.current_doc.api.rotate_selected(-math.pi / 2.0)
 	def mirror_h(self):self.app.current_doc.api.mirror_selected(False)
