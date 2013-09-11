@@ -17,11 +17,11 @@
 
 import wx
 
-from pdesign import events, modes, config
+from pdesign import config
 from pdesign.resources import pdids
 
 EDIT = [wx.ID_UNDO, wx.ID_REDO, None, wx.ID_CUT, wx.ID_COPY, wx.ID_PASTE,
-	wx.ID_DELETE, None, wx.ID_SELECTALL]
+	wx.ID_DELETE, pdids.ID_DUPLICATE, None, wx.ID_SELECTALL]
 DEFAULT = [None, wx.ID_PROPERTIES]
 COMBINE = [None, pdids.ID_COMBINE, pdids.ID_BREAK_APART, ]
 TO_CURVES = [None, pdids.ID_TO_CURVES]
