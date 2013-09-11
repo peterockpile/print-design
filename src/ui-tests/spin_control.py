@@ -39,6 +39,12 @@ class SpinControl(wx.Panel):
 			line.SetSize((1, self.sb.GetSize()[1] - 1))
 			line.set_bg(const.UI_COLORS['dark_shadow'])
 			line.SetPosition((w_pos - 1, -1))
+		elif const.is_winxp():
+			self.entry = Entry(self)
+			size = (-1, self.entry.GetSize()[1]-2)
+			self.sb = SpinButton(self, size=size)
+			w_pos = self.entry.GetSize()[0] - self.sb.GetSize()[0]-1
+			self.sb.SetPosition((w_pos, 1))
 
 
 class WidgetPanel(HPanel):
