@@ -23,7 +23,6 @@ from uc2.formats.pdxf import const
 from uc2 import libgeom, uc2const
 
 from pdesign import events, config
-from pdesign import modes
 
 
 class AbstractAPI:
@@ -143,7 +142,8 @@ class AbstractAPI:
 			layer.childs = childs
 
 	def _delete_objects(self, objs_list):
-		for obj, parent, index in objs_list:
+		for item in objs_list:
+			obj = item[0]
 			self.methods.delete_object(obj)
 			if obj in self.selection.objs:
 				self.selection.remove([obj])
