@@ -9,6 +9,7 @@ encoding//src/pdesign/appconst.py=utf-8
 encoding//src/pdesign/application.py=utf-8
 encoding//src/pdesign/clipboard.py=utf-8
 encoding//src/pdesign/context/__init__.py=utf-8
+encoding//src/pdesign/context/circle.py=utf-8
 encoding//src/pdesign/context/combine.py=utf-8
 encoding//src/pdesign/context/generic.py=utf-8
 encoding//src/pdesign/context/jump.py=utf-8
