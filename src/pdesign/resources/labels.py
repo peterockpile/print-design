@@ -88,6 +88,7 @@ pdids.ID_PAGE_FRAME:(_('Page frame'),),
 pdids.ID_PAGE_GUIDE_FRAME:(_('Guides around page'),),
 pdids.ID_REMOVE_ALL_GUIDES:(_('Remove all guides'),),
 
+pdids.ID_CLEAR_TRANSFORM:(_('Clear transformations'),),
 pdids.ID_ROTATE_LEFT:(_('Rotate &left 90°'),),
 pdids.ID_ROTATE_RIGHT:(_('Rotate &right 90°'),),
 pdids.ID_MIRROR_H:(_('&Horizontal mirror'),),
