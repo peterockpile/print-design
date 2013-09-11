@@ -41,12 +41,6 @@ class SpinControl(wx.Panel):
 			line.SetPosition((w_pos - 1, -1))
 
 
-#__init__(self, Window parent, int id=-1, Point
-# pos=DefaultPosition,
-#    Size size=DefaultSize, long
-#     style=wxTAB_TRAVERSAL|wxNO_BORDER,
-#    String name=PanelNameStr) -> Panel
-
 class WidgetPanel(HPanel):
 
 	name = 'Basic widgets'
