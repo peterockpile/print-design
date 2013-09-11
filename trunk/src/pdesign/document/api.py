@@ -550,6 +550,10 @@ class PresenterAPI(AbstractAPI):
 		trafo = [1.0, 0.0, 0.0, 1.0, x, y]
 		self.transform_selected(trafo, copy)
 
+	def duplicate_selected(self):
+		trafo = [1.0, 0.0, 0.0, 1.0, config.obj_jump, config.obj_jump]
+		self.transform_selected(trafo, True)
+
 	def rotate_selected(self, angle=0, copy=False):
 		if self.selection.objs:
 			bbox = self.selection.bbox
