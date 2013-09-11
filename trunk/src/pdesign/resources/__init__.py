@@ -32,7 +32,7 @@ if const.is_mac():
 	pass
 elif const.is_msw():
 	MSW_KEYS = {
-			wx.ID_EXIT:(wx.ACCEL_ALT, wx.WXK_F4, wx.ID_EXIT),
+			wx.ID_EXIT:(wx.ACCEL_ALT, wx.WXK_F4),
 			}
 	ACC_KEYS.update(MSW_KEYS)
 else:
