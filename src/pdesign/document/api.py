@@ -212,6 +212,17 @@ class AbstractAPI:
 		self.selection.update_bbox()
 		return (before, after)
 
+	def _set_trafo(self, objs, trafo):
+		before = []
+		after = []
+		for obj in objs:
+			before.append(obj.get_trafo_snapshot())
+			obj.trafo = [] + trafo
+			obj.update()
+			after.append(obj.get_trafo_snapshot())
+		self.selection.update_bbox()
+		return (before, after)
+
 	def _set_snapshots(self, snapshots):
 		for snapshot in snapshots:
 			obj = snapshot[0]
@@ -553,6 +564,27 @@ class PresenterAPI(AbstractAPI):
 	def duplicate_selected(self):
 		trafo = [1.0, 0.0, 0.0, 1.0, config.obj_jump, config.obj_jump]
 		self.transform_selected(trafo, True)
+
+	def clear_trafo(self):
+		normal_trafo = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+		if self.selection.objs:
+			sel_before = [] + self.selection.objs
+			objs = [] + self.selection.objs
+			cleared_objs = []
+			for obj in objs:
+				if obj.cid > model.PRIMITIVE_CLASS:
+					if not obj.trafo == normal_trafo:
+						cleared_objs.append(obj)
+			if cleared_objs:
+				before, after = self._set_trafo(cleared_objs, normal_trafo)
+				transaction = [
+					[[self._set_snapshots, before],
+					[self._set_selection, sel_before]],
+					[[self._set_snapshots, after],
+					[self._set_selection, sel_before]],
+					False]
+				self.add_undo(transaction)
+				self.selection.update()
 
 	def rotate_selected(self, angle=0, copy=False):
 		if self.selection.objs:
