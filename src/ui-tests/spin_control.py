@@ -28,7 +28,7 @@ class SpinControl(wx.Panel):
 
 	def __init__(self, parent):
 		wx.Panel.__init__(self, parent)
-		#self.SetBackgroundColour(wx.RED)
+		self.SetBackgroundColour(wx.RED)
 		if const.is_gtk():
 			self.entry = Entry(self)
 			size = (-1, self.entry.GetSize()[1])
