@@ -179,6 +179,20 @@ class AppInspector:
 	def is_obj_text(self, obj):return obj.cid == model.TEXT_BLOCK
 	def is_obj_pixmap(self, obj):return obj.cid == model.PIXMAP
 
+	def can_clear_trafo(self, doc=None):
+		if doc is None: doc = self.app.current_doc
+		if doc is None: return False
+		elif self.is_selection(doc):
+			objs = doc.selection.objs
+			ret = False
+			for obj in objs:
+				if self.is_obj_primitive(obj):
+					if not obj.trafo == [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]:
+						ret = True
+						break
+			return ret
+		return False
+
 	def is_container_selected(self, doc=None):
 		if doc is None: doc = self.app.current_doc
 		if doc is None: return False
