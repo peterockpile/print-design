@@ -23,8 +23,8 @@ from pdesign.resources import pdids
 EDIT = [wx.ID_UNDO, wx.ID_REDO, None, wx.ID_CUT, wx.ID_COPY, wx.ID_PASTE,
 	wx.ID_DELETE, None, wx.ID_SELECTALL]
 DEFAULT = [None, wx.ID_PROPERTIES]
-MULTIPLE = [None, pdids.ID_COMBINE, pdids.ID_BREAK_APART, ]
-PRIMITIVE = [None, pdids.ID_TO_CURVES]
+COMBINE = [None, pdids.ID_COMBINE, pdids.ID_BREAK_APART, ]
+TO_CURVES = [None, pdids.ID_TO_CURVES]
 GROUP = [None, pdids.ID_GROUP, pdids.ID_UNGROUP, pdids.ID_UNGROUPALL, ]
 
 class ContextMenu(wx.Menu):
@@ -73,20 +73,30 @@ class ContextMenu(wx.Menu):
 			doc = self.app.current_doc
 			sel = doc.selection.objs
 			if len(sel) > 1:
-				ret = MULTIPLE + GROUP + PRIMITIVE
+				ret = COMBINE + GROUP + TO_CURVES
 			elif self.insp.is_obj_rect(sel[0]):
-				ret = PRIMITIVE + DEFAULT
+				ret = self.get_order_entries() + TO_CURVES
 			elif self.insp.is_obj_circle(sel[0]):
-				ret = PRIMITIVE + DEFAULT
+				ret = self.get_order_entries() + TO_CURVES
 			elif self.insp.is_obj_polygon(sel[0]):
-				ret = PRIMITIVE + DEFAULT
+				ret = self.get_order_entries() + TO_CURVES
 			elif self.insp.is_obj_curve(sel[0]):
-				ret = DEFAULT
+				ret = self.get_order_entries() + COMBINE
 			elif self.insp.can_be_ungrouped():
-				ret = GROUP + DEFAULT
+				ret = self.get_order_entries() + GROUP
 			else:
 				ret = DEFAULT
 		return ret
+
+	def get_order_entries(self):
+		ret = []
+		if self.insp.can_be_raised():
+			ret += [pdids.ID_RAISE_TO_TOP, pdids.ID_RAISE]
+		if self.insp.can_be_lower():
+			ret += [pdids.ID_LOWER, pdids.ID_LOWER_TO_BOTTOM]
+		if ret: ret = [None, ] + ret
+		return ret
+
 
 class CtxActionMenuItem(wx.MenuItem):
 
