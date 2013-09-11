@@ -57,6 +57,7 @@ class AppProxy:
 	def copy(self): self.app.current_doc.api.copy_selected()
 	def paste(self): self.app.current_doc.api.paste_selected()
 	def delete(self): self.app.current_doc.api.delete_selected()
+	def duplicate(self): self.app.current_doc.api.duplicate_selected()
 	def select_all(self): self.app.current_doc.selection.select_all()
 	def deselect(self, *args): self.app.current_doc.selection.clear()
 
