@@ -428,6 +428,7 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 				self.line.set_bg(const.UI_COLORS['dark_shadow'])
 				self.line.SetPosition((w_pos - 1, -1))
 			elif const.is_msw():
+				width+=2
 				self.entry = Entry(self, '', size=size, width=width,
 						onchange=self._check_entry, onenter=self._entry_enter)
 				size = (-1, self.entry.GetSize()[1] - 1)
