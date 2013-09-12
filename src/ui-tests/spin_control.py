@@ -41,10 +41,10 @@ class SpinControl(wx.Panel):
 			line.SetPosition((w_pos - 1, -1))
 		elif const.is_winxp():
 			self.entry = Entry(self)
-			size = (-1, self.entry.GetSize()[1]-2)
-			self.sb = SpinButton(self, size=size)
-			w_pos = self.entry.GetSize()[0] - self.sb.GetSize()[0]-1
-			self.sb.SetPosition((w_pos, 1))
+			size = (-1, self.entry.GetSize()[1]-1)
+			self.sb = SpinButton(self.entry, size=size)
+			w_pos = self.entry.GetSize()[0] - self.sb.GetSize()[0]-2
+			self.sb.SetPosition((w_pos, -2))
 
 
 class WidgetPanel(HPanel):
@@ -59,8 +59,8 @@ class WidgetPanel(HPanel):
 	def build(self):
 		flags = LEFT | CENTER
 		pflags = ALL | EXPAND
-		self.add(SpinControl(self))
-		self.add(SpinControl(self))
+		self.add(SpinControl(self),0,ALL,2)
+		self.add(SpinControl(self),0,ALL,2)
 
 
 app = Application('wxWidgets')
