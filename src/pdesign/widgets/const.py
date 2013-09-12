@@ -78,8 +78,8 @@ def _init_gtk_colors(kw):
 	kw['hover_border'] = border + (90,)
 	kw['hover_solid_border'] = mix_colors(border, bg, 200)
 	kw['pressed_border'] = border + (0,)
-	kw['light_shadow'] = (255, 255, 255, 90)
-	kw['dark_shadow'] = border + (40,)
+	kw['light_shadow'] = mix_colors((255, 255, 255), bg, 40)
+	kw['dark_shadow'] = mix_colors(border, bg, 200)
 	kw['dark_face'] = border + (40,)
 	kw['light_face'] = (255, 255, 255, 60)
 	kw['workspace'] = () + ws
