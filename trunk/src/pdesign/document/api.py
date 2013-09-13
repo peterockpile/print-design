@@ -1062,6 +1062,24 @@ class PresenterAPI(AbstractAPI):
 		self.add_undo(transaction)
 		self.selection.update()
 
+	def set_circle_properties(self, circle_type, angle1, angle2):
+		sel = [] + self.selection.objs
+		obj = sel[0]
+		type_before = obj.circle_type
+		angle1_before = obj.angle1
+		angle2_before = obj.angle2
+		mtds = self.methods
+		mtds.set_polygon_corners_num(obj, circle_type, angle1, angle2)
+		transaction = [
+			[[mtds.set_circle_properties, obj, type_before,
+											angle1_before, angle2_before],
+			[self._set_selection, sel], ],
+			[[mtds.set_circle_properties, obj, circle_type, angle1, angle2],
+			[self._set_selection, sel]],
+			False]
+		self.add_undo(transaction)
+		self.selection.update()
+
 	def raise_to_top(self):
 		before = self._get_layers_snapshot()
 		sel_before = [] + self.selection.objs
