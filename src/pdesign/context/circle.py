@@ -15,6 +15,8 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+
 from uc2.formats.pdxf.const import ARC_ARC, ARC_CHORD, ARC_PIE_SLICE
 
 from pdesign import _, events
@@ -24,6 +26,8 @@ from pdesign.widgets import ImageToggleButton, Slider
 from pdesign.pwidgets import BitmapToggle
 from pdesign.pwidgets import AngleSpin
 from generic import CtxPlugin
+
+CIRCLE_TYPES = [ARC_ARC, ARC_CHORD, ARC_PIE_SLICE]
 
 class CirclePlugin(CtxPlugin):
 
@@ -79,11 +83,64 @@ class CirclePlugin(CtxPlugin):
 			sel = self.app.current_doc.selection
 			if len(sel.objs) == 1 and self.insp.is_obj_circle(sel.objs[0]):
 				obj = sel.objs[0]
+				self.circle_type = obj.circle_type
+				self.start = obj.angle1
+				self.end = obj.angle2
+				self.update_flag = True
+				for item in CIRCLE_TYPES:
+					self.toggles[item].set_active(item == self.circle_type)
+				self.update_flag = False
+				self.switched()
 
+	def toggled(self, *args):
+		if self.update_flag: return
+		self.update_flag = True
+		val = -1
+		for item in CIRCLE_TYPES:
+			if self.toggles[item].get_active() and not item == self.circle_type:
+				val = item
+			elif self.toggles[item].get_active() and item == self.circle_type:
+				self.toggles[item].set_active(False)
+		if val < 0: self.toggles[self.circle_type].set_active(True)
+		else: self.circle_type = val
+		self.update_flag = False
+		self.apply_changes()
 
-	def toggled(self, *args):pass
-	def switched(self, *args):pass
-	def angle_changes(self, *args):pass
-	def slider_changes(self, *args):pass
+	def switched(self, *args):
+		self.update_flag = True
+		if self.switch.get_active():
+			self.slider.set_value(int(self.start * 180.0 / math.pi))
+			self.angle_spin.set_angle_value(self.start)
+		else:
+			self.slider.set_value(int(self.end * 180.0 / math.pi))
+			self.angle_spin.set_angle_value(self.end)
+		self.update_flag = False
+
+	def angle_changes(self, *args):
+		if self.update_flag: return
+		if self.switch.get_active():
+			self.start = self.angle_spin.get_angle_value()
+		else:
+			self.end = self.angle_spin.get_angle_value()
+		self.apply_changes()
+
+	def slider_changes(self, *args):
+		if self.update_flag: return
+		val = self.slider.get_value() * math.pi / 180.0
+		if self.switch.get_active(): self.start = val
+		else: self.end = val
+		self.apply_changes()
+
+	def apply_changes(self):
+		if self.insp.is_selection():
+			sel = self.app.current_doc.selection
+			if len(sel.objs) == 1 and self.insp.is_obj_circle(sel.objs[0]):
+				obj = sel.objs[0]
+				if not self.circle_type == obj.circle_type or \
+					not self.start == obj.angle1 or \
+					not self.end == obj.angle2:
+					api = self.app.current_doc.api
+					api.set_circle_properties(self.circle_type,
+											self.start, self.end)
 
 
