@@ -46,7 +46,7 @@ class RectanglePlugin(CtxPlugin):
 							width=3, onchange=self.changes)
 		self.add(self.num_spin, 0, LEFT | CENTER, 2)
 
-		self.switch = AngleSwitch(self, onchange=self.switch_changed)
+		self.switch = RectAngleSwitch(self, onchange=self.switch_changed)
 		self.add(self.switch, 0, LEFT | CENTER, 3)
 		self.switch.hide()
 
@@ -106,7 +106,7 @@ class RectanglePlugin(CtxPlugin):
 					self.lock_changed()
 
 
-class AngleSwitch(VPanel):
+class RectAngleSwitch(VPanel):
 
 	active = 0
 	toggles = []
