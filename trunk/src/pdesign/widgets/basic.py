@@ -406,12 +406,14 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 	step = 0.01
 	digits = 2
 	callback = None
+	enter_callback = None
 
 	def __init__(self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
 				digits=2, size=const.DEF_SIZE, width=0, spin_overlay=True,
-				onchange=None, check_focus=True):
+				onchange=None, onenter=None, check_focus=True):
 
 		self.callback = onchange
+		self.enter_callback = onenter
 		if const.is_mac(): spin_overlay = False
 
 		wx.Panel.__init__(self, parent)
@@ -428,7 +430,7 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 				self.line.set_bg(const.UI_COLORS['dark_shadow'])
 				self.line.SetPosition((w_pos - 1, -1))
 			elif const.is_msw():
-				width+=2
+				width += 2
 				self.entry = Entry(self, '', size=size, width=width,
 						onchange=self._check_entry, onenter=self._entry_enter)
 				size = (-1, self.entry.GetSize()[1] - 4)
@@ -446,7 +448,7 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 			self.box.Add(self.sb, 0, wx.ALL)
 
 		if check_focus:
-			self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_enter, self.entry)
+			self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_lost_focus, self.entry)
 
 		self.set_step(step)
 		self.set_range(range_val)
@@ -474,6 +476,12 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 		event.Skip()
 
 	def _entry_enter(self, event):
+		if self.flag:return
+		self.SetValue(self._calc_entry())
+		event.Skip()
+		if not self.enter_callback is None: self.enter_callback()
+
+	def _entry_lost_focus(self, event):
 		if self.flag:return
 		self.SetValue(self._calc_entry())
 		event.Skip()
