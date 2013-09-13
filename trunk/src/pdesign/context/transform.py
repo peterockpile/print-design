@@ -32,7 +32,7 @@ class RotatePlugin(CtxPlugin):
 		bmp = get_bmp(self, icons.CTX_ROTATE, _('Rotate selection'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
-		self.angle_spin = AngleSpin(self, onchange=self.apply_changes)
+		self.angle_spin = AngleSpin(self, onenter=self.apply_changes)
 		self.add(self.angle_spin, 0, LEFT | CENTER, 2)
 
 		self.add((2, 2))
