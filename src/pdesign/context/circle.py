@@ -15,13 +15,11 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import wx
-
 from uc2.formats.pdxf.const import ARC_ARC, ARC_CHORD, ARC_PIE_SLICE
 
 from pdesign import _, events
 from pdesign.resources import icons
-from pdesign.widgets import const, LEFT, CENTER, VPanel
+from pdesign.widgets import const, LEFT, CENTER
 from pdesign.widgets import ImageToggleButton, Slider
 from pdesign.pwidgets import BitmapToggle
 from pdesign.pwidgets import AngleSpin
