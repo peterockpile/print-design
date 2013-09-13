@@ -1069,7 +1069,7 @@ class PresenterAPI(AbstractAPI):
 		angle1_before = obj.angle1
 		angle2_before = obj.angle2
 		mtds = self.methods
-		mtds.set_polygon_corners_num(obj, circle_type, angle1, angle2)
+		mtds.set_circle_properties(obj, circle_type, angle1, angle2)
 		transaction = [
 			[[mtds.set_circle_properties, obj, type_before,
 											angle1_before, angle2_before],
