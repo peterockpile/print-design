@@ -103,6 +103,7 @@ class BitmapToggle(wx.StaticBitmap):
 		self.update_icons()
 		wx.StaticBitmap.__init__(self, parent, -1, self.icons_dict[self.state][0])
 		self.Bind(wx.EVT_LEFT_UP, self.change, self)
+		self.SetToolTipString(self.icons_dict[self.state][1])
 
 	def change(self, *args):
 		self.set_active(not self.state)
