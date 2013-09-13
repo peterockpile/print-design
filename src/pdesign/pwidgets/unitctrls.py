@@ -55,7 +55,7 @@ class UnitSpin(FloatSpin):
 	point_value = 0.0
 	units = uc2const.UNIT_MM
 
-	def __init__(self, app, parent, val=0.0, onchange=None):
+	def __init__(self, app, parent, val=0.0, onchange=None, onenter=None):
 		self.app = app
 		self.insp = app.insp
 		self.point_value = val
@@ -64,7 +64,7 @@ class UnitSpin(FloatSpin):
 		val = self.point_value * point_dict[self.units]
 		FloatSpin.__init__(self, parent, val, (0.0, 100000.0),
 						step=1.0, width=5,
-						onchange=self.update_point_value)
+						onchange=self.update_point_value, onenter=onenter)
 		events.connect(events.DOC_MODIFIED, self.update_units)
 
 	def update_point_value(self, *args):
@@ -141,12 +141,12 @@ class AngleSpin(FloatSpin):
 	ucallback = None
 	angle_value = 0.0
 
-	def __init__(self, parent, val=0.0, onchange=None):
+	def __init__(self, parent, val=0.0, onchange=None, onenter=None):
 		self.angle_value = val
 		self.ucallback = onchange
 		FloatSpin.__init__(self, parent, val, (-360.0, 360.0),
 						step=1.0, width=5,
-						onchange=self.update_angle_value,
+						onchange=self.update_angle_value, onenter=onenter,
 						check_focus=False)
 
 	def update_angle_value(self, *args):
