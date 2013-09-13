@@ -212,12 +212,16 @@ class AbstractAPI:
 		self.selection.update_bbox()
 		return (before, after)
 
-	def _set_trafo(self, objs, trafo):
+	def _clear_trafo(self, objs):
+		normal_trafo = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
 		before = []
 		after = []
 		for obj in objs:
 			before.append(obj.get_trafo_snapshot())
-			obj.trafo = [] + trafo
+			if obj.cid == model.CIRCLE:
+				obj.trafo = [] + obj.initial_trafo
+			else:
+				obj.trafo = [] + normal_trafo
 			obj.update()
 			after.append(obj.get_trafo_snapshot())
 		self.selection.update_bbox()
@@ -576,7 +580,7 @@ class PresenterAPI(AbstractAPI):
 					if not obj.trafo == normal_trafo:
 						cleared_objs.append(obj)
 			if cleared_objs:
-				before, after = self._set_trafo(cleared_objs, normal_trafo)
+				before, after = self._clear_trafo(cleared_objs)
 				transaction = [
 					[[self._set_snapshots, before],
 					[self._set_selection, sel_before]],
