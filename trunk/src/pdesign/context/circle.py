@@ -20,9 +20,10 @@ import wx
 from uc2.formats.pdxf.const import ARC_ARC, ARC_CHORD, ARC_PIE_SLICE
 
 from pdesign import _, events
-from pdesign.resources import icons, get_bmp
-from pdesign.widgets import const, LEFT, CENTER, VPanel, HORIZONTAL
-from pdesign.widgets import ImageToggleButton, FloatSpin, Slider
+from pdesign.resources import icons
+from pdesign.widgets import const, LEFT, CENTER, VPanel
+from pdesign.widgets import ImageToggleButton, Slider
+from pdesign.pwidgets import BitmapToggle
 from pdesign.pwidgets import AngleSpin
 from generic import CtxPlugin
 
@@ -68,6 +69,13 @@ class CirclePlugin(CtxPlugin):
 		self.angle_spin = AngleSpin(self, onchange=self.angle_changes)
 		self.add(self.angle_spin, 0, LEFT | CENTER, 2)
 
+		txt1 = _('Start angle')
+		txt2 = _('End angle')
+		icons_dict = {True:[icons.CTX_CIRCLE_START_ANGLE, txt1, ],
+				False:[icons.CTX_CIRCLE_END_ANGLE, txt2, ], }
+		self.switch = BitmapToggle(self, True, icons_dict, self.switched)
+		self.add(self.switch, 0, LEFT | CENTER, 2)
+
 	def update(self, *args):
 		if self.insp.is_selection():
 			sel = self.app.current_doc.selection
@@ -76,5 +84,8 @@ class CirclePlugin(CtxPlugin):
 
 
 	def toggled(self, *args):pass
+	def switched(self, *args):pass
 	def angle_changes(self, *args):pass
 	def slider_changes(self, *args):pass
+
+
