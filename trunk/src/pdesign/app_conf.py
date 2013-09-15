@@ -22,7 +22,7 @@ from PIL import Image
 
 from uc2.cms import libcms
 from uc2.uc_conf import UCConfig, UCData
-from uc2 import uc2const
+from uc2 import uc2const, libtrace
 from uc2.utils import system
 from uc2.formats.pdxf.const import DOC_STRUCTURE
 
@@ -69,6 +69,7 @@ class AppData(UCData):
 		comp.append(['pycairo', self.seq_to_str(cairo.version_info)])
 		comp.append(['PIL', Image.VERSION])
 		comp.append(['LittleCMS', libcms.get_version()])
+		comp.append(['Potrace', libtrace.get_version()])
 
 
 class AppConfig(UCConfig):
