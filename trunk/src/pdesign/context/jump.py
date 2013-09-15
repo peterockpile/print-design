@@ -24,7 +24,6 @@ from generic import CtxPlugin
 class JumpPlugin(CtxPlugin):
 
 	name = 'JumpPlugin'
-	update_flag = False
 
 	def __init__(self, app, parent):
 		CtxPlugin.__init__(self, app, parent)
@@ -34,9 +33,9 @@ class JumpPlugin(CtxPlugin):
 		bmp = get_bmp(self, icons.CTX_OBJECT_JUMP, _('Default object jump'))
 		self.add(bmp, 0, LEFT | CENTER, 2)
 
-		self.jump_spin = UnitSpin(self.app, self, onchange=self.user_changes)
-		self.add(self.jump_spin, 0, LEFT | CENTER, 2)
+		self.jump_spin = UnitSpin(self.app, self, onenter=self.user_changes)
 		self.jump_spin.set_point_value(config.obj_jump)
+		self.add(self.jump_spin, 0, LEFT | CENTER, 2)
 
 	def user_changes(self, *args):
 		val = self.jump_spin.get_point_value()
