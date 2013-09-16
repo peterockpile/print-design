@@ -44,6 +44,7 @@ class AppPalettePanel(HPanel):
 							onmax=self.right_enable)
 
 		native = False
+		if const.is_gtk(): native = True
 
 		tip = _('Scroll palette to left')
 		self.dleft_but = ImageButton(self.panel, icons.DOUBLE_ARROW_LEFT,
