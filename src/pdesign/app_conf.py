@@ -69,7 +69,7 @@ class AppData(UCData):
 		comp.append(['pycairo', self.seq_to_str(cairo.version_info)])
 		comp.append(['PIL', Image.VERSION])
 		comp.append(['LittleCMS', libcms.get_version()])
-		comp.append(['Potrace', libtrace.get_version()])
+#		comp.append(['Potrace', libtrace.get_version()])
 
 
 class AppConfig(UCConfig):
