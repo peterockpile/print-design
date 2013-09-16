@@ -46,8 +46,9 @@ class MDIArea(VPanel):
 		self.add(self.ctxpanel, 0, ALL | EXPAND)
 
 		#----- Doc tabs
-		self.doc_tabs = DocTabsPanel(self)
-		self.add(self.doc_tabs, 0, ALL | EXPAND)
+		dtp = DocTabsPanel(self)
+		self.doc_tabs = dtp.doc_tabs
+		self.add(dtp, 0, ALL | EXPAND)
 
 		hpanel = HPanel(self)
 		self.add(hpanel, 1, ALL | EXPAND)

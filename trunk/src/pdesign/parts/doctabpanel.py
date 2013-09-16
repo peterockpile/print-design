@@ -17,16 +17,190 @@
 
 import wx
 
+from pdesign import _
 from pdesign.resources import icons
-from pdesign.widgets import const, ALL, EXPAND, HPanel
+from pdesign.widgets import const, ALL, EXPAND, HPanel, RIGHT, LEFT
 
 TAB_HEIGHT = 25
 TAB_MARGIN = 1
 TAB_PADDING = 5
-PANEL_MARGIN = 10
+SCROLL_PADDING = 2
+PANEL_MARGIN = 3
 PANEL_HEIGHT = 27
 
 class DocTabsPanel(HPanel):
+
+	def __init__(self, parent):
+		HPanel.__init__(self, parent)
+
+		self.left_scroll = TabScroller(self, icons.ARROW_LEFT,
+									tooltip=_('Scroll tabs right'),
+									onclick=self.scroll_left)
+		self.add(self.left_scroll, 0, ALL | EXPAND)
+
+		self.tabs_bg = TabsBgPanel(self)
+		self.add(self.tabs_bg, 1, ALL | EXPAND)
+
+		self.doc_tabs = DocTabs(self.tabs_bg)
+		self.doc_tabs.SetPosition((0, 0))
+
+		self.right_scroll = TabScroller(self, icons.ARROW_RIGHT,
+									tooltip=_('Scroll tabs left'),
+									border_side=LEFT,
+									onclick=self.scroll_right)
+		self.add(self.right_scroll, 0, ALL | EXPAND)
+
+	def recalc(self, *args):pass
+
+	def scroll_left(self):
+		x = self.doc_tabs.GetPosition()[0] + 10
+		if x > 0: x = 0
+		self.doc_tabs.SetPosition((0, 0))
+		self.doc_tabs.SetPosition((x, 0))
+
+	def scroll_right(self):
+		x = self.doc_tabs.GetPosition()[0] - 10
+		win_x = self.tabs_bg.GetSize()[0]
+		if win_x - x > self.doc_tabs.GetSize()[0]:
+			x = win_x - (self.doc_tabs.GetSize()[0] + 3)
+		self.doc_tabs.SetPosition((0, 0))
+		self.doc_tabs.SetPosition((x, 0))
+
+class TabsBgPanel(HPanel):
+
+	def __init__(self, parent):
+		HPanel.__init__(self, parent)
+		self.Bind(wx.EVT_PAINT, self._on_paint, self)
+
+	def _on_paint(self, event):
+		w, h = self.panel.GetSize()
+		pdc = wx.PaintDC(self.panel)
+		try:
+			dc = wx.GCDC(pdc)
+		except:dc = pdc
+		dc.BeginDrawing()
+
+		color1 = wx.Colour(0, 0, 0, 10)
+		color2 = wx.Colour(0, 0, 0, 0)
+		rect = wx.Rect(0, h / 2, w, h / 2)
+		dc.GradientFillLinear(rect, color1, color2, nDirection=wx.NORTH)
+		rect = wx.Rect(0, 0, w, h / 2)
+		dc.GradientFillLinear(rect, color1, color2, nDirection=wx.SOUTH)
+
+		pdc.SetPen(wx.Pen(wx.Colour(*const.UI_COLORS['hover_solid_border']), 1))
+		pdc.DrawLine(0, h - 1, w, h - 1)
+		pdc.DrawLine(0, 0, w, 0)
+
+		if not pdc == dc:
+			dc.EndDrawing()
+			pdc.EndDrawing()
+		else:
+			dc.EndDrawing()
+		pdc = dc = None
+
+class TabScroller(HPanel):
+
+	callback = None
+	active = False
+	pressed = False
+
+	def __init__(self, parent, icon, tooltip='', border_side=RIGHT, onclick=None):
+		self.icon = wx.ArtProvider.GetBitmap(icon)
+		self.callback = onclick
+		self.tooltip = tooltip
+		self.border_side = border_side
+		HPanel.__init__(self, parent)
+		width = self.icon.GetSize()[0] + SCROLL_PADDING * 2
+		self.add((width, PANEL_HEIGHT))
+		self.Bind(wx.EVT_PAINT, self._on_paint, self)
+		self.Bind(wx.EVT_LEFT_DOWN, self._on_left_down, self)
+		self.Bind(wx.EVT_LEFT_UP, self._on_left_up, self)
+		self.timer = wx.Timer(self)
+		self.Bind(wx.EVT_TIMER, self.do_action)
+		#self.set_active(True)
+
+	def set_active(self, val):
+		self.active = val
+		self.refresh()
+		if self.active:
+			self.SetToolTipString(self.tooltip)
+		else:
+			self.SetToolTipString('')
+			self.timer.Stop()
+
+	def _on_left_down(self, event):
+		if self.active:
+			self.pressed = True
+			self.timer.Start(50)
+		self.refresh()
+
+	def _on_left_up(self, event):
+		self.pressed = False
+		self.do_action()
+		self.timer.Stop()
+		self.refresh()
+
+	def do_action(self, *args):
+		if not self.callback is None: self.callback()
+
+	def refresh(self, x=0, y=0, w=0, h=0):
+		if not w: w, h = self.GetSize()
+		self.Refresh(rect=wx.Rect(x, y, w, h))
+
+	def _on_paint(self, event):
+		w, h = self.panel.GetSize()
+		pdc = wx.PaintDC(self.panel)
+		try:
+			dc = wx.GCDC(pdc)
+		except:dc = pdc
+		dc.BeginDrawing()
+
+		if self.active:
+			start = wx.Colour(0, 0, 0, 10)
+			end = wx.Colour(0, 0, 0, 0)
+
+			if not self.pressed:
+				#----- draw gradient
+				rect = wx.Rect(0, h / 2, w, h / 2)
+				dc.GradientFillLinear(rect, start, end, nDirection=wx.NORTH)
+				dc.GradientFillLinear(rect, start, end, nDirection=wx.NORTH)
+
+			#----- draw icon
+			x = SCROLL_PADDING
+			y = (PANEL_HEIGHT - self.icon.GetSize()[1]) / 2 + 1
+			if self.border_side == RIGHT: x -= 1
+			else:x += 1
+			if self.pressed: x += 1
+			dc.DrawBitmap(self.icon, x, y, True)
+
+			color = const.UI_COLORS['hover_solid_border']
+			pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
+			if self.border_side == RIGHT:
+				pdc.DrawLine(w - 1, 0, w - 1, h)
+			else:
+				pdc.DrawLine(0, 0, 0, h)
+
+		else:
+			rect = wx.Rect(0, h / 2, w, h / 2)
+			color1 = wx.Colour(0, 0, 0, 10)
+			color2 = wx.Colour(0, 0, 0, 0)
+			dc.GradientFillLinear(rect, color1, color2, nDirection=wx.NORTH)
+			rect = wx.Rect(0, 0, w, h / 2)
+			dc.GradientFillLinear(rect, color1, color2, nDirection=wx.SOUTH)
+
+		pdc.SetPen(wx.Pen(wx.Colour(*const.UI_COLORS['hover_solid_border']), 1))
+		pdc.DrawLine(0, h - 1, w, h - 1)
+		pdc.DrawLine(0, 0, w, 0)
+
+		if not pdc == dc:
+			dc.EndDrawing()
+			pdc.EndDrawing()
+		else:
+			dc.EndDrawing()
+		pdc = dc = None
+
+
+class DocTabs(HPanel):
 
 	doc_tabs = []
 
@@ -44,6 +218,7 @@ class DocTabsPanel(HPanel):
 		doc_tab = DocTab(self.panel, doc)
 		self.doc_tabs.append(doc_tab)
 		self.add(doc_tab, 0, ALL | EXPAND)
+		self.SetSize(self.GetBestSize())
 		self.Layout()
 		return doc_tab
 
@@ -52,6 +227,7 @@ class DocTabsPanel(HPanel):
 		self.box.Detach(doc_tab)
 		self.doc_tabs.remove(doc_tab)
 		doc_tab.Hide()
+		self.SetSize(self.GetBestSize())
 		self.Layout()
 
 	def set_active(self, doc):
@@ -59,6 +235,7 @@ class DocTabsPanel(HPanel):
 		for tab in self.doc_tabs:
 			if tab.active: tab.set_active(False)
 		doc_tab.set_active(True)
+		self.SetSize(self.GetBestSize())
 		self.Layout()
 
 	def _on_paint(self, event):
@@ -85,6 +262,7 @@ class DocTabsPanel(HPanel):
 		else:
 			dc.EndDrawing()
 		pdc = dc = None
+
 
 class DocTab(HPanel):
 
