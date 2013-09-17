@@ -41,7 +41,7 @@ class DocTabsPanel(HPanel):
 		self.tabs_bg = TabsBgPanel(self)
 		self.add(self.tabs_bg, 1, ALL | EXPAND)
 
-		self.doc_tabs = DocTabs(self.tabs_bg)
+		self.doc_tabs = DocTabs(self.tabs_bg, self.update_panel)
 		self.doc_tabs.SetPosition((0, 0))
 
 		self.right_scroll = TabScroller(self, icons.ARROW_RIGHT,
@@ -49,14 +49,31 @@ class DocTabsPanel(HPanel):
 									border_side=LEFT,
 									onclick=self.scroll_right)
 		self.add(self.right_scroll, 0, ALL | EXPAND)
+		self.Bind(wx.EVT_SIZE, self.resize, self)
 
-	def recalc(self, *args):pass
+	def resize(self, event):
+		self.update_panel()
+		event.Skip()
+
+	def update_panel(self, *args):
+		pos = self.doc_tabs.GetPosition()[0]
+		width = self.doc_tabs.GetSize()[0]
+		bg_width = self.tabs_bg.GetSize()[0] - 1
+		if pos < 0 and not self.left_scroll.get_active():
+			self.left_scroll.set_active(True)
+		elif pos >= 0 and self.left_scroll.get_active():
+			self.left_scroll.set_active(False)
+		if pos + width > bg_width and not self.right_scroll.get_active():
+			self.right_scroll.set_active(True)
+		elif pos + width <= bg_width and self.right_scroll.get_active():
+			self.right_scroll.set_active(False)
 
 	def scroll_left(self):
 		x = self.doc_tabs.GetPosition()[0] + 10
 		if x > 0: x = 0
 		self.doc_tabs.SetPosition((0, 0))
 		self.doc_tabs.SetPosition((x, 0))
+		self.update_panel()
 
 	def scroll_right(self):
 		x = self.doc_tabs.GetPosition()[0] - 10
@@ -65,6 +82,7 @@ class DocTabsPanel(HPanel):
 			x = win_x - (self.doc_tabs.GetSize()[0] + 3)
 		self.doc_tabs.SetPosition((0, 0))
 		self.doc_tabs.SetPosition((x, 0))
+		self.update_panel()
 
 class TabsBgPanel(HPanel):
 
@@ -117,7 +135,8 @@ class TabScroller(HPanel):
 		self.Bind(wx.EVT_LEFT_UP, self._on_left_up, self)
 		self.timer = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self.do_action)
-		#self.set_active(True)
+
+	def get_active(self): return self.active
 
 	def set_active(self, val):
 		self.active = val
@@ -125,7 +144,7 @@ class TabScroller(HPanel):
 		if self.active:
 			self.SetToolTipString(self.tooltip)
 		else:
-			self.SetToolTipString('')
+			self.SetToolTip(None)
 			self.timer.Stop()
 
 	def _on_left_down(self, event):
@@ -203,9 +222,11 @@ class TabScroller(HPanel):
 class DocTabs(HPanel):
 
 	doc_tabs = []
+	callback = None
 
-	def __init__(self, parent):
+	def __init__(self, parent, callback=None):
 		HPanel.__init__(self, parent)
+		self.callback = callback
 		self.doc_tabs = []
 		self.add((PANEL_MARGIN, PANEL_HEIGHT))
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
@@ -214,12 +235,16 @@ class DocTabs(HPanel):
 		if not w: w, h = self.GetSize()
 		self.Refresh(rect=wx.Rect(x, y, w, h))
 
+	def update(self):
+		self.Layout()
+		self.SetSize(self.GetBestSize())
+		if not self.callback is None: self.callback()
+
 	def add_new_tab(self, doc):
 		doc_tab = DocTab(self.panel, doc)
 		self.doc_tabs.append(doc_tab)
 		self.add(doc_tab, 0, ALL | EXPAND)
-		self.SetSize(self.GetBestSize())
-		self.Layout()
+		self.update()
 		return doc_tab
 
 	def remove_tab(self, doc):
@@ -227,16 +252,14 @@ class DocTabs(HPanel):
 		self.box.Detach(doc_tab)
 		self.doc_tabs.remove(doc_tab)
 		doc_tab.Hide()
-		self.SetSize(self.GetBestSize())
-		self.Layout()
+		self.update()
 
 	def set_active(self, doc):
 		doc_tab = doc.docarea.doc_tab
 		for tab in self.doc_tabs:
 			if tab.active: tab.set_active(False)
 		doc_tab.set_active(True)
-		self.SetSize(self.GetBestSize())
-		self.Layout()
+		self.update()
 
 	def _on_paint(self, event):
 		w, h = self.panel.GetSize()
@@ -267,6 +290,7 @@ class DocTabs(HPanel):
 class DocTab(HPanel):
 
 	doc = None
+	parent = None
 
 	active = True
 	text = ''
@@ -277,6 +301,7 @@ class DocTab(HPanel):
 
 	def __init__(self, parent, doc, active=True):
 		self.doc = doc
+		self.parent = parent
 		self.active = active
 		self.text = self.doc.doc_name
 		self.icon = wx.ArtProvider.GetBitmap(icons.DOCUMENT_ICON)
@@ -295,6 +320,7 @@ class DocTab(HPanel):
 		self.remove(0)
 		self.add((self.get_best_width(), TAB_HEIGHT))
 		self.refresh()
+		self.parent.update()
 
 	def destroy(self):
 		self.doc = None
