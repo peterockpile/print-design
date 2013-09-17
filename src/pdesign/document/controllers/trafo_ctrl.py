@@ -208,10 +208,11 @@ class TransformController(AbstractController):
 		self.canvas.selection_repaint = False
 		if not self.canvas.resize_marker == 9:
 			self.painter = self._draw_frame
+			self.canvas.renderer.cdc_paint_doc()
 		else:
 			self.offset_start = [] + self.selection.center_offset
 			self.painter = self._draw_center
-		self.canvas.renderer.cdc_paint_doc()
+			self.canvas.selection_repaint = True
 		self.timer.Start(RENDERING_DELAY)
 
 	def mouse_up(self, event):
@@ -923,5 +924,6 @@ class TransformController(AbstractController):
 			cp = libgeom.bbox_center(self.selection.bbox)
 			f, win_p, doc_p = self.snap.snap_point([cp[0] + x + dx, cp[1] + y + dy], False)
 			self.selection.center_offset = [doc_p[0] - cp[0], doc_p[1] - cp[1]]
-			self.canvas.renderer.paint_selection()
+			self.canvas.selection_redraw()
+			#self.canvas.renderer.paint_selection()
 		return True
