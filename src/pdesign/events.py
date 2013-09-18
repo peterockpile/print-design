@@ -24,6 +24,7 @@ CONFIG_MODIFIED   arg[0] - [attr, value]
 APP_STATUS		  arg[0] - statusbar message
 MOUSE_STATUS	  arg[0] - mouse status msg
 CMS_CHANGED		  no args 
+HISTORY_CHANGED	  no args 
 NO_DOCS		      no args
 DOC_MODIFIED	  arg[0] - presenter instance
 DOC_CHANGED	      arg[0] - actual presenter instance
@@ -42,6 +43,7 @@ CONFIG_MODIFIED = ['CONFIG_MODIFIED']
 APP_STATUS = ['APP_STATUS']
 MOUSE_STATUS = ['MOUSE_STATUS']
 CMS_CHANGED = ['CMS_CHANGED']
+HISTORY_CHANGED = ['HISTORY_CHANGED']
 
 NO_DOCS = ['NO_DOCS']
 DOC_MODIFIED = ['DOC_MODIFIED']
