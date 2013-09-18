@@ -43,7 +43,7 @@ class AppHistoryManager:
 					self.history.append([items[0], int(items[1])])
 			fp.close()
 
-	def save_histrory(self):
+	def save_history(self):
 		fp = open(self.history_file, 'wb')
 		for item in self.history:
 			fp.write(item[0] + '\t' + str(item[1]) + '\n')
@@ -53,11 +53,11 @@ class AppHistoryManager:
 		if not len(self.history) < config.history_size:
 			self.history = self.history[1:]
 		self.history.append(['' + path, int(time.time())])
-		self.save_histrory()
+		self.save_history()
 
 	def clear_history(self):
 		self.history = []
-		self.save_histrory()
+		self.save_history()
 
 	def is_empthy(self): return not self.history
 
