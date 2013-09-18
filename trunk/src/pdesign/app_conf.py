@@ -108,6 +108,7 @@ class AppConfig(UCConfig):
 	mw_min_width = 1000
 	mw_min_height = 700
 	spin_overlay = True
+	statusbar_fontsize = '8'
 	palette = ''
 	show_splash = False
 	menu_size = (16, 16)
