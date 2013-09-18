@@ -19,7 +19,7 @@ import wx
 
 from uc2 import uc2const
 
-from pdesign import _
+from pdesign import _, config
 from pdesign.widgets import ALL, VERTICAL, const
 from pdesign.widgets import Label, FloatSpin, HPanel, VPanel, Radiobutton
 from generic import GenericDialog
@@ -40,7 +40,8 @@ class GotoPageDialog(GenericDialog):
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
-		self.spin = FloatSpin(self, current_page, (1, page_num), 1, 0, width=5)
+		self.spin = FloatSpin(self, current_page, (1, page_num), 1, 0, width=5,
+							spin_overlay=config.spin_overlay)
 		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 	def get_result(self):
@@ -70,7 +71,8 @@ class DeletePageDialog(GenericDialog):
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
-		self.spin = FloatSpin(self, current_page, (1, page_num), 1, 0, width=5)
+		self.spin = FloatSpin(self, current_page, (1, page_num), 1, 0, width=5,
+							spin_overlay=config.spin_overlay)
 		self.box.add(self.spin, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 	def get_result(self):
@@ -105,7 +107,8 @@ class InsertPageDialog(GenericDialog):
 		label = Label(panel, _("Insert:"))
 		panel.add(label, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
-		self.page_num = FloatSpin(panel, 1, (1, 100), 1, 0, width=5)
+		self.page_num = FloatSpin(panel, 1, (1, 100), 1, 0, width=5,
+							spin_overlay=config.spin_overlay)
 		panel.add(self.page_num, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 		label = Label(panel, _("page(s)"))
@@ -134,7 +137,8 @@ class InsertPageDialog(GenericDialog):
 		page_num = len(pages)
 		current_page = pages.index(self.presenter.active_page) + 1
 
-		self.page_index = FloatSpin(panel, current_page, (1, page_num), 1, 0, width=5)
+		self.page_index = FloatSpin(panel, current_page, (1, page_num), 1, 0,
+								width=5, spin_overlay=config.spin_overlay)
 		panel.add(self.page_index, 0, wx.ALIGN_CENTER_VERTICAL | ALL, 5)
 
 	def get_result(self):
