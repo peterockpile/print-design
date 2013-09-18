@@ -249,12 +249,19 @@ class Label(wx.StaticText, Widget):
 		if fontbold:
 			font.SetWeight(wx.FONTWEIGHT_BOLD)
 		if fontsize:
-			if font.IsUsingSizeInPixels():
-				sz = font.GetPixelSize()[1] + fontsize
-				font.SetPixelSize((0, sz))
+			if isinstance(fontsize, str):
+				sz = int(fontsize)
+				if font.IsUsingSizeInPixels():
+					font.SetPixelSize((0, sz))
+				else:
+					font.SetPointSize(sz)
 			else:
-				sz = font.GetPointSize() + fontsize
-				font.SetPointSize(sz)
+				if font.IsUsingSizeInPixels():
+					sz = font.GetPixelSize()[1] + fontsize
+					font.SetPixelSize((0, sz))
+				else:
+					sz = font.GetPointSize() + fontsize
+					font.SetPointSize(sz)
 		self.SetFont(font)
 		if fg:
 			self.SetForegroundColour(wx.Colour(*fg))
