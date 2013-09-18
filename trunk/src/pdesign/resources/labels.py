@@ -39,6 +39,8 @@ pdids.COPY_MODE: (_('Copy mode'),),
 
 wx.ID_NEW: (_('&New'), _('New document')),
 wx.ID_OPEN: (_('&Open...'), _('Open document')),
+pdids.ID_CLEAR_LOG: (_('&Clear history'),),
+pdids.ID_VIEW_LOG: (_('&Detailed log'),),
 wx.ID_SAVE:(_('&Save'), _('Save document')),
 wx.ID_SAVEAS:(_('Save &As...'), _('Save document as...')),
 pdids.ID_SAVEALL:(_('Save All'), ('Save all documents')),
