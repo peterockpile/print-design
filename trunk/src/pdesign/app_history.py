@@ -54,3 +54,25 @@ class AppHistoryManager:
 			self.history = self.history[1:]
 		self.history.append(['' + path, int(time.time())])
 		self.save_histrory()
+
+	def clear_history(self):
+		self.history = []
+		self.save_histrory()
+
+	def is_empthy(self): return not self.history
+
+	def is_more(self): return len(self.history) > config.history_list_size
+
+	def get_menu_entries(self):
+		entries = []
+		if len(self.history) > config.history_list_size:
+			entries = self.history[-config.history_list_size:]
+		else:
+			entries += self.history
+		ret = []
+		for item in entries:
+			path = item[0]
+			filename = os.path.basename(item[0])
+			ret.append([filename + '[' + path + ']', path])
+		ret.reverse()
+		return ret
