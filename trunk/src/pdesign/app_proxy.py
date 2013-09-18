@@ -39,6 +39,8 @@ class AppProxy:
 
 	def new(self): self.app.new()
 	def open(self): self.app.open()
+	def clear_log(self): self.app.history.clear_history()
+	def view_log(self): self.stub()
 	def save(self): self.app.save()
 	def save_as(self): self.app.save_as()
 	def save_all(self): self.app.save_all()
