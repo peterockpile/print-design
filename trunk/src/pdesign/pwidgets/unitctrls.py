@@ -21,7 +21,7 @@ import wx
 from uc2 import uc2const
 from uc2.uc2const import point_dict, unit_dict, unit_accuracy
 
-from pdesign import _, events
+from pdesign import _, config, events
 from pdesign.widgets import Label, FloatSpin, const
 from pdesign.resources import icons, get_icon
 
@@ -64,7 +64,8 @@ class UnitSpin(FloatSpin):
 		val = self.point_value * point_dict[self.units]
 		FloatSpin.__init__(self, parent, val, (0.0, 100000.0),
 						step=1.0, width=5,
-						onchange=self.update_point_value, onenter=onenter)
+						onchange=self.update_point_value, onenter=onenter,
+						spin_overlay=config.spin_overlay)
 		events.connect(events.DOC_MODIFIED, self.update_units)
 
 	def update_point_value(self, *args):
@@ -148,7 +149,7 @@ class AngleSpin(FloatSpin):
 		FloatSpin.__init__(self, parent, val, (-360.0, 360.0),
 						step=1.0, width=5,
 						onchange=self.update_angle_value, onenter=onenter,
-						check_focus=False)
+						check_focus=False, spin_overlay=config.spin_overlay)
 
 	def update_angle_value(self, *args):
 		self.angle_value = self.get_value() * math.pi / 180.0
