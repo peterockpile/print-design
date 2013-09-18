@@ -148,7 +148,7 @@ class PageMonitor(HPanel):
 		HPanel.__init__(self, parent)
 
 		native = False
-		if const.is_msw(): native = True
+		if const.is_gtk(): native = True
 		fontsize = 0
 		if const.is_mac(): fontsize = -1
 
