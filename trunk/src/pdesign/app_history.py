@@ -18,7 +18,7 @@
 import os, time, datetime
 
 from uc2.utils.fs import path_unicode
-from pdesign import config, appconst
+from pdesign import config, appconst, events
 
 class AppHistoryManager:
 
@@ -49,6 +49,7 @@ class AppHistoryManager:
 		for item in self.history:
 			fp.write(str(item[0]) + '\t' + item[1] + '\t' + str(item[2]) + '\n')
 		fp.close()
+		events.emit(events.HISTORY_CHANGED)
 
 	def add_entry(self, path, operation=appconst.OPENED):
 		if not len(self.history) < config.history_size:
