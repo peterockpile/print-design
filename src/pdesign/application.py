@@ -24,6 +24,7 @@ from uc2.application import UCApplication
 
 from pdesign import _, config, events, app_actions, modes, dialogs
 from pdesign.app_conf import AppData
+from pdesign.app_history import AppHistoryManager
 from pdesign.app_insp import AppInspector
 from pdesign.app_proxy import AppProxy
 from pdesign.parts.mw import AppMainWindow
@@ -36,6 +37,7 @@ from pdesign.clipboard import AppClipboard
 class pdApplication(Application, UCApplication):
 
 	appdata = None
+	history = None
 
 	actions = {}
 	docs = []
@@ -58,6 +60,7 @@ class pdApplication(Application, UCApplication):
 		self.appdata = AppData()
 		config.load(self.appdata.app_config)
 		config.resource_dir = os.path.join(path_unicode(self.path), 'share')
+		self.history = AppHistoryManager(self)
 
 		create_artprovider()
 		self.cursors = modes.get_cursors()
@@ -117,6 +120,7 @@ class pdApplication(Application, UCApplication):
 			self.docs.append(doc)
 			self.set_current_doc(doc)
 			config.open_dir = str(os.path.dirname(doc_file))
+			self.history.add_entry(doc_file)
 			events.emit(events.APP_STATUS, _('Document opened'))
 
 	def save(self, doc=''):
@@ -174,6 +178,7 @@ class pdApplication(Application, UCApplication):
 					print sys.exc_info()[2].__str__()
 				return False
 			config.save_dir = str(os.path.dirname(doc_file))
+			self.history.add_entry(doc_file)
 			events.emit(events.APP_STATUS, _('Document saved'))
 			return True
 		else:
