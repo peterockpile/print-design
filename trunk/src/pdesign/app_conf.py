@@ -107,6 +107,7 @@ class AppConfig(UCConfig):
 	mw_height = 700
 	mw_min_width = 1000
 	mw_min_height = 700
+	spin_overlay = True
 	palette = ''
 	show_splash = False
 	menu_size = (16, 16)
@@ -229,6 +230,7 @@ class MacosxConfig(AppConfig):
 	os = system.MACOSX
 	toolbar_size = (16, 16)
 	toolbar_icon_size = (16, 16)
+	spin_overlay = False
 
 class WinConfig(AppConfig):
 	os = system.WINDOWS
