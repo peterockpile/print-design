@@ -101,6 +101,8 @@ class AppConfig(UCConfig):
 	resource_dir = ''
 	profile_import_dir = '~'
 
+	history_size = 100
+
 	#============== UI SECTION ===================
 	mw_maximized = 0
 	mw_width = 1000
@@ -115,6 +117,7 @@ class AppConfig(UCConfig):
 	toolbar_size = (24, 24)
 	toolbar_icon_size = (24, 24)
 	set_doc_icon = True
+	history_list_size = 10
 
 	default_polygon_num = 5
 
