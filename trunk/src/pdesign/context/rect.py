@@ -17,7 +17,7 @@
 
 import wx
 
-from pdesign import _, events
+from pdesign import _, config, events
 from pdesign.resources import icons, get_bmp
 from pdesign.widgets import LEFT, CENTER, FloatSpin, Slider, VPanel, HORIZONTAL
 from pdesign.pwidgets import RatioToggle, BitmapToggle
@@ -43,7 +43,8 @@ class RectanglePlugin(CtxPlugin):
 		self.add(self.slider, 0, LEFT | CENTER, 2)
 
 		self.num_spin = FloatSpin(self, 0, (0.0, 100.0), 1.0, 0,
-							width=3, onchange=self.changes)
+							width=3, onchange=self.changes,
+							spin_overlay=config.spin_overlay)
 		self.add(self.num_spin, 0, LEFT | CENTER, 2)
 
 		self.switch = RectAngleSwitch(self, onchange=self.switch_changed)
