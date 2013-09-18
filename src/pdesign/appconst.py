@@ -15,6 +15,9 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+OPENED = 0
+SAVED = 1
+
 LEFT_BUTTON = 1
 MIDDLE_BUTTON = 2
 RIGHT_BUTTON = 3
