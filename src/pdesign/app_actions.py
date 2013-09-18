@@ -59,6 +59,8 @@ def create_actions(app):
 #------ File menu -------
 (wx.ID_NEW, proxy.new),
 (wx.ID_OPEN, proxy.open),
+(pdids.ID_CLEAR_LOG, proxy.clear_log),
+(pdids.ID_VIEW_LOG, proxy.view_log),
 (wx.ID_SAVE, proxy.save, doc_save_chnls, insp.is_doc_not_saved),
 (wx.ID_SAVEAS, proxy.save_as, doc_chnls, insp.is_doc),
 (pdids.ID_SAVEALL, proxy.save_all, doc_save_chnls, insp.is_any_doc_not_saved),
