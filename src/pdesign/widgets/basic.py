@@ -422,13 +422,13 @@ class FloatSpin(wx.Panel, RangeDataWidget):
 				self.entry = Entry(self, '', size=size, width=width,
 						onchange=self._check_entry, onenter=self._entry_enter)
 				size = (-1, self.entry.GetSize()[1])
+				self.line = HPanel(self)
 				self.sb = SpinButton(self, size=size, onchange=self._check_spin)
 				w_pos = self.entry.GetSize()[0] - 5
-				self.sb.SetPosition((w_pos, -1))
-				self.line = HPanel(self)
 				self.line.SetSize((1, self.sb.GetSize()[1] - 1))
 				self.line.set_bg(const.UI_COLORS['dark_shadow'])
 				self.line.SetPosition((w_pos - 1, -1))
+				self.sb.SetPosition((w_pos, -1))
 			elif const.is_msw():
 				width += 2
 				self.entry = Entry(self, '', size=size, width=width,
