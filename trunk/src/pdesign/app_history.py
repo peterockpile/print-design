@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, time
+import os, time, datetime
 
 from pdesign import config
 
@@ -73,6 +73,18 @@ class AppHistoryManager:
 		for item in entries:
 			path = item[0]
 			filename = os.path.basename(item[0])
-			ret.append([filename + '[' + path + ']', path])
+			ret.append([filename + ' [' + path + ']', path])
 		ret.reverse()
 		return ret
+
+	def get_history_entries(self):
+		ret = []
+		for item in self.history:
+			path = item[0]
+			filename = os.path.basename(item[0])
+			timestamp = datetime.datetime.fromtimestamp(item[1])
+			timestr = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+			ret.append([filename, path, timestr])
+		ret.reverse()
+		return ret
+
