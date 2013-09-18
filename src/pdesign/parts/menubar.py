@@ -138,16 +138,32 @@ class HistoryMenu(wx.Menu):
 	mw = None
 	items = []
 	empty_item = None
+	persistent_items = []
 
 	def __init__(self, app, mw):
 		self.app = app
 		self.mw = mw
 		wx.Menu.__init__(self)
+
 		self.empty_item = wx.MenuItem(self, wx.NewId(), _('Empty'))
 		self.empty_item.Enable(False)
+
+		self.items.append(self.AppendSeparator())
+		action = self.app.actions[pdids.ID_VIEW_LOG]
+		menuitem = ActionMenuItem(self.mw, self, action)
+		self.AppendItem(menuitem)
+		self.items.append(menuitem)
+
+		self.items.append(self.AppendSeparator())
+		action = self.app.actions[pdids.ID_CLEAR_LOG]
+		menuitem = ActionMenuItem(self.mw, self, action)
+		self.AppendItem(menuitem)
+		self.items.append(menuitem)
+
+		self.persistent_items += self.items
+
 		self.rebuild()
-		events.connect(events.DOC_CHANGED, self.rebuild)
-		events.connect(events.DOC_SAVED, self.rebuild)
+		events.connect(events.HISTORY_CHANGED, self.rebuild)
 
 	def rebuild(self, *args):
 		for item in self.items: self.RemoveItem(item)
@@ -162,7 +178,9 @@ class HistoryMenu(wx.Menu):
 				menuitem = HistoryMenuItem(self.mw, self, entry[0], entry[1])
 				self.items.append(menuitem)
 				self.AppendItem(menuitem)
-
+			for menuitem in self.persistent_items:
+				self.items.append(menuitem)
+				self.AppendItem(menuitem)
 
 class HistoryMenuItem(wx.MenuItem):
 
