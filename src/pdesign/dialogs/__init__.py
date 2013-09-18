@@ -20,3 +20,4 @@ from filedlgs import get_open_file_name, get_save_file_name
 from progressdlg import ProgressDialog
 from aboutdlg import about_dialog
 from page_dlg import goto_page_dlg, delete_page_dlg, insert_page_dlg
+from log_viewer import log_viewer_dlg
