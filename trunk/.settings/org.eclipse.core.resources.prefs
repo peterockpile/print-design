@@ -3,6 +3,7 @@ encoding//src/pdesign/__init__.py=utf-8
 encoding//src/pdesign/app_actions.py=utf-8
 encoding//src/pdesign/app_cms.py=utf-8
 encoding//src/pdesign/app_conf.py=utf-8
+encoding//src/pdesign/app_history.py=utf-8
 encoding//src/pdesign/app_insp.py=utf-8
 encoding//src/pdesign/app_proxy.py=utf-8
 encoding//src/pdesign/appconst.py=utf-8
