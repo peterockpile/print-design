@@ -22,7 +22,7 @@ from uc2 import uc2const
 from uc2.utils.fs import path_unicode
 from uc2.application import UCApplication
 
-from pdesign import _, config, events, app_actions, modes, dialogs
+from pdesign import _, config, events, app_actions, modes, dialogs, appconst
 from pdesign.app_conf import AppData
 from pdesign.app_history import AppHistoryManager
 from pdesign.app_insp import AppInspector
@@ -118,9 +118,9 @@ class pdApplication(Application, UCApplication):
 					print sys.exc_info()[2].__str__()
 				return
 			self.docs.append(doc)
-			self.set_current_doc(doc)
 			config.open_dir = str(os.path.dirname(doc_file))
 			self.history.add_entry(doc_file)
+			self.set_current_doc(doc)
 			events.emit(events.APP_STATUS, _('Document opened'))
 
 	def save(self, doc=''):
@@ -136,6 +136,7 @@ class pdApplication(Application, UCApplication):
 
 		try:
 			doc.save()
+			self.history.add_entry(self.current_doc.doc_file, appconst.SAVED)
 			events.emit(events.DOC_SAVED, doc)
 		except:
 			msg = _('Cannot save file')
@@ -178,7 +179,8 @@ class pdApplication(Application, UCApplication):
 					print sys.exc_info()[2].__str__()
 				return False
 			config.save_dir = str(os.path.dirname(doc_file))
-			self.history.add_entry(doc_file)
+			self.history.add_entry(doc_file, appconst.SAVED)
+			events.emit(events.DOC_SAVED, self.current_doc)
 			events.emit(events.APP_STATUS, _('Document saved'))
 			return True
 		else:
