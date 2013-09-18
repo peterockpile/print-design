@@ -17,7 +17,7 @@
 
 import wx
 
-from pdesign import _, config
+from pdesign import _, config, events
 from pdesign.resources import pdids
 
 class AppMenuBar(wx.MenuBar):
@@ -29,7 +29,10 @@ class AppMenuBar(wx.MenuBar):
 		self.entries = []
 
 		#---File menu
-		sub = (wx.ID_NEW, None, wx.ID_OPEN, wx.ID_SAVE, wx.ID_SAVEAS,
+		sub = (wx.ID_NEW, None, wx.ID_OPEN,
+				(_("Open &Recent"), (HistoryMenu(self.app, self.mw),)),
+				None,
+				wx.ID_SAVE, wx.ID_SAVEAS,
 				pdids.ID_SAVEALL, None, wx.ID_CLOSE, wx.ID_CLOSE_ALL,
 				None, wx.ID_PRINT_SETUP, wx.ID_PRINT, None, wx.ID_EXIT,)
 		entry = (_("&File"), sub)
@@ -116,6 +119,8 @@ class AppMenuBar(wx.MenuBar):
 			for item in subentries:
 				if item is None:
 					menu.AppendSeparator()
+				elif isinstance(item, wx.Menu):
+					menu = item
 				elif isinstance(item, tuple):
 					self.create_menu(menu, (item,))
 				else:
@@ -126,6 +131,54 @@ class AppMenuBar(wx.MenuBar):
 
 	def AppendMenu(self, menu_id, txt, menu):
 		self.Append(menu, txt)
+
+class HistoryMenu(wx.Menu):
+
+	app = None
+	mw = None
+	items = []
+	empty_item = None
+
+	def __init__(self, app, mw):
+		self.app = app
+		self.mw = mw
+		wx.Menu.__init__(self)
+		self.empty_item = wx.MenuItem(self, wx.NewId(), _('Empty'))
+		self.empty_item.Enable(False)
+		self.rebuild()
+		events.connect(events.DOC_CHANGED, self.rebuild)
+		events.connect(events.DOC_SAVED, self.rebuild)
+
+	def rebuild(self, *args):
+		for item in self.items: self.RemoveItem(item)
+		self.items = []
+		if self.app.history.is_empty():
+			self.items.append(self.empty_item)
+			self.AppendItem(self.empty_item)
+			self.empty_item.Enable(False)
+		else:
+			entries = self.app.history.get_menu_entries()
+			for entry in entries:
+				menuitem = HistoryMenuItem(self.mw, self, entry[0], entry[1])
+				self.items.append(menuitem)
+				self.AppendItem(menuitem)
+
+
+class HistoryMenuItem(wx.MenuItem):
+
+	app = None
+	path = None
+	id = None
+
+	def __init__(self, mw, parent, text, path):
+		self.app = mw.app
+		self.path = path
+		self.id = wx.NewId()
+		wx.MenuItem.__init__(self, parent, self.id, text=text)
+		mw.Bind(wx.EVT_MENU, self.action, id=self.id)
+
+	def action(self, event):
+		self.app.open(self.path)
 
 
 class ActionMenuItem(wx.MenuItem):
