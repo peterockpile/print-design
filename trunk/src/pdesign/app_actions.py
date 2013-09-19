@@ -24,7 +24,7 @@ from pdesign.modes import SELECT_MODE, SHAPER_MODE, ZOOM_MODE, FLEUR_MODE, \
 LINE_MODE, CURVE_MODE, RECT_MODE, ELLIPSE_MODE, TEXT_MODE, POLYGON_MODE, \
 ZOOM_OUT_MODE
 from pdesign.events import CLIPBOARD, DOC_CHANGED, PAGE_CHANGED, \
-DOC_MODIFIED, DOC_SAVED, NO_DOCS, SELECTION_CHANGED, MODE_CHANGED
+DOC_MODIFIED, DOC_SAVED, NO_DOCS, SELECTION_CHANGED, MODE_CHANGED, HISTORY_CHANGED
 
 def create_actions(app):
 	# action_id, callback, channels, validator, checker,
@@ -60,7 +60,6 @@ def create_actions(app):
 (wx.ID_NEW, proxy.new),
 (wx.ID_OPEN, proxy.open),
 (pdids.ID_CLEAR_LOG, proxy.clear_log),
-(pdids.ID_VIEW_LOG, proxy.view_log),
 (wx.ID_SAVE, proxy.save, doc_save_chnls, insp.is_doc_not_saved),
 (wx.ID_SAVEAS, proxy.save_as, doc_chnls, insp.is_doc),
 (pdids.ID_SAVEALL, proxy.save_all, doc_save_chnls, insp.is_any_doc_not_saved),
@@ -80,6 +79,7 @@ def create_actions(app):
 (pdids.ID_DUPLICATE, proxy.duplicate, sel_chnls, insp.is_selection),
 (wx.ID_SELECTALL, proxy.select_all, doc_chnls, insp.is_doc),
 (pdids.ID_DESELECT, proxy.deselect, sel_chnls, insp.is_selection),
+(pdids.ID_VIEW_LOG, proxy.view_log, [HISTORY_CHANGED, ], insp.is_history),
 (wx.ID_PROPERTIES, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PREFERENCES, proxy.stub),
 #------ View menu -------
