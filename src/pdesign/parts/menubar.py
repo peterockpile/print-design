@@ -149,12 +149,6 @@ class HistoryMenu(wx.Menu):
 		self.empty_item.Enable(False)
 
 		self.items.append(self.AppendSeparator())
-		action = self.app.actions[pdids.ID_VIEW_LOG]
-		menuitem = ActionMenuItem(self.mw, self, action)
-		self.AppendItem(menuitem)
-		self.items.append(menuitem)
-
-		self.items.append(self.AppendSeparator())
 		action = self.app.actions[pdids.ID_CLEAR_LOG]
 		menuitem = ActionMenuItem(self.mw, self, action)
 		self.AppendItem(menuitem)
