@@ -33,8 +33,9 @@ class AppMenuBar(wx.MenuBar):
 				(_("Open &Recent"), (HistoryMenu(self.app, self.mw),)),
 				None,
 				wx.ID_SAVE, wx.ID_SAVEAS,
-				pdids.ID_SAVEALL, None, wx.ID_CLOSE, wx.ID_CLOSE_ALL,
-				None, wx.ID_PRINT_SETUP, wx.ID_PRINT, None, wx.ID_EXIT,)
+				pdids.ID_SAVEALL, None, wx.ID_CLOSE, wx.ID_CLOSE_ALL, None,
+				pdids.ID_VIEW_LOG, None, wx.ID_PRINT_SETUP, wx.ID_PRINT, 
+				None, wx.ID_EXIT,)
 		entry = (_("&File"), sub)
 		self.entries.append(entry)
 
@@ -42,7 +43,6 @@ class AppMenuBar(wx.MenuBar):
 		sub = (wx.ID_UNDO, wx.ID_REDO, pdids.ID_CLEAR_UNDO, None, wx.ID_CUT,
 				wx.ID_COPY, wx.ID_PASTE, wx.ID_DELETE, pdids.ID_DUPLICATE,
 				None, wx.ID_SELECTALL, pdids.ID_DESELECT, None,
-				pdids.ID_VIEW_LOG, None,
 				wx.ID_PROPERTIES, wx.ID_PREFERENCES,)
 		entry = (_("&Edit"), sub)
 		self.entries.append(entry)
