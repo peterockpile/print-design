@@ -79,7 +79,7 @@ def create_actions(app):
 (pdids.ID_DUPLICATE, proxy.duplicate, sel_chnls, insp.is_selection),
 (wx.ID_SELECTALL, proxy.select_all, doc_chnls, insp.is_doc),
 (pdids.ID_DESELECT, proxy.deselect, sel_chnls, insp.is_selection),
-(pdids.ID_VIEW_LOG, proxy.view_log, [HISTORY_CHANGED, ], insp.is_history),
+(pdids.ID_VIEW_LOG, proxy.view_log, [HISTORY_CHANGED, ] + doc_chnls, insp.is_file_history),
 (wx.ID_PROPERTIES, proxy.stub, doc_chnls, insp.is_doc),
 (wx.ID_PREFERENCES, proxy.stub),
 #------ View menu -------
