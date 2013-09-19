@@ -62,6 +62,9 @@ class AppHistoryManager:
 		self.save_history()
 
 	def is_empty(self): return not self.history
+	def is_history(self):
+		if self.history:return True
+		return False
 
 	def is_more(self): return len(self.history) > config.history_list_size
 
