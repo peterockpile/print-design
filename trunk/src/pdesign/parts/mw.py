@@ -57,11 +57,12 @@ class AppMainWindow(MainWindow):
 		#----- MDI Area
 		self.mdi = MDIArea(self.app, self)
 		self.add(self.mdi, 1, ALL | EXPAND)
-		self.mdi.hide()
+		if not config.new_doc_on_start:self.mdi.hide()
 
 		#----- Stub panel
 		self.stub = AppStubPanel(self)
 		self.add(self.stub, 1, ALL | EXPAND)
+		if config.new_doc_on_start:self.stub.hide()
 
 		#----- Palette panel
 		self.palette_panel = AppPalettePanel(self)
