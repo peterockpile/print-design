@@ -50,7 +50,7 @@ class AppInspector:
 		if mode == self.app.current_doc.canvas.mode: return True
 		return False
 
-	def is_history(self): return not self.app.history.is_empty()
+	def is_file_history(self): return self.app.history.is_history()
 
 	def is_undo(self, doc=None):
 		if doc is None: doc = self.app.current_doc
