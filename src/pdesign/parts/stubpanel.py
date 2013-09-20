@@ -51,6 +51,10 @@ class AppStubPanel(wx.Panel):
 
 		self.Bind(wx.EVT_PAINT, self._on_paint, self)
 		self.Bind(wx.EVT_SIZE, self._on_resize, self)
+		events.connect(events.HISTORY_CHANGED, self.check_history)
+
+	def check_history(self, *args):
+		self.recent_btn.set_active(self.app.history.is_history())
 
 	def hide(self):
 		self.Hide()
@@ -65,13 +69,13 @@ class AppStubPanel(wx.Panel):
 	def _on_resize(self, event):
 		h = self.new_btn.GetSize()[1]
 		w0 = self.new_btn.GetSize()[0]
-		w = 3 * w0 + 40
+		w = 3 * w0
 		win_w, win_h = self.GetSize()
 		x = (win_w - w) / 2
 		y = (win_h - h) / 3
 		self.new_btn.SetPosition((x, y))
-		self.open_btn.SetPosition((x + w0 + 20, y))
-		self.recent_btn.SetPosition((x + 2 * w0 + 40, y))
+		self.open_btn.SetPosition((x + w0, y))
+		self.recent_btn.SetPosition((x + 2 * w0, y))
 		self.refresh()
 
 	def _on_paint(self, event):
@@ -92,6 +96,7 @@ class StubButton(wx.Panel):
 	normal_bmp = None
 	disabled_bmp = None
 	active_bmp = None
+	pressed_bmp = None
 
 	def __init__(self, parent, icon, action, tooltip=''):
 		self.action = action
@@ -123,6 +128,8 @@ class StubButton(wx.Panel):
 		image.Replace(0, 0, 0, 255, 255, 255)
 		image = image.AdjustChannels(1.0, 1.0, 1.0, .8)
 		self.active_bmp = image.ConvertToBitmap()
+		image = image.Blur(5)
+		self.pressed_bmp = image.ConvertToBitmap()
 
 	def set_active(self, val):
 		if val: self.state = appconst.NORMAL
@@ -140,6 +147,8 @@ class StubButton(wx.Panel):
 			dc.DrawBitmap(self.normal_bmp, 0, 0, True)
 		elif self.state == appconst.ACTIVE:
 			dc.DrawBitmap(self.active_bmp, 0, 0, True)
+		elif self.state == appconst.PRESSED:
+			dc.DrawBitmap(self.pressed_bmp, 0, 0, True)
 		else:
 			dc.DrawBitmap(self.disabled_bmp, 0, 0, True)
 
@@ -152,14 +161,16 @@ class StubButton(wx.Panel):
 
 	def _mouse_down(self, event):
 		self.mouse_pressed = True
+		self.state = appconst.PRESSED
 		self.refresh()
 
 	def _mouse_up(self, event):
 		self.mouse_pressed = False
 		if self.mouse_over:
 			if self.action and not self.state == appconst.DISABLED:
+				self.state = appconst.NORMAL
+				self.refresh()
 				self.action.do_call()
-		self.refresh()
 
 	def _on_timer(self, event):
 		mouse_pos = wx.GetMousePosition()
