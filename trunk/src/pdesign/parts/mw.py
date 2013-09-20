@@ -38,11 +38,10 @@ class AppMainWindow(MainWindow):
 
 	def __init__(self, app):
 		self.app = app
-		title = self.app.appdata.app_name
 		height = max(config.mw_min_height, config.mw_height)
 		width = max(config.mw_min_width, config.mw_width)
 		size = (width, height)
-		MainWindow.__init__(self, title, size, maximized=config.mw_maximized)
+		MainWindow.__init__(self, '', size, maximized=config.mw_maximized)
 		self.set_minsize(config.mw_min_width, config.mw_min_height)
 		self.icons = self.create_icon_bundle()
 		self.SetIcons(self.icons)
@@ -76,6 +75,7 @@ class AppMainWindow(MainWindow):
 
 	def set_title(self, title=''):
 		appname = self.app.appdata.app_name
+		print 'title:', title
 		if title: self.SetTitle('[%s] - %s' % (title, appname))
 		else: self.SetTitle(appname)
 
