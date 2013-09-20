@@ -67,11 +67,11 @@ class pdApplication(Application, UCApplication):
 
 		self.proxy = AppProxy(self)
 		self.insp = AppInspector(self)
+		self.actions = app_actions.create_actions(self)
+
 		self.mw = AppMainWindow(self)
 		self.default_cms = AppColorManager(self)
 		self.clipboard = AppClipboard(self)
-
-		self.actions = app_actions.create_actions(self)
 
 		self.proxy.update()
 		self.insp.update()
