@@ -37,7 +37,7 @@ class AppData(UCData):
 	app_icon = None
 	doc_icon = None
 	version = "1.0"
-	revision = 'rev.765'
+	revision = 'rev.821'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
 	components = []
 
