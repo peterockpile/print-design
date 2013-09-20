@@ -19,7 +19,7 @@ import wx
 
 from pdesign import _, appconst, events
 from pdesign.resources import icons, get_icon, pdids
-from pdesign.widgets import const, HPanel
+from pdesign.widgets import const
 
 
 class AppStubPanel(wx.Panel):
