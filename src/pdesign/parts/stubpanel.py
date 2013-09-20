@@ -160,9 +160,10 @@ class StubButton(wx.Panel):
 			self.timer.Start(100)
 
 	def _mouse_down(self, event):
-		self.mouse_pressed = True
-		self.state = appconst.PRESSED
-		self.refresh()
+		if not self.state == appconst.DISABLED:
+			self.mouse_pressed = True
+			self.state = appconst.PRESSED
+			self.refresh()
 
 	def _mouse_up(self, event):
 		self.mouse_pressed = False
