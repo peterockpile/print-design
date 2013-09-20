@@ -37,7 +37,7 @@ class AppData(UCData):
 	app_icon = None
 	doc_icon = None
 	version = "1.0"
-	revision = 'rev.823'
+	revision = 'rev.824'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
 	components = []
 
@@ -240,6 +240,7 @@ class WinConfig(AppConfig):
 	os = system.WINDOWS
 	toolbar_size = (24, 24)
 	toolbar_icon_size = (16, 16)
+	statusbar_fontsize = 0
 
 
 
