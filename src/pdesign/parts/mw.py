@@ -75,7 +75,6 @@ class AppMainWindow(MainWindow):
 
 	def set_title(self, title=''):
 		appname = self.app.appdata.app_name
-		print 'title:', title
 		if title: self.SetTitle('[%s] - %s' % (title, appname))
 		else: self.SetTitle(appname)
 
