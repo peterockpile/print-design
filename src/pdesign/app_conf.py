@@ -39,6 +39,7 @@ class AppData(UCData):
 	version = "1.0"
 	revision = 'rev.824'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
+	plugin_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign', 'plugins'))
 	components = []
 
 	def __init__(self):
@@ -53,6 +54,12 @@ class AppData(UCData):
 			path = os.path.join(self.app_clipboard_dir, item)
 			if not os.path.lexists(path):
 				os.makedirs(path)
+		if not os.path.lexists(self.plugin_dir):
+			os.makedirs(self.plugin_dir)
+		plugin_dir_init = os.path.join(self.plugin_dir, '__init__.py')
+		if not os.path.lexists(plugin_dir_init):
+			fp = open(plugin_dir_init, 'w')
+			fp.close()
 		self.check_components()
 
 	def seq_to_str(self, seq):
