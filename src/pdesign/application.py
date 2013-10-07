@@ -22,7 +22,8 @@ from uc2 import uc2const
 from uc2.utils.fs import path_unicode
 from uc2.application import UCApplication
 
-from pdesign import _, config, events, app_actions, modes, dialogs, appconst
+from pdesign import _, config, events, modes, dialogs, appconst
+from pdesign import app_plugins, app_actions
 from pdesign.app_conf import AppData
 from pdesign.app_history import AppHistoryManager
 from pdesign.app_insp import AppInspector
@@ -40,6 +41,7 @@ class pdApplication(Application, UCApplication):
 	history = None
 
 	actions = {}
+	plugins = {}
 	docs = []
 	current_doc = None
 	doc_counter = 0
@@ -67,6 +69,7 @@ class pdApplication(Application, UCApplication):
 
 		self.proxy = AppProxy(self)
 		self.insp = AppInspector(self)
+		self.plugins = app_plugins.scan_plugins(self)
 		self.actions = app_actions.create_actions(self)
 
 		self.mw = AppMainWindow(self)
