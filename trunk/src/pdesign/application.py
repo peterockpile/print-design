@@ -65,6 +65,8 @@ class pdApplication(Application, UCApplication):
 		plg_dir = os.path.join(self.path, 'share', 'pd_plugins')
 		custom_plg_dir = self.appdata.plugin_dir
 		config.plugin_dirs = [plg_dir, custom_plg_dir]
+		sys.path.insert(1, self.appdata.app_config)
+		sys.path.insert(1, os.path.join(self.path, 'share'))
 
 		self.history = AppHistoryManager(self)
 
