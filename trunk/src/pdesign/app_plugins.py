@@ -19,4 +19,5 @@ from pdesign import config
 
 def scan_plugins(app):
 	ret = {}
+	print 'plugins:', config.plugin_dirs
 	return ret

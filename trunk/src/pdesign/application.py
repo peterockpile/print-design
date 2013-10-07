@@ -62,7 +62,7 @@ class pdApplication(Application, UCApplication):
 		self.appdata = AppData()
 		config.load(self.appdata.app_config)
 		config.resource_dir = os.path.join(path_unicode(self.path), 'share')
-		plg_dir = os.path.join(self.path, 'share', 'plugins')
+		plg_dir = os.path.join(self.path, 'share', 'pd_plugins')
 		custom_plg_dir = self.appdata.plugin_dir
 		config.plugin_dirs = [plg_dir, custom_plg_dir]
 

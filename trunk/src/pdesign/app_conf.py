@@ -39,7 +39,8 @@ class AppData(UCData):
 	version = "1.0"
 	revision = 'rev.824'
 	app_config_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign'))
-	plugin_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign', 'plugins'))
+	plugin_dir = os.path.expanduser(os.path.join('~', '.config', 'pdesign', \
+												'pd_custom_plugins'))
 	components = []
 
 	def __init__(self):
