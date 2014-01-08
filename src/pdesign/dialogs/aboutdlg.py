@@ -91,7 +91,9 @@ class AboutPage(HPanel):
 		data = app.appdata
 		txt = data.app_name + ' - ' + _('vector graphics editor') + '\n'
 		box.add(Label(box, txt, True, 2))
-		txt = '(C) 2011-2013 sK1 Project team' + '\n'
+		import datetime
+		year = str(datetime.date.today().year)
+		txt = '(C) 2011-' + year + ' sK1 Project team' + '\n'
 		box.add(Label(box, txt))
 		box.add(HtmlLabel(box, 'http://sk1project.org'))
 
