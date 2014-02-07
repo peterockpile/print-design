@@ -61,15 +61,15 @@ class MDIArea(VPanel):
 		self.doc_keeper = VPanel(self.splitter)
 		self.doc_keeper.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.plg_area = PlgArea(self.splitter)
+		self.plg_area.SetBackgroundColour(wx.Colour(183, 183, 183))
 
+		self.splitter.SplitVertically(self.doc_keeper, self.plg_area, 0)
 		self.splitter.SetMinimumPaneSize(200)
 		self.splitter.SetSashGravity(1.0)
-		self.splitter.SplitVertically(self.doc_keeper, self.plg_area, -100)
-		self.splitter.Unsplit(None)
+#		self.splitter.Unsplit(None)
 		hpanel.add(self.splitter, 1, ALL | EXPAND)
 
 		self.Layout()
-		self.splitter.UpdateSize()
 		events.connect(events.DOC_CHANGED, self.set_active)
 
 	def hide(self):
@@ -107,6 +107,8 @@ class MDIArea(VPanel):
 		self.current_docarea = doc_area
 		self.doc_tabs.set_active(doc)
 		if len(self.docareas) == 1: self.mw.show_mdi(True)
+		if self.plg_area.GetSize()[0] > 400:
+			self.splitter.SetSashPosition(-250)
 		self.doc_keeper.Layout()
 
 	def show_plugins(self, value):
