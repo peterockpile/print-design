@@ -21,4 +21,3 @@ class PlgArea(VPanel):
 
 	def __init__(self, parent):
 		VPanel.__init__(self, parent)
-		self.add((200, 50))
