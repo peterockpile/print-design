@@ -15,9 +15,47 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign import config
+import os, sys
+from pdesign import _, config
+
+def check_package(path, name):
+	full_path = os.path.join(path, name)
+	if not os.path.isdir(full_path): return False
+	if name[0] == '.': return False
+	init_file = os.path.join(full_path, '__init__.py')
+	if not os.path.lexists(init_file): return False
+	return True
 
 def scan_plugins(app):
 	ret = {}
-#	print 'plugins:', config.plugin_dirs
+	for path in config.plugin_dirs:
+		sys.path.insert(0, path)
+		plgs = []
+		for item in os.listdir(path):
+			if check_package(path, item):
+				plgs.append(item)
+		if plgs:
+			bn = os.path.basename(path)
+			for item in plgs:
+				try:
+					pkg = __import__(bn + '.' + item)
+					plg_mod = getattr(pkg, item)
+					pobj = plg_mod.get_plugin(app)
+					ret[pobj.id] = pobj
+				except:
+					print 'Error while importing ' + item + ' plugin'
 	return ret
+
+class RS_Plugin:
+
+	id = 'plugin'
+	name = _('plugin')
+	activated = False
+	app = None
+
+	def __init__(self, app):
+		self.app = app
+
+	def activate(self, *args):pass
+	def show(self, *args):pass
+	def hide(self):pass
