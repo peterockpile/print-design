@@ -47,6 +47,11 @@ class ContextMenu(wx.Menu):
 		self.persistent_items = self.items
 		self.items = []
 
+	def destroy(self):
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	def rebuild(self):
 		for item in self.persistent_items:
 			if not item.IsSeparator(): item.update()

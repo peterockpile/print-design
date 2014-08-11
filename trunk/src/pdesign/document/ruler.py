@@ -83,7 +83,9 @@ class RulerCorner(HPanel):
 		self.presenter.api.set_doc_origin(origin)
 
 	def destroy(self):
-		self.presenter = None
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
 
 	def refresh(self, x=0, y=0, w=0, h=0):
 		if not w: w, h = self.GetSize()
@@ -151,7 +153,9 @@ class Ruler(HPanel):
 		self.timer.Stop()
 
 	def destroy(self):
-		self.presenter = None
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
 
 	def calc_ruler(self):
 		canvas = self.presenter.canvas

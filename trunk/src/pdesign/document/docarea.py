@@ -72,12 +72,11 @@ class DocArea(VPanel):
 		self.canvas._set_scrolls(self.hscroll, self.vscroll)
 
 	def destroy(self):
-		objs = [self.presenter.eventloop, self.doc_tab, self.hruler, 
+		objs = [self.doc_tab, self.hruler,
 			self.vruler, self.corner, self.canvas]
 		for obj in objs: obj.destroy()
-		self.doc_tab = None
-		self.hruler = None
-		self.vruler = None
-		self.corner = None
-		self.canvas = None
+
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
 

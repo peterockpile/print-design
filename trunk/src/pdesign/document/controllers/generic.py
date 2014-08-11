@@ -49,6 +49,11 @@ class AbstractController:
 		self.end_doc = []
 		self.timer = self.canvas.timer
 
+	def destroy(self):
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	def set_cursor(self):
 		if self.mode is None:
 			self.canvas.set_canvas_cursor(self.canvas.mode)

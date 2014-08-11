@@ -107,6 +107,18 @@ class AppCanvas(wx.Panel):
 		self.eventloop.connect(self.eventloop.SELECTION_CHANGED,
 							self.selection_redraw)
 
+	def destroy(self):
+		if self.timer.IsRunning():self.timer.Stop()
+		self.ctx_menu.destroy()
+		self.renderer.destroy()
+		items = self.ctrls.keys()
+		for item in items:
+			self.ctrls[item].destroy()
+
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	#----- SCROLLING
 
 	def _set_scrolls(self, hscroll, vscroll):
@@ -435,15 +447,6 @@ class AppCanvas(wx.Panel):
 			self.renderer.paint_guide_dragging(*self.dragged_guide)
 			if not self.mode == modes.GUIDE_MODE: self.dragged_guide = ()
 		self.renderer.finalize()
-
-	def destroy(self):
-		if self.timer.IsRunning():self.timer.Stop()
-		self.presenter = None
-		self.app = None
-		self.mode = None
-		self.controller = None
-		self.ctrls = {}
-		self.current_cursor = None
 
 #==============EVENT CONTROLLING==========================
 

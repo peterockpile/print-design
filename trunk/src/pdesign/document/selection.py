@@ -40,6 +40,11 @@ class Selection:
 		self.markers = []
 		self.center_offset = [0.0, 0.0]
 
+	def destroy(self):
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	def update(self):
 		if not self.objs:
 			self.center_offset = [0.0, 0.0]
