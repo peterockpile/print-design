@@ -30,7 +30,6 @@ class DocViewer(VPanel):
 
 	def destroy(self):
 		self.Destroy()
-		fields = self.__dict__
-		items = fields.keys()
+		items = self.__dict__.keys()
 		for item in items:
-			fields[item] = None
+			self.__dict__[item] = None

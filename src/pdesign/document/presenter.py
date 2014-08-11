@@ -151,8 +151,16 @@ class PD_Presenter:
 	def close(self):
 		self.app.mdi.remove_doc(self)
 		self.app.default_cms.unregistry_cm(self.cms)
+		self.eventloop.destroy()
+		self.api.destroy()
 		self.doc_presenter.close()
 		self.docarea.destroy()
+		self.selection.destroy()
+		self.snap.destroy()
+
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
 
 	def modified(self, *args):
 		self.saved = False

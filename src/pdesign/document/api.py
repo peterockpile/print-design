@@ -272,6 +272,14 @@ class PresenterAPI(AbstractAPI):
 		self.undo = []
 		self.redo = []
 
+	def destroy(self):
+		self.undo = self._clear_history_stack(self.undo)
+		self.redo = self._clear_history_stack(self.redo)
+
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	def clear_history(self):
 		self.undo = self._clear_history_stack(self.undo)
 		self.redo = self._clear_history_stack(self.redo)

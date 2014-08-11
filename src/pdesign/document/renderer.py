@@ -53,6 +53,11 @@ class PDRenderer(CairoRenderer):
 		self.canvas = canvas
 		self.direct_matrix = cairo.Matrix(1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
+	def destroy(self):
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
+
 	#-------DOCUMENT RENDERING
 
 	def paint_document(self):
