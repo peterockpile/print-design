@@ -51,6 +51,8 @@ class pdApplication(Application, UCApplication):
 	mw = None
 	default_cms = None
 	cursors = None
+	mdiarea = None
+	plg_area = None
 
 	def __init__(self, path):
 
