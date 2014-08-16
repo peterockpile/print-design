@@ -15,7 +15,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pdesign.widgets import VPanel
+from pdesign.widgets import VPanel, ALL, EXPAND
 
 class PlgArea(VPanel):
 
@@ -35,7 +35,19 @@ class PlgArea(VPanel):
 
 	def load_plugin(self, pid):
 		item = self.app.plugins[pid]
+		item.activate()
+		self.plugins.append(item)
+		return item
 
 	def show_plugin(self, pid):
+		if self.active_plg and pid == self.active_plg.pid: return
 		item = self.check_id(pid)
+		if self.active_plg:
+			self.active_plg.hide()
+		if not item:
+			item = self.load_plugin(pid)
+			self.add(item.panel, 1, ALL | EXPAND)
+		self.active_plg = item
+		self.active_plg.show()
+		self.Layout()
 
