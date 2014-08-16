@@ -276,3 +276,5 @@ class AppProxy:
 			pass
 		else:
 			self.app.current_doc.api.stroke_selected(color)
+
+	def show_plugin(self, id=""): self.app.mdiarea.show_plugins(id)
