@@ -19,5 +19,23 @@ from pdesign.widgets import VPanel
 
 class PlgArea(VPanel):
 
-	def __init__(self, parent):
+	app = None
+	active_plg = None
+	plugins = []
+
+	def __init__(self, app, parent):
+		self.app = app
 		VPanel.__init__(self, parent)
+
+	def check_id(self, pid):
+		for item in self.plugins:
+			if item.id == pid:
+				return item
+		return None
+
+	def load_plugin(self, pid):
+		item = self.app.plugins[pid]
+
+	def show_plugin(self, pid):
+		item = self.check_id(pid)
+

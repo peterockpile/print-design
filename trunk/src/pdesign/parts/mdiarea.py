@@ -60,7 +60,7 @@ class MDIArea(VPanel):
 		self.splitter = wx.SplitterWindow(hpanel, -1, style=wx.SP_LIVE_UPDATE)
 		self.doc_keeper = VPanel(self.splitter)
 		self.doc_keeper.SetBackgroundColour(wx.Colour(255, 255, 255))
-		self.plg_area = PlgArea(self.splitter)
+		self.plg_area = PlgArea(self.app, self.splitter)
 		self.plg_area.SetBackgroundColour(wx.Colour(183, 183, 183))
 		self.app.mdiarea = self
 		self.app.plg_area = self.plg_area
@@ -113,8 +113,8 @@ class MDIArea(VPanel):
 			self.splitter.SetSashPosition(-250)
 		self.doc_keeper.Layout()
 
-	def show_plugins(self, value):
-		if value:
+	def show_plugins(self, pid):
+		if pid:
 			if not self.plg_area.is_shown():
 				self.splitter.SplitVertically(self.doc_keeper,
 											self.plg_area, -100)
