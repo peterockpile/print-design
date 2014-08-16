@@ -65,6 +65,7 @@ class RS_Plugin:
 			self.activated = True
 
 	def show(self, *args):
-		self.activate()
+		self.panel.show()
 
-	def hide(self):pass
+	def hide(self):
+		self.panel.hide()
