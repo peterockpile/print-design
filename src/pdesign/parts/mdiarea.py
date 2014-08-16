@@ -62,11 +62,13 @@ class MDIArea(VPanel):
 		self.doc_keeper.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.plg_area = PlgArea(self.splitter)
 		self.plg_area.SetBackgroundColour(wx.Colour(183, 183, 183))
+		self.app.mdiarea = self
+		self.app.plg_area = self.plg_area
 
 		self.splitter.SplitVertically(self.doc_keeper, self.plg_area, 0)
 		self.splitter.SetMinimumPaneSize(200)
 		self.splitter.SetSashGravity(1.0)
-#		self.splitter.Unsplit(None)
+		self.splitter.Unsplit(None)
 		hpanel.add(self.splitter, 1, ALL | EXPAND)
 
 		self.Layout()
