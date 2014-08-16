@@ -6,5 +6,5 @@ def get_plugin(app):
 
 class Test_Plugin(RS_Plugin):
 
-	id = 'TestPlugin'
+	pid = 'TestPlugin'
 	name = 'Test Plugin'
