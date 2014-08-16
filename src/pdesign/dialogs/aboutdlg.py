@@ -21,7 +21,7 @@ from pdesign import _
 from pdesign.resources import icons
 
 from pdesign.widgets import const, EXPAND, ALL, LEFT, CENTER
-from pdesign.widgets import HPanel, VPanel, Notebook, Label, HLine, HtmlLabel
+from pdesign.widgets import HPanel, VPanel, Notebook, Label, HtmlLabel
 from pdesign.widgets import Entry
 
 from pdesign.dialogs.license import LICENSE
@@ -140,7 +140,6 @@ class ThanksPage(VPanel):
 
 	def __init__(self, parent):
 		VPanel.__init__(self, parent)
-		from pdesign.dialogs.credits import CREDITS
 		entry = Entry(self, CREDITS, multiline=True, editable=False)
 		self.add(entry, 1, ALL | EXPAND, 5)
 
@@ -148,7 +147,6 @@ class LicensePage(VPanel):
 
 	def __init__(self, parent):
 		VPanel.__init__(self, parent)
-		from pdesign.dialogs.license import LICENSE
 		entry = Entry(self, LICENSE, multiline=True, editable=False)
 		self.add(entry, 1, ALL | EXPAND, 5)
 
