@@ -16,7 +16,9 @@
 #	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, sys
+
 from pdesign import _, config
+from pdesign.widgets import VPanel
 
 def check_package(path, name):
 	full_path = os.path.join(path, name)
@@ -52,10 +54,17 @@ class RS_Plugin:
 	name = _('plugin')
 	activated = False
 	app = None
+	panel = None
 
 	def __init__(self, app):
 		self.app = app
 
-	def activate(self, *args):pass
-	def show(self, *args):pass
+	def activate(self):
+		if not self.activated:
+			self.panel = VPanel(self.app.plg_area)
+			self.activated = True
+
+	def show(self, *args):
+		self.activate()
+
 	def hide(self):pass
