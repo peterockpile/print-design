@@ -59,10 +59,13 @@ class RS_Plugin:
 	def __init__(self, app):
 		self.app = app
 
+	def build_ui(self):pass
+
 	def activate(self):
 		if not self.activated:
 			self.panel = VPanel(self.app.plg_area)
 			self.activated = True
+			self.build_ui()
 
 	def show(self, *args):
 		self.panel.show()
