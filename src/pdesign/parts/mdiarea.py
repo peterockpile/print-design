@@ -61,7 +61,6 @@ class MDIArea(VPanel):
 		self.doc_keeper = VPanel(self.splitter)
 		self.doc_keeper.SetBackgroundColour(wx.Colour(255, 255, 255))
 		self.plg_area = PlgArea(self.app, self.splitter)
-		self.plg_area.SetBackgroundColour(wx.Colour(183, 183, 183))
 		self.app.mdiarea = self
 		self.app.plg_area = self.plg_area
 
