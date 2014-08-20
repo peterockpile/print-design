@@ -42,6 +42,7 @@ class DocTabsPanel(HPanel):
 		self.add(self.tabs_bg, 1, ALL | EXPAND)
 
 		self.doc_tabs = DocTabs(self.tabs_bg, self.update_panel)
+		self.tabs_bg.add(self.doc_tabs, 0, ALL | EXPAND)
 		self.doc_tabs.SetPosition((0, 0))
 
 		self.right_scroll = TabScroller(self, icons.ARROW_RIGHT,
