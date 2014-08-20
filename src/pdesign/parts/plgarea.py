@@ -17,6 +17,7 @@
 
 import wx
 from pdesign.widgets import HPanel, VPanel, ALL, EXPAND, VLine
+from pdesign.parts.plgtabpanel import PlgTabsPanel
 
 class PlgArea(HPanel):
 
@@ -57,21 +58,8 @@ class PlgArea(HPanel):
 		if not item:
 			item = self.load_plugin(pid)
 			self.container.add(item.panel, 1, ALL | EXPAND)
+			item.plg_tab = self.tabs.plg_tabs.add_new_tab(item)
 		self.active_plg = item
 		self.active_plg.show()
 		self.container.Layout()
 		self.Layout()
-
-class PlgTabsPanel(VPanel):
-
-	app = None
-	active_plg = None
-	plugins = []
-	container = None
-	tabs = None
-
-	def __init__(self, app, parent):
-		self.app = app
-		VPanel.__init__(self, parent)
-		self.SetBackgroundColour(wx.Colour(183, 183, 183))
-		self.add((10, 10))
