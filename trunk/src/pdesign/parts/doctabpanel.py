@@ -59,6 +59,8 @@ class DocTabsPanel(HPanel):
 		pos = self.doc_tabs.GetPosition()[0]
 		width = self.doc_tabs.GetSize()[0]
 		bg_width = self.tabs_bg.GetSize()[0] - 1
+		if pos < 0 and bg_width > width:
+			self.doc_tabs.SetPosition((0, 0))
 		if pos < 0 and not self.left_scroll.get_active():
 			self.left_scroll.set_active(True)
 		elif pos >= 0 and self.left_scroll.get_active():
