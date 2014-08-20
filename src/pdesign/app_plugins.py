@@ -56,6 +56,7 @@ class RS_Plugin:
 	app = None
 	panel = None
 	icon = None
+	plg_tab = None
 
 	def __init__(self, app):
 		self.app = app
