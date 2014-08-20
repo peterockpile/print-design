@@ -326,13 +326,9 @@ class DocTab(HPanel):
 		self.parent.update()
 
 	def destroy(self):
-		self.doc = None
-		self.active = True
-		self.text = ''
-		self.rect = None
-		self.but_rect = None
-		self.but_active = False
-		self.but_pressed = False
+		items = self.__dict__.keys()
+		for item in items:
+			self.__dict__[item] = None
 
 	def refresh(self, x=0, y=0, w=0, h=0):
 		if not w: w, h = self.GetSize()
