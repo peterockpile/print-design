@@ -102,8 +102,9 @@ class PlgTabs(VPanel):
 		plg_tab = PlgTab(self.panel, plg)
 		self.plg_tabs.append(plg_tab)
 		self.add(plg_tab, 0, ALL | EXPAND)
-		self.update()
-		return plg_tab
+		self.add((TAB_MARGIN, TAB_MARGIN))
+		plg.plg_tab = plg_tab
+		self.set_active(plg)
 
 	def remove_tab(self, plg):
 		plg_tab = plg.plg_tab
@@ -239,10 +240,9 @@ class PlgTab(VPanel):
 		if self.but_rect.Inside(mouse_pos):
 			self.but_pressed = False
 			self.refresh()
-#			self.doc.app.close(self.doc)
+			self.plg.app.plg_area.close_plugin(self.plg.pid)
 		elif self.rect.Inside(mouse_pos) and not self.active:
-			pass
-#			self.doc.app.set_current_doc(self.doc)
+			self.plg.app.plg_area.show_plugin(self.plg.pid)
 
 	######################################
 

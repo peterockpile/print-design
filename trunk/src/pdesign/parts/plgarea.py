@@ -38,9 +38,9 @@ class PlgArea(HPanel):
 		self.add(self.tabs, 0, ALL | EXPAND)
 		self.Layout()
 
-	def check_id(self, pid):
+	def check_pid(self, pid):
 		for item in self.plugins:
-			if item.id == pid:
+			if item.pid == pid:
 				return item
 		return None
 
@@ -52,14 +52,27 @@ class PlgArea(HPanel):
 
 	def show_plugin(self, pid):
 		if self.active_plg and pid == self.active_plg.pid: return
-		item = self.check_id(pid)
+		item = self.check_pid(pid)
 		if self.active_plg:
 			self.active_plg.hide()
 		if not item:
 			item = self.load_plugin(pid)
 			self.container.add(item.panel, 1, ALL | EXPAND)
-			item.plg_tab = self.tabs.plg_tabs.add_new_tab(item)
+			self.tabs.plg_tabs.add_new_tab(item)
+		else:
+			self.tabs.plg_tabs.set_active(item)
 		self.active_plg = item
 		self.active_plg.show()
 		self.container.Layout()
 		self.Layout()
+
+	def close_plugin(self, pid):
+		item = self.check_pid(pid)
+		if not item: return
+		if self.active_plg == item:
+			pass
+		else:
+			self.tabs.plg_tabs.remove_tab(item)
+			self.plugins.remove(item)
+			self.container.box.Detach(item.panel)
+			item.hide()
