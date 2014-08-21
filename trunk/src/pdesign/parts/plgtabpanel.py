@@ -17,9 +17,8 @@
 
 import wx
 
-from pdesign import _
 from pdesign.resources import icons
-from pdesign.widgets import const, ALL, EXPAND, VPanel, RIGHT, LEFT
+from pdesign.widgets import const, ALL, EXPAND, VPanel
 
 TAB_WIDTH = 25
 TAB_MARGIN = 1
