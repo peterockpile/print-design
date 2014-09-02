@@ -133,7 +133,7 @@ def create_actions(app):
 (pdids.ID_EDIT_TEXT, proxy.stub),
 #------ Tools menu -------
 (pdids.ID_TOOL_PAGES, proxy.show_plugin, doc_chnls, insp.is_doc, None, ('TestPlugin',)),
-(pdids.ID_TOOL_LAYERS, proxy.show_plugin, doc_chnls, insp.is_doc, None, ('',)),
+(pdids.ID_TOOL_LAYERS, proxy.show_plugin, doc_chnls, insp.is_doc, None, ('AnotherTestPlugin',)),
 (pdids.ID_TOOL_OBJBROWSER, proxy.stub),
 #------ Help menu -------
 (pdids.ID_REPORT_BUG, proxy.open_url, [], None, None, ('http://sk1project.org/contact.php',)),

@@ -51,7 +51,9 @@ class PlgArea(HPanel):
 		return item
 
 	def show_plugin(self, pid):
+		if not pid: return
 		if self.active_plg and pid == self.active_plg.pid: return
+		self.app.mdiarea.show_plugin_area()
 		item = self.check_pid(pid)
 		if self.active_plg:
 			self.active_plg.hide()
@@ -69,10 +71,13 @@ class PlgArea(HPanel):
 	def close_plugin(self, pid):
 		item = self.check_pid(pid)
 		if not item: return
+		self.tabs.plg_tabs.remove_tab(item)
+		self.plugins.remove(item)
+		self.container.box.Detach(item.panel)
+		item.hide()
 		if self.active_plg == item:
-			pass
-		else:
-			self.tabs.plg_tabs.remove_tab(item)
-			self.plugins.remove(item)
-			self.container.box.Detach(item.panel)
-			item.hide()
+			self.active_plg = None
+			if self.plugins:
+				self.show_plugin(self.plugins[-1].pid)
+			else:
+				self.app.mdiarea.show_plugin_area(False)

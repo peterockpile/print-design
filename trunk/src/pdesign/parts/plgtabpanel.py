@@ -160,7 +160,9 @@ class PlgTab(VPanel):
 		self.parent = parent
 		self.active = active
 		self.text = self.plg.name
-		self.icon = wx.ArtProvider.GetBitmap(icons.PLUGIN_ICON)
+		self.icon = self.plg.icon
+		if not self.icon:
+			self.icon = wx.ArtProvider.GetBitmap(icons.PLUGIN_ICON)
 		self.close_but = wx.ArtProvider.GetBitmap(icons.PD_CLOSE_BUTTON_ACTIVE)
 		self.inactive_close_but = wx.ArtProvider.GetBitmap(icons.PD_CLOSE_BUTTON)
 		VPanel.__init__(self, parent)
