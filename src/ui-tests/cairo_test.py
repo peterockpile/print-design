@@ -87,29 +87,38 @@ class CairoCanvas(VPanel):
 			x, y, w, h = self.norm_rect(start, end)
 			if not w: w = 1
 			if not h: h = 1
-			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
-			ctx = cairo.Context(temp_surface)
-			ctx.set_antialias(cairo.ANTIALIAS_NONE)
-			ctx.set_line_width(1.0)
-			ctx.set_source_rgb(1, 1, 1)
-			ctx.rectangle(1, 1, w - 1, h - 1)
-			ctx.stroke()
-			ctx.set_dash([5, 5])
-			ctx.set_source_rgb(0, 0, 0)
-			ctx.rectangle(1, 1, w - 1, h - 1)
-			ctx.stroke()
 			dc = wx.ClientDC(self)
-			rects = [[0, 0, 1, h - 1], [0, 0, w - 1, 1],
-				[w - 1, 0, 1, h - 1], [0, h - 1, w - 1, 1]]
-			for rect in rects:
-				x0, y0, w, h = rect
-				if not w: w = 1
-				if not h: h = 1
-				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
-				ctx = cairo.Context(surface)
-				ctx.set_source_surface(temp_surface, -x0, -y0)
-				ctx.paint()
-				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0 + x, y0 + y)
+			dc.SetLogicalFunction(wx.INVERT)
+			color = [0, 0, 0]
+			pen = wx.Pen(wx.Colour(*color), 1)
+			pen.SetDashes([0xAAAAAAAA, 0x55555555, 0, 0xFFFFFFFF])
+			dc.SetPen(pen)
+			dc.SetBrush(wx.TRANSPARENT_BRUSH)
+			dc.DrawRectangle(x, y, w, h)
+
+#			temp_surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+#			ctx = cairo.Context(temp_surface)
+#			ctx.set_antialias(cairo.ANTIALIAS_NONE)
+#			ctx.set_line_width(1.0)
+#			ctx.set_source_rgb(1, 1, 1)
+#			ctx.rectangle(1, 1, w - 1, h - 1)
+#			ctx.stroke()
+#			ctx.set_dash([5, 5])
+#			ctx.set_source_rgb(0, 0, 0)
+#			ctx.rectangle(1, 1, w - 1, h - 1)
+#			ctx.stroke()
+#			dc = wx.ClientDC(self)
+#			rects = [[0, 0, 1, h - 1], [0, 0, w - 1, 1],
+#				[w - 1, 0, 1, h - 1], [0, h - 1, w - 1, 1]]
+#			for rect in rects:
+#				x0, y0, w, h = rect
+#				if not w: w = 1
+#				if not h: h = 1
+#				surface = cairo.ImageSurface(cairo.FORMAT_RGB24, w, h)
+#				ctx = cairo.Context(surface)
+#				ctx.set_source_surface(temp_surface, -x0, -y0)
+#				ctx.paint()
+#				dc.DrawBitmap(copy_surface_to_bitmap(surface), x0 + x, y0 + y)
 
 	def clear_frame(self, start, end):
 		if start and end:

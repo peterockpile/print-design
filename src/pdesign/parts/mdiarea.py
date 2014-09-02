@@ -112,9 +112,8 @@ class MDIArea(VPanel):
 			self.splitter.SetSashPosition(-250)
 		self.doc_keeper.Layout()
 
-	def show_plugins(self, pid):
-		if pid:
-			self.plg_area.show_plugin(pid)
+	def show_plugin_area(self, value=True):
+		if value:
 			if not self.plg_area.is_shown():
 				self.splitter.SplitVertically(self.doc_keeper,
 											self.plg_area, -100)
