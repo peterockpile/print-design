@@ -17,6 +17,7 @@
 
 import wx
 
+from pdesign import config
 from pdesign.resources import icons
 from pdesign.widgets import const, ALL, EXPAND, VPanel
 
@@ -203,6 +204,10 @@ class PlgTab(VPanel):
 	def _get_text_size(self, text, bold=False):
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		if bold: font.SetWeight(wx.FONTWEIGHT_BOLD)
+		if font.IsUsingSizeInPixels():
+			font.SetPixelSize(config.tabs_fontsize)
+		else:
+			font.SetPointSize(config.tabs_fontsize)
 		result = (0, 0)
 		if text:
 			pdc = wx.MemoryDC()
@@ -280,6 +285,10 @@ class PlgTab(VPanel):
 			x = (TAB_WIDTH - txt_h) / 2 + txt_h - 2
 			font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 			font.SetWeight(wx.FONTWEIGHT_BOLD)
+			if font.IsUsingSizeInPixels():
+				font.SetPixelSize(config.tabs_fontsize)
+			else:
+				font.SetPointSize(config.tabs_fontsize)
 			pdc.SetFont(font)
 			pdc.DrawRotatedText(self.text, x, y, 270)
 			#----- draw button
@@ -308,6 +317,10 @@ class PlgTab(VPanel):
 			txt_h = self._get_text_size(self.text, self.active)[1]
 			x = (TAB_WIDTH - txt_h) / 2 + txt_h - 3
 			font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+			if font.IsUsingSizeInPixels():
+				font.SetPixelSize(config.tabs_fontsize)
+			else:
+				font.SetPointSize(config.tabs_fontsize)
 			pdc.SetFont(font)
 			pdc.DrawRotatedText(self.text, x, y, 270)
 			#----- draw button
