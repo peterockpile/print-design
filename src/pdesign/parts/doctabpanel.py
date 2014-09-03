@@ -353,10 +353,11 @@ class DocTab(HPanel):
 	def _get_text_size(self, text, bold=False):
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		if bold: font.SetWeight(wx.FONTWEIGHT_BOLD)
-		if font.IsUsingSizeInPixels():
-			font.SetPixelSize(config.tabs_fontsize)
-		else:
-			font.SetPointSize(config.tabs_fontsize)
+		if config.tabs_fontsize:
+			if font.IsUsingSizeInPixels():
+				font.SetPixelSize(config.tabs_fontsize)
+			else:
+				font.SetPointSize(config.tabs_fontsize)
 		result = (0, 0)
 		if text:
 			pdc = wx.MemoryDC()
@@ -464,10 +465,11 @@ class DocTab(HPanel):
 		if not self.active:y += 1
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		if self.active: font.SetWeight(wx.FONTWEIGHT_BOLD)
-		if font.IsUsingSizeInPixels():
-			font.SetPixelSize(config.tabs_fontsize)
-		else:
-			font.SetPointSize(config.tabs_fontsize)
+		if config.tabs_fontsize:
+			if font.IsUsingSizeInPixels():
+				font.SetPixelSize(config.tabs_fontsize)
+			else:
+				font.SetPointSize(config.tabs_fontsize)
 		pdc.SetFont(font)
 		pdc.DrawText(self.text, x, y)
 		#----- draw button
