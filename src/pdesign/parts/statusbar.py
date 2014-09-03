@@ -51,7 +51,7 @@ class AppStatusbar(HPanel):
 		panel1.add(get_bmp(panel1.panel, icons.PD_APP_STATUS), 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
-		fontsize = config.statusbar_fontsize
+		fontsize = str(config.statusbar_fontsize)
 		self.info = Label(panel1.panel, text='', fontsize=fontsize)
 		panel1.add(self.info, 0, LEFT | CENTER)
 		self.add(panel1, 1, ALL | EXPAND)
@@ -77,7 +77,7 @@ class ColorMonitor(HPanel):
 		self.parent = parent
 		HPanel.__init__(self, parent)
 
-		fontsize = config.statusbar_fontsize
+		fontsize = str(config.statusbar_fontsize)
 
 		self.fill_txt = Label(self.panel, text='Fill:', fontsize=fontsize)
 		self.add(self.fill_txt, 0, LEFT | CENTER)
@@ -109,7 +109,7 @@ class MouseMonitor(HPanel):
 		HPanel.__init__(self, parent)
 		self.add(get_bmp(self.panel, icons.PD_MOUSE_MONITOR), 0, LEFT | CENTER)
 
-		fontsize = config.statusbar_fontsize
+		fontsize = str(config.statusbar_fontsize)
 		width = 100
 		if const.is_mac():
 			width = 130
@@ -145,7 +145,7 @@ class PageMonitor(HPanel):
 		HPanel.__init__(self, parent)
 
 		native = False
-		fontsize = config.statusbar_fontsize
+		fontsize = str(config.statusbar_fontsize)
 		if const.is_gtk(): native = True
 
 		callback = self.app.proxy.goto_start

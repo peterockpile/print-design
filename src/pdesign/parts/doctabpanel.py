@@ -17,7 +17,7 @@
 
 import wx
 
-from pdesign import _
+from pdesign import _, config
 from pdesign.resources import icons
 from pdesign.widgets import const, ALL, EXPAND, HPanel, RIGHT, LEFT
 
@@ -353,6 +353,10 @@ class DocTab(HPanel):
 	def _get_text_size(self, text, bold=False):
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		if bold: font.SetWeight(wx.FONTWEIGHT_BOLD)
+		if font.IsUsingSizeInPixels():
+			font.SetPixelSize(config.tabs_fontsize)
+		else:
+			font.SetPointSize(config.tabs_fontsize)
 		result = (0, 0)
 		if text:
 			pdc = wx.MemoryDC()
@@ -460,6 +464,10 @@ class DocTab(HPanel):
 		if not self.active:y += 1
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
 		if self.active: font.SetWeight(wx.FONTWEIGHT_BOLD)
+		if font.IsUsingSizeInPixels():
+			font.SetPixelSize(config.tabs_fontsize)
+		else:
+			font.SetPointSize(config.tabs_fontsize)
 		pdc.SetFont(font)
 		pdc.DrawText(self.text, x, y)
 		#----- draw button
