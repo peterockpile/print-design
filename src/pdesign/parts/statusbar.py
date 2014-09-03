@@ -24,13 +24,7 @@ from pdesign.pwidgets import FillSwatch, StrokeSwatch
 from pdesign.resources import get_bmp, icons
 
 
-FONTSIZE = str(config.statusbar_fontsize)
-if not config.statusbar_fontsize:
-	font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
-	if font.IsUsingSizeInPixels():
-		FONTSIZE = str(font.GetPixelSize())
-	else:
-		FONTSIZE = str(font.GetPointSize())
+FONTSIZE = [str(config.statusbar_fontsize), ]
 
 class AppStatusbar(HPanel):
 
@@ -43,6 +37,14 @@ class AppStatusbar(HPanel):
 	clr_monitor = None
 
 	def __init__(self, mw):
+
+		if not config.statusbar_fontsize:
+			font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+			if font.IsUsingSizeInPixels():
+				FONTSIZE[0] = str(font.GetPixelSize())
+			else:
+				FONTSIZE[0] = str(font.GetPointSize())
+
 		self.mw = mw
 		HPanel.__init__(self, mw, border=TOP)
 		self.add((1, 20))
@@ -60,7 +62,7 @@ class AppStatusbar(HPanel):
 		panel1.add(get_bmp(panel1.panel, icons.PD_APP_STATUS), 0, LEFT | CENTER)
 		panel1.add((5, 3))
 
-		self.info = Label(panel1.panel, text='', fontsize=FONTSIZE)
+		self.info = Label(panel1.panel, text='', fontsize=FONTSIZE[0])
 		panel1.add(self.info, 0, LEFT | CENTER)
 		self.add(panel1, 1, ALL | EXPAND)
 
@@ -85,11 +87,11 @@ class ColorMonitor(HPanel):
 		self.parent = parent
 		HPanel.__init__(self, parent)
 
-		self.fill_txt = Label(self.panel, text='Fill:', fontsize=FONTSIZE)
+		self.fill_txt = Label(self.panel, text='Fill:', fontsize=FONTSIZE[0])
 		self.add(self.fill_txt, 0, LEFT | CENTER)
 		self.fill_swatch = FillSwatch(self.panel, self.app, self.fill_txt)
 		self.add(self.fill_swatch, 0, LEFT | CENTER, 2)
-		self.stroke_txt = Label(self.panel, text='Stroke:', fontsize=FONTSIZE)
+		self.stroke_txt = Label(self.panel, text='Stroke:', fontsize=FONTSIZE[0])
 		self.add(self.stroke_txt, 0, LEFT | CENTER, 10)
 		self.stroke_swatch = StrokeSwatch(self.panel, self.app, self.stroke_txt)
 		self.add(self.stroke_swatch, 0, LEFT | CENTER, 2)
@@ -119,7 +121,7 @@ class MouseMonitor(HPanel):
 		if const.is_mac():
 			width = 130
 
-		self.pointer_txt = Label(self.panel, text=' ', fontsize=FONTSIZE)
+		self.pointer_txt = Label(self.panel, text=' ', fontsize=FONTSIZE[0])
 		self.pointer_txt.SetMinSize((width, -1))
 		self.add(self.pointer_txt, 0, LEFT | CENTER)
 		self.add(VLine(self.panel), 0, ALL | EXPAND, 2)
@@ -170,7 +172,7 @@ class PageMonitor(HPanel):
 							onclick=callback)
 		self.add(self.prev_but, 0, LEFT | CENTER)
 
-		self.page_txt = Label(self.panel, text=' ', fontsize=FONTSIZE)
+		self.page_txt = Label(self.panel, text=' ', fontsize=FONTSIZE[0])
 		self.add(self.page_txt, 0, LEFT | CENTER)
 
 		callback = self.app.proxy.next_page
