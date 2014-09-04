@@ -121,6 +121,7 @@ class AppConfig(UCConfig):
 	spin_overlay = True
 	statusbar_fontsize = 0
 	tabs_fontsize = 0
+	tabs_use_bold = True
 	palette = ''
 	show_splash = False
 	menu_size = (16, 16)
@@ -239,8 +240,9 @@ class AppConfig(UCConfig):
 
 class LinuxConfig(AppConfig):
 	os = system.LINUX
-	statusbar_fontsize = 8
+	statusbar_fontsize = 9
 	tabs_fontsize = 9
+	tabs_use_bold = False
 
 class MacosxConfig(AppConfig):
 	os = system.MACOSX
