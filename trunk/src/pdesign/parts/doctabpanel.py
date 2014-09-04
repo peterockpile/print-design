@@ -352,7 +352,8 @@ class DocTab(HPanel):
 
 	def _get_text_size(self, text, bold=False):
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
-		if bold: font.SetWeight(wx.FONTWEIGHT_BOLD)
+		if bold and config.tabs_use_bold:
+			font.SetWeight(wx.FONTWEIGHT_BOLD)
 		if config.tabs_fontsize:
 			if font.IsUsingSizeInPixels():
 				font.SetPixelSize(config.tabs_fontsize)
@@ -464,7 +465,8 @@ class DocTab(HPanel):
 		y = (TAB_HEIGHT - self._get_text_size(self.text, self.active)[1]) / 2 + 3
 		if not self.active:y += 1
 		font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
-		if self.active: font.SetWeight(wx.FONTWEIGHT_BOLD)
+		if self.active and config.tabs_use_bold:
+			font.SetWeight(wx.FONTWEIGHT_BOLD)
 		if config.tabs_fontsize:
 			if font.IsUsingSizeInPixels():
 				font.SetPixelSize(config.tabs_fontsize)
